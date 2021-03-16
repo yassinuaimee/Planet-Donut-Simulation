@@ -119,3 +119,5 @@ bool Cercle::intersection_cercle(Cercle cercle)
     else
         return false;
 }
+
+//t'arrives a lire ca gros?
