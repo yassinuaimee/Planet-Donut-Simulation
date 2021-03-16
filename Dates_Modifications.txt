@@ -3,3 +3,5 @@
 			-Ajouter le truc qui évite une deuxième déclaration des fonctions de "geomod.h" 
 			-Modifier un peu la fonction qui permet de remettre dans l'espace les points dehors(+ajout d'une condition do{}while au cas ou le point est vraiment loin
 			-Ajout d'un fichier Makefile.txt, on va le modifier après oklm
+16/03 - 16h30 Adrien : T56kfdl-AdYa Voici le code à Utiliser et voila c'est cool. Ca marche bien.
+
