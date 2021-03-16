@@ -1,0 +1,5 @@
+08/03 - 21h00 Adrien
+13/03 - 14h00 Adrien : 
+			-Ajouter le truc qui évite une deuxième déclaration des fonctions de "geomod.h" 
+			-Modifier un peu la fonction qui permet de remettre dans l'espace les points dehors(+ajout d'une condition do{}while au cas ou le point est vraiment loin
+			-Ajout d'un fichier Makefile.txt, on va le modifier après oklm
