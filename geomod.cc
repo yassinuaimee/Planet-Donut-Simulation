@@ -1,8 +1,10 @@
-using namespace std;
 #include <iostream>
 #include <cmath>
 #include <array>
 #include "geomod.h"
+
+using namespace std;
+
 typedef array<double,2> Vecteur;
 typedef array<double,2> Point;
 

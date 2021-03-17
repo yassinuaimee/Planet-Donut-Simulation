@@ -1,6 +1,7 @@
 #ifndef GEOMOD_H_INCLUDED
 #define GEOMOD_H_INCLUDED
-
+#include <array>
+using namespace std;
 class Cercle
 {
 public:
