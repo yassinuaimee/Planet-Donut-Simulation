@@ -1,5 +1,5 @@
 # Makefile
-COMPILE = g++ -g Wall -std==c++11 -O2
+COMPILE = g++ -g -Wall -std==c++11 -O2
 
 geomod.o : geomod.cc geomod.h
 					$(COMPILE) -c geomod.cc -o fruits.o
