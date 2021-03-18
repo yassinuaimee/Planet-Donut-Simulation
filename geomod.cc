@@ -9,7 +9,6 @@ using namespace std;
 typedef array<double,2> Vecteur;
 typedef array<double,2> Point;
 
-
 namespace
 {
 double epsilon_zero;
@@ -24,12 +23,14 @@ bool equal_zero(double parametre)//Permet de faire le test d'égalité pour les 
         return false;
 }
 
-void set_max()//Va donner la taille de notre "planète"
+void set_max(char* init_max)//Va donner la taille de notre "planète"
 {
-    do
-    {
-        cin>>max_;
-    }while(max_<=0);
+	max_=atof(init_max);
+	cout<<"max  = "<<max_<<endl;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	if(max_<=0)//Si la valeur de max_ n'est pas bonne alors on doit sortir car c'est pas bon
+	{
+		exit(0);
+	}
     epsilon_zero=max_*pow(10,-10);//Va pouvoir definir la précision de notre 0
 }
 

@@ -8,7 +8,6 @@ void verification_nb_arguments(const int,char**);
 
 int main(int argc,char* argv[] )
 {
-	cout<<"ARGC : "<<argc<<endl;
 	verification_nb_arguments(argc,argv);
 
 }
@@ -17,17 +16,21 @@ int main(int argc,char* argv[] )
 
 void verification_nb_arguments(const int argc, char* argv[])
 {
-	int i(atoi(argv[1] )); //Permet la conversion de chaine de caractere ASCII vers entier
-	cout<<i<<endl;
+	int i(atof(argv[1] )); //Permet la conversion de chaine de caractere ASCII vers entier
+	cout<<"i = "<<i<<endl;
 	switch(i){
 		case(1): if(argc-2!=1)
-						{
-							message_geomod::bad_argc();
-							exit(0);
-						}
+					{
+						message_geomod::bad_argc();
+						exit(0);
+					}
 					else
 					{
-						cout<<argv[1]<<endl;
+						
+						//Setter de max
+						//Recupérer max et Epsilon_zero avec leur getteurs
+						set_max(argv[2]);
+						message_geomod::print_max(atof(argv[2]),get_max(),get_epsilon_zero());
 					}
 					break;
 		case(2):if(argc-2!=3)
