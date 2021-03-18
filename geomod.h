@@ -16,10 +16,16 @@ private:
     double rayon;
 };
 
-bool equal_zero(double parametre);
-void set_max(char*);
+bool equal_zero(double);
+
+void set_max(double);
+
 double get_max();
+
 double  get_epsilon_zero();
+
+double normalisation_point(double);
+
 double norme_plus_petit_vecteur(std::array<double,2> depart,std::array<double,2> arrivee,std::array<double,2> vecteur);
 bool  test_egalite_points(std::array<double,2>,std::array<double,2>);
 bool appartient_cercle(std::array<double,2>,std::array<double,2>);

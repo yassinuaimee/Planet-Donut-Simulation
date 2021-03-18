@@ -14,7 +14,7 @@ namespace
 double epsilon_zero;
 double max_(0);
 }
-
+///======================================================================================================///
 bool equal_zero(double parametre)//Permet de faire le test d'égalité pour les types double
 {
     if(abs(parametre)<epsilon_zero)
@@ -22,28 +22,29 @@ bool equal_zero(double parametre)//Permet de faire le test d'égalité pour les 
     else
         return false;
 }
-
-void set_max(char* init_max)//Va donner la taille de notre "planète"
+///======================================================================================================///
+void set_max(double init_max)//Va donner la taille de notre "planète"
 {
-	max_=atof(init_max);
-	cout<<"max  = "<<max_<<endl;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	max_=init_max;//C'est maxi dangereux ça je crois qu'il faut pas faire ça
+	
 	if(max_<=0)//Si la valeur de max_ n'est pas bonne alors on doit sortir car c'est pas bon
 	{
 		exit(0);
 	}
     epsilon_zero=max_*pow(10,-10);//Va pouvoir definir la précision de notre 0
 }
-
+///======================================================================================================///
 double get_max()//Getter pour avoir accès à la valeur de max hors du module
 {
     return max_;
 }
+///======================================================================================================///
 double get_epsilon_zero()//Getter pour avoir accès à la valeur de epsilon_zero hors du module
 {
     return epsilon_zero;
 }
-
-void normalisation_point(double v)//Permet de remettre les points qui sont hors du graph
+///======================================================================================================///
+double normalisation_point(double v)//Permet de remettre les points qui sont hors du graph
                           //de nouveau dans le graph
 {
     if(v>max_)
@@ -54,16 +55,16 @@ void normalisation_point(double v)//Permet de remettre les points qui sont hors 
     {
         v=v+(2*max_);
     }
-    
+    return v;
 }
-
+///======================================================================================================///
 void normalisation_point(array<double,2> v)//On demande explicitement le fait
                                             //d'avoir une surcharge
 {
     normalisation_point(v[0]);
     normalisation_point(v[1]);
 }
-
+///======================================================================================================///
 
 double norme_plus_petit_vecteur(Point depart,Point arrivee,Vecteur vecteur={0.,0.})
 {
@@ -82,13 +83,14 @@ double norme_plus_petit_vecteur(Point depart,Point arrivee,Vecteur vecteur={0.,0
             if(distance_min>distance_test)
             {
                 distance_min=distance_test;
-                vecteur={delta_x,delta_y};
+                vecteur[0]=delta_x;/////////////////////////////////// ça marche pas ça c'est de la merde
+                vecteur[1]=delta_y;
             }
         }
     }
     return distance_min;
 }
-
+///======================================================================================================///
 bool  test_egalite_points(Point a,Point b)
 {
     if(equal_zero(norme_plus_petit_vecteur(a,b)))
@@ -108,7 +110,7 @@ double Cercle::get_rayon()
 {
     return rayon;
 }
-
+///======================================================================================================///
 bool Cercle::point_appartient(Point point)
 {
     double n(norme_plus_petit_vecteur(centre,point));
@@ -117,7 +119,7 @@ bool Cercle::point_appartient(Point point)
     else
         return false;
 }
-
+///======================================================================================================///
 bool Cercle::intersection_cercle(Cercle cercle)
 {
     double  n(norme_plus_petit_vecteur(centre,cercle.get_centre()));
