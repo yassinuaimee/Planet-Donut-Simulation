@@ -86,6 +86,16 @@ void Point::set_y(double y_)
 	y=y_;
 }
 
+bool operator==(Point const& autre) const
+{
+	//if( (x-autre.getx()==0) and (y-autre.gety()==0))
+	double norme(0.0);
+	norme= norme_plus_petit_vecteur(..)
+	if(equal_zero(norme))
+		return true;
+	else
+		return false;
+}
 ///======================================================================================================///
 Vecteur::Vecteur(double x_ , double y_)
 : x(x_) , y(y_)
