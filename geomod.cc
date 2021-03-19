@@ -47,15 +47,19 @@ double get_epsilon_zero()//Getter pour avoir accès à la valeur de epsilon_zero
 double normalisation_point(double v)//Permet de remettre les points qui sont hors du graph
                           //de nouveau dans le graph
 {
-    if(v>max_)
-    {
-        v=v-(2*max_);//J'ai rajouté le +1 pour comme on a dit sinon ça marche pas en fait
-    }
-    else if (v<-max_)
-    {
-        v=v+(2*max_);
-    }
-    return v;
+	while( v>max_ or v<-max_)
+	{
+		if(v>max_)
+		{
+			v=v-(2*max_);
+		}
+		else if (v<-max_)
+		{
+			v=v+(2*max_);
+		}
+    
+	}
+	return v;
 }
 ///======================================================================================================///
 void normalisation_point(array<double,2> v)//On demande explicitement le fait
@@ -91,6 +95,53 @@ double norme_plus_petit_vecteur(Point depart,Point arrivee,Vecteur vecteur={0.,0
     return distance_min;
 }
 ///======================================================================================================///
+
+array<double,3> norme_plus_petit_vecteur( const double init_x1, const double init_y1, const double init_x2, const double init_y2 )
+{
+	array<double,3> norme_et_coordonnees;
+	double distance_min(0.);
+	double delta_x(0.),delta_y(0.);
+	
+	delta_x=init_x2-init_x1;
+	delta_y=init_y2-init_y1;
+	
+	distance_min=sqrt( pow(delta_x,2) + pow(delta_y,2) );
+	
+	double distance_test( distance_min );
+	
+	double vecteur_x( delta_x ), vecteur_y( delta_y );
+	
+	
+	 for(int kx=-1;kx<=1;++kx)
+    {
+        for(int ky=-1;ky<=1;++ky)
+        {
+			
+			delta_x=(init_x2+kx*2*max_)-init_x1;
+            delta_y=(init_y2+ky*2*max_)-init_x1;
+            
+            
+            distance_test=sqrt(pow(delta_x,2)+pow(delta_y,2));
+            
+            
+             if(distance_min>distance_test)
+            {
+				
+				distance_min=distance_test;
+            
+				vecteur_x=delta_x;
+				vecteur_y=delta_y;
+			}
+		}
+	}
+	norme_et_coordonnees[0]=distance_min;
+	norme_et_coordonnees[1]=vecteur_x;
+	norme_et_coordonnees[2]=vecteur_y;
+
+	return norme_et_coordonnees;
+	
+}
+///======================================================================================================///
 bool  test_egalite_points(Point a,Point b)
 {
     if(equal_zero(norme_plus_petit_vecteur(a,b)))
@@ -100,6 +151,12 @@ bool  test_egalite_points(Point a,Point b)
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Cercle::Cercle(Point set_centre, double set_rayon)
+{
+	centre=set_centre;
+	rayon=set_rayon;
+}
 
 Point Cercle::get_centre()
 {

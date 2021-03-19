@@ -63,19 +63,20 @@ void verification_nb_arguments(const int argc, char* argv[])
 						
 						set_max(init_max); //Setter de max
 						
-						double init_x1( normalisation_point( (atof(argv[3])))); //On initialise la valeur directement avec une coordonnée qui a déjà été initialisée on va rapidos quoi
-						double init_y1( normalisation_point( (atof(argv[4]))));
-						double init_x2( normalisation_point( (atof(argv[5]))));
-						double init_y2( normalisation_point( (atof(argv[6]))));
+						double init_x1( normalisation_point( atof(argv[3] ) ));
+						double init_y1( normalisation_point( atof(argv[4] ) ));
+						double init_x2( normalisation_point( atof(argv[5] ) ));
+						double init_y2( normalisation_point( atof(argv[6] ) ));
 						
-						array<double,2> point_1={init_x1,init_y1};
-						array<double,2> point_2={init_x2,init_y2};
-						array<double,2> vecteur={0,0}; //C'est ce vecteur qui va être modifié pour donner le vecteur finale entre les deux points
 						
+						double vecteur_x(0.0),vecteur_y(0.0);
 						double norme(0);
 						
-						norme = norme_plus_petit_vecteur(point_1 , point_2 , vecteur);
-						message_geomod::print_vect( norme, vecteur[0] , vecteur[1]);
+						array<double,3> norme_et_coordonnees(  norme_plus_petit_vecteur(init_x1 , init_y1 , init_x2 ,init_y2 ) );//A l'intérieur on appelle la fonction qui va permettre de créer le vecteur et de calculer la norme
+						norme=norme_et_coordonnees[0];
+						vecteur_x=norme_et_coordonnees[1];
+						vecteur_y=norme_et_coordonnees[2];
+						message_geomod::print_vect( norme, vecteur_x , vecteur_y );
 							
 						}
 					break;
