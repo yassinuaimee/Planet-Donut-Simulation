@@ -30,7 +30,7 @@ public:
 	double get_y();
 	void set_x(double);
 	void set_y(double);
-	bool operator==( Point const& ) const ;//Yassin va créer la fonction égalité vecteurs
+	bool operator==( Point & ) const ;//Yassin va créer la fonction égalité vecteurs
 private:
 	double x;
 	double y;

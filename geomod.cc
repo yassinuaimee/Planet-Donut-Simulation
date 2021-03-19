@@ -86,11 +86,10 @@ void Point::set_y(double y_)
 	y=y_;
 }
 
-bool operator==(Point const& autre) const
+bool Point::operator==(Point & autre) const
 {
-	//if( (x-autre.getx()==0) and (y-autre.gety()==0))
 	double norme(0.0);
-	norme= norme_plus_petit_vecteur(..)
+	norme= norme_plus_petit_vecteur( x ,y , autre.get_x() , autre.get_y() );
 	if(equal_zero(norme))
 		return true;
 	else

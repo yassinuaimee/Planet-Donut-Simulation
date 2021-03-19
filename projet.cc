@@ -9,13 +9,14 @@ void verification_nb_arguments(const int,char**);
 int main(int argc,char* argv[] )
 {
 	verification_nb_arguments(argc,argv);
-
+	
 }
 
 
 
 void verification_nb_arguments(const int argc, char* argv[])
 {
+	
 	int i(atoi(argv[1] )); //Permet la conversion de chaine de caractere ASCII vers entier
 	
 	switch(i){
@@ -45,6 +46,7 @@ void verification_nb_arguments(const int argc, char* argv[])
 							double y_init(atof(argv[4]));
 							
 							set_max(init_max); //Setter de max
+							
 							Point point(x_init, y_init);
 							point.normalisation();
 							
@@ -59,8 +61,8 @@ void verification_nb_arguments(const int argc, char* argv[])
 						}
 						else
 						{
-						double init_max( atof(argv[2]) );
-						set_max(init_max); //Setter de max
+							
+						set_max( atof(argv[2]) ); //Setter de max
 						
 						Point point_1( atof(argv[3] ) , atof(argv[4] ) );
 						Point point_2( atof(argv[5] ) , atof(argv[6] ) );
