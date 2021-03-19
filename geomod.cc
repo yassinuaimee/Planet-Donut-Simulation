@@ -6,9 +6,6 @@ using namespace std;
 
 
 
-typedef array<double,2> Vecteur;
-typedef array<double,2> Point;
-
 namespace
 {
 double epsilon_zero;
@@ -43,6 +40,140 @@ double get_epsilon_zero()//Getter pour avoir accès à la valeur de epsilon_zero
 {
     return epsilon_zero;
 }
+
+/*
+
+LA ON VA PRESQUE TOUT REFAIRE MAIS DU COUP EN UTILISANT DES CLASSES C'EST PLUS CLEAN
+
+
+
+CLASS POINT
+*/
+ 
+///======================================================================================================///
+
+Point::Point(double x, double y)
+	: x(x) , y(y)
+	{}
+	
+Point::Point()
+	: x(0.0) , y(0.0)
+	{}
+	
+void Point::normalisation()
+{
+	x=normalisation_point(x);//Pas sur qu'on a le droit d'utiliser fonction à l'extérieur
+	y=normalisation_point(y);
+}
+
+double Point::get_x()
+{
+	return x;
+}
+
+double Point::get_y()
+{
+	return y;
+}
+
+void Point::set_x(double x_)
+{
+	x=x_;
+}
+
+void Point::set_y(double y_)
+{
+	y=y_;
+}
+
+///======================================================================================================///
+Vecteur::Vecteur(double x_ , double y_)
+: x(x_) , y(y_)
+{
+	norme = sqrt(x*x+y*y);
+}
+
+Vecteur::Vecteur()
+: x(0.0) ,y(0.0) , norme(0.0)
+{}
+
+double Vecteur::norme_plus_petit_vecteur( Point& p1 , Point& p2 , Vecteur& vecteur)
+{
+	double distance_min(0.),distance_test(0.);
+	double delta_x(0.),delta_y(0.);
+	double init_x1(p1.get_x() ) , init_y1(p1.get_y());
+	double init_x2(p2.get_x() ) , init_y2(p2.get_y());
+	
+	delta_x=init_x2-init_x1;
+	delta_y=init_y2-init_y1;
+	
+	distance_min=sqrt( pow(delta_x,2) + pow(delta_y,2) );
+	
+
+	double vecteur_x( delta_x ), vecteur_y( delta_y );
+	
+	
+	 for(int kx=-1;kx<=1;++kx)
+    {
+        for(int ky=-1;ky<=1;++ky)
+        {
+			
+			delta_x=(init_x2+kx*2*max_)-init_x1;
+            delta_y=(init_y2+ky*2*max_)-init_x1;
+            
+            
+            distance_test=sqrt(pow(delta_x,2)+pow(delta_y,2));
+            
+            
+             if(distance_min>distance_test)
+            {
+				
+				distance_min=distance_test;
+            
+				vecteur_x=delta_x;
+				vecteur_y=delta_y;
+			}
+		}
+	}
+	vecteur.set_x(vecteur_x);
+	vecteur.set_y(vecteur_y);
+	vecteur.set_norme(distance_min);
+	return distance_min;
+	
+}
+
+
+double Vecteur::get_x()
+{
+	return x;
+}
+
+double Vecteur::get_y()
+{
+	return y;
+}
+
+double Vecteur::get_norme()
+{
+	return norme;
+}
+
+void Vecteur::set_x( double x_)
+{
+	x=x_;
+}
+
+void Vecteur::set_y( double y_)
+{
+	y=y_;
+}
+
+void Vecteur::set_norme(double norme_)
+{
+	norme=norme_;
+}
+
+
 ///======================================================================================================///
 double normalisation_point(double v)//Permet de remettre les points qui sont hors du graph
                           //de nouveau dans le graph
@@ -62,15 +193,14 @@ double normalisation_point(double v)//Permet de remettre les points qui sont hor
 	return v;
 }
 ///======================================================================================================///
-void normalisation_point(array<double,2> v)//On demande explicitement le fait
-                                            //d'avoir une surcharge
+void normalisation_point(array<double,2> v)//On demande explicitement le fait  d'avoir une surcharge dans la consigne
 {
     normalisation_point(v[0]);
     normalisation_point(v[1]);
 }
 ///======================================================================================================///
 
-double norme_plus_petit_vecteur(Point depart,Point arrivee,Vecteur vecteur={0.,0.})
+double norme_plus_petit_vecteur(array<double,2> depart,array<double,2> arrivee,array<double,2> vecteur={0.,0.})
 {
     double distance_min(0.),distance_test(0.);
     double delta_x(0.),delta_y(0.);
@@ -96,9 +226,8 @@ double norme_plus_petit_vecteur(Point depart,Point arrivee,Vecteur vecteur={0.,0
 }
 ///======================================================================================================///
 
-array<double,3> norme_plus_petit_vecteur( const double init_x1, const double init_y1, const double init_x2, const double init_y2 )
+double norme_plus_petit_vecteur( const double init_x1, const double init_y1, const double init_x2, const double init_y2 )
 {
-	array<double,3> norme_et_coordonnees;
 	double distance_min(0.);
 	double delta_x(0.),delta_y(0.);
 	
@@ -134,14 +263,19 @@ array<double,3> norme_plus_petit_vecteur( const double init_x1, const double ini
 			}
 		}
 	}
-	norme_et_coordonnees[0]=distance_min;
-	norme_et_coordonnees[1]=vecteur_x;
-	norme_et_coordonnees[2]=vecteur_y;
-
-	return norme_et_coordonnees;
+	
+	return distance_min;
 	
 }
+
+	/*
+	 * 
+	 * Fin du test ici je crois que la consigne de demandais pas de rendre ce type de fonction
+	 * 
+	 * */
+
 ///======================================================================================================///
+/*
 bool  test_egalite_points(Point a,Point b)
 {
     if(equal_zero(norme_plus_petit_vecteur(a,b)))
@@ -149,8 +283,12 @@ bool  test_egalite_points(Point a,Point b)
     else
         return false;
 }
+* 
+* */
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*
 
 Cercle::Cercle(Point set_centre, double set_rayon)
 {
@@ -187,3 +325,5 @@ bool Cercle::intersection_cercle(Cercle cercle)
         return false;
 }
 
+
+*/

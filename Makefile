@@ -33,3 +33,6 @@ clean:
 
 
 
+projet.o: projet.cc geomod.h message_geomod.h
+geomod.o: geomod.cc geomod.h
+message_geomod.o: message_geomod.cc message_geomod.h
