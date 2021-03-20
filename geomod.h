@@ -76,7 +76,7 @@ double  get_epsilon_zero();
 
 double normalisation_point(double);
 
-double norme_plus_petit_vecteur(std::array<double,2> depart,std::array<double,2> arrivee,std::array<double,2> vecteur);
+
 
 double norme_plus_petit_vecteur(const double,const double,const double,const double); //Surcharge de la fonction qui n'utilise pas de array comme paramètre
 //Je fais le choix de return un array comme ça ya tout qui passe et c'est mieux(sinon on avait les deux valeur du vecteur qui restaient à 0 parcque c'est dans un autre module)

@@ -252,7 +252,8 @@ void normalisation_point(array<double,2> v)//On demande explicitement le fait  d
 ///======================================================================================================///
 
 
-double norme_plus_petit_vecteur( const double init_x1, const double init_y1, const double init_x2, const double init_y2 )
+double norme_plus_petit_vecteur( const double init_x1, const double init_y1, 
+                                 const double init_x2, const double init_y2 )
 {
 	double distance_min(0.);
 	double delta_x(0.),delta_y(0.);
@@ -264,9 +265,7 @@ double norme_plus_petit_vecteur( const double init_x1, const double init_y1, con
 	
 	double distance_test( distance_min );
 	
-	double vecteur_x( delta_x ), vecteur_y( delta_y );
-	
-	
+
 	 for(int kx=-1;kx<=1;++kx)
     {
         for(int ky=-1;ky<=1;++ky)
@@ -284,8 +283,7 @@ double norme_plus_petit_vecteur( const double init_x1, const double init_y1, con
 				
 				distance_min=distance_test;
             
-				vecteur_x=delta_x;
-				vecteur_y=delta_y;
+				
 			}
 		}
 	}
@@ -334,7 +332,8 @@ double Cercle::get_centre_y()
 ///======================================================================================================///
 bool Cercle::point_appartient(Point point )
 {
-    double n(norme_plus_petit_vecteur( centre.get_x() , centre.get_y()  , point.get_x() , point.get_y() ));
+    double n(norme_plus_petit_vecteur( centre.get_x(), centre.get_y(), point.get_x(), 
+                                       point.get_y() ));
     if(n<rayon-epsilon_zero)
         return true;
     else
@@ -343,7 +342,9 @@ bool Cercle::point_appartient(Point point )
 ///======================================================================================================///
 bool Cercle::intersection_cercle(Cercle cercle)
 {
-    double  n(norme_plus_petit_vecteur(centre.get_x() , centre.get_y() , cercle.centre.get_x() , cercle.centre.get_y() ) );
+    double  n(norme_plus_petit_vecteur(centre.get_x(), centre.get_y(), 
+	                                   cercle.centre.get_x(), 
+	                                   cercle.centre.get_y() ) );
     
     if(n < rayon + cercle.get_rayon() - epsilon_zero)
         return true;
