@@ -11,6 +11,7 @@ namespace
 double epsilon_zero;
 double max_(0);
 }
+
 ///======================================================================================================///
 bool equal_zero(double parametre)//Permet de faire le test d'égalité pour les types double
 {
@@ -41,16 +42,14 @@ double get_epsilon_zero()//Getter pour avoir accès à la valeur de epsilon_zero
     return epsilon_zero;
 }
 
-/*
-
-LA ON VA PRESQUE TOUT REFAIRE MAIS DU COUP EN UTILISANT DES CLASSES C'EST PLUS CLEAN
-
-
-
-CLASS POINT
-*/
- 
 ///======================================================================================================///
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+POINT
+*/
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 Point::Point(double x, double y)
 	: x( normalisation_point(x) ) , y( normalisation_point(y) )
@@ -96,6 +95,12 @@ bool Point::operator==(Point & autre) const
 		return false;
 }
 ///======================================================================================================///
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+VECTEUR
+*/
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Vecteur::Vecteur(double x_ , double y_)
 : x(x_) , y(y_)
 {
@@ -246,31 +251,6 @@ void normalisation_point(array<double,2> v)//On demande explicitement le fait  d
 }
 ///======================================================================================================///
 
-double norme_plus_petit_vecteur(array<double,2> depart,array<double,2> arrivee,array<double,2> vecteur={0.,0.})
-{
-    double distance_min(0.),distance_test(0.);
-    double delta_x(0.),delta_y(0.);
-    distance_min=sqrt(pow(depart[0]-arrivee[0],2)+pow(depart[1]-arrivee[1],2));
-    for(int kx=-1;kx<=1;++kx)
-    {
-        for(int ky=-1;ky<=1;++ky)
-        {
-            delta_x=(arrivee[0]+kx*2*max_)-depart[0];
-            delta_y=(arrivee[1]+ky*2*max_)-depart[1];
-            
-            distance_test=sqrt(pow(delta_x,2)+pow(delta_y,2));
-            
-            if(distance_min>distance_test)
-            {
-                distance_min=distance_test;
-                vecteur[0]=delta_x;/////////////////////////////////// ça marche pas ça c'est de la merde
-                vecteur[1]=delta_y;
-            }
-        }
-    }
-    return distance_min;
-}
-///======================================================================================================///
 
 double norme_plus_petit_vecteur( const double init_x1, const double init_y1, const double init_x2, const double init_y2 )
 {
