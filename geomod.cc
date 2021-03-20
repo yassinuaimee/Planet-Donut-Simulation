@@ -123,7 +123,6 @@ double Vecteur::norme_plus_petit_vecteur( Point& p1 , Point& p2 , Vecteur& vecte
 	
 	distance_min=sqrt( pow(delta_x,2) + pow(delta_y,2) );
 	
-
 	double vecteur_x( delta_x ), vecteur_y( delta_y );
 	
 	
@@ -133,8 +132,7 @@ double Vecteur::norme_plus_petit_vecteur( Point& p1 , Point& p2 , Vecteur& vecte
         {
 			
 			delta_x=(init_x2+kx*2*max_)-init_x1;
-            delta_y=(init_y2+ky*2*max_)-init_x1;
-            
+            delta_y=(init_y2+ky*2*max_)-init_y1;
             
             distance_test=sqrt(pow(delta_x,2)+pow(delta_y,2));
             
@@ -143,7 +141,8 @@ double Vecteur::norme_plus_petit_vecteur( Point& p1 , Point& p2 , Vecteur& vecte
             {
 				
 				distance_min=distance_test;
-            
+					
+
 				vecteur_x=delta_x;
 				vecteur_y=delta_y;
 			}
@@ -176,7 +175,7 @@ double Vecteur::norme_plus_petit_vecteur( Point& p1 , Point& p2 ) //Fonction de 
         {
 			
 			delta_x=(init_x2+kx*2*max_)-init_x1;
-            delta_y=(init_y2+ky*2*max_)-init_x1;
+            delta_y=(init_y2+ky*2*max_)-init_y1;
             
             
             distance_test=sqrt(pow(delta_x,2)+pow(delta_y,2));
@@ -272,7 +271,7 @@ double norme_plus_petit_vecteur( const double init_x1, const double init_y1,
         {
 			
 			delta_x=(init_x2+kx*2*max_)-init_x1;
-            delta_y=(init_y2+ky*2*max_)-init_x1;
+            delta_y=(init_y2+ky*2*max_)-init_y1;
             
             
             distance_test=sqrt(pow(delta_x,2)+pow(delta_y,2));
