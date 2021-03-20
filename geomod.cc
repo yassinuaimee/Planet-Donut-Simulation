@@ -53,7 +53,7 @@ CLASS POINT
 ///======================================================================================================///
 
 Point::Point(double x, double y)
-	: x(x) , y(y)
+	: x( normalisation_point(x) ) , y( normalisation_point(y) )
 	{}
 	
 Point::Point()
@@ -151,6 +151,43 @@ double Vecteur::norme_plus_petit_vecteur( Point& p1 , Point& p2 , Vecteur& vecte
 	
 }
 
+double Vecteur::norme_plus_petit_vecteur( Point& p1 , Point& p2 ) //Fonction de surcharge qui a besoin que de deux arguments
+{
+	double distance_min(0.),distance_test(0.);
+	double delta_x(0.),delta_y(0.);
+	double init_x1(p1.get_x() ) , init_y1(p1.get_y());
+	double init_x2(p2.get_x() ) , init_y2(p2.get_y());
+	
+	delta_x=init_x2-init_x1;
+	delta_y=init_y2-init_y1;
+	
+	distance_min=sqrt( pow(delta_x,2) + pow(delta_y,2) );
+	
+	
+	
+	 for(int kx=-1;kx<=1;++kx)
+    {
+        for(int ky=-1;ky<=1;++ky)
+        {
+			
+			delta_x=(init_x2+kx*2*max_)-init_x1;
+            delta_y=(init_y2+ky*2*max_)-init_x1;
+            
+            
+            distance_test=sqrt(pow(delta_x,2)+pow(delta_y,2));
+            
+            
+             if(distance_min>distance_test)
+            {
+				
+				distance_min=distance_test;
+            
+			}
+		}
+	}
+	return distance_min;
+	
+}
 
 double Vecteur::get_x()
 {
@@ -277,33 +314,22 @@ double norme_plus_petit_vecteur( const double init_x1, const double init_y1, con
 	
 }
 
-	/*
-	 * 
-	 * Fin du test ici je crois que la consigne de demandais pas de rendre ce type de fonction
-	 * 
-	 * */
 
-///======================================================================================================///
-/*
-bool  test_egalite_points(Point a,Point b)
-{
-    if(equal_zero(norme_plus_petit_vecteur(a,b)))
-        return true;
-    else
-        return false;
-}
-* 
-* */
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 /*
+CERCLE
+*/
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Cercle::Cercle(Point set_centre, double set_rayon)
-{
-	centre=set_centre;
-	rayon=set_rayon;
-}
+
+
+Cercle::Cercle(Point centre, double rayon)
+: centre( centre ) , rayon(rayon) 
+{}
+Cercle::Cercle()
+: centre( Point(0.0 , 0.0) ) , rayon(0.0)
+{}
+
 
 Point Cercle::get_centre()
 {
@@ -314,10 +340,21 @@ double Cercle::get_rayon()
 {
     return rayon;
 }
-///======================================================================================================///
-bool Cercle::point_appartient(Point point)
+double Cercle::get_centre_x()
 {
-    double n(norme_plus_petit_vecteur(centre,point));
+	return centre.get_x();
+}
+
+
+double Cercle::get_centre_y()
+{
+	return centre.get_y();
+}
+
+///======================================================================================================///
+bool Cercle::point_appartient(Point point )
+{
+    double n(norme_plus_petit_vecteur( centre.get_x() , centre.get_y()  , point.get_x() , point.get_y() ));
     if(n<rayon-epsilon_zero)
         return true;
     else
@@ -326,7 +363,7 @@ bool Cercle::point_appartient(Point point)
 ///======================================================================================================///
 bool Cercle::intersection_cercle(Cercle cercle)
 {
-    double  n(norme_plus_petit_vecteur(centre,cercle.get_centre()));
+    double  n(norme_plus_petit_vecteur(centre.get_x() , centre.get_y() , cercle.centre.get_x() , cercle.centre.get_y() ) );
     
     if(n < rayon + cercle.get_rayon() - epsilon_zero)
         return true;
@@ -334,5 +371,3 @@ bool Cercle::intersection_cercle(Cercle cercle)
         return false;
 }
 
-
-*/
