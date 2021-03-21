@@ -16,10 +16,9 @@ int main(int argc,char* argv[] )
 
 void verification_nb_arguments(const int argc, char* argv[])
 {
+
 	
-	int i(atoi(argv[1] )); //Permet la conversion de chaine de caractere ASCII vers entier
-	
-	switch(i){
+	switch(atoi(argv[1] )){
 		
 		case(1): 
 			if(argc-2!=1)
