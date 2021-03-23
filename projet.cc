@@ -28,7 +28,7 @@ void verification_nb_arguments(const int argc, char* argv[])
 			break;
 			
 		case(2):
-			case_1(argc, argv);
+			case_2(argc, argv);
 			break;
 			
 		case(3):
