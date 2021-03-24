@@ -1,9 +1,7 @@
 #include <iostream>
-using namespace std;
-
 #include "message_geomod.h"
 #include <string>
-
+using namespace std;
 
 
 void message_geomod::bad_argc()

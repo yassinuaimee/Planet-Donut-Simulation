@@ -13,7 +13,7 @@ public:
 	double get_y();
 	void set_x(double);
 	void set_y(double);
-	bool operator==( Point & ) const ;//Yassin va créer la fonction égalité vecteurs
+	bool operator==( Point & ) const ;
 private:
 	double x;
 	double y;
@@ -47,9 +47,9 @@ private:
 class Cercle
 {
 public:
-	Cercle (Point, double); //On changer la valeur en entrée par un point
+	Cercle (Point, double); 
 	Cercle();
-    bool point_appartient(Point);//On va devoir remplacer cette valeur par une variable de type Point
+    bool point_appartient(Point);
     bool intersection_cercle(Cercle);
     Point get_centre();
     double get_centre_x();
@@ -59,11 +59,6 @@ private:
     Point centre;
     double rayon;
 };
-
-
-
-
-
 
 
 bool equal_zero(double);
@@ -78,7 +73,9 @@ double normalisation_point(double);
 
 
 
-double norme_plus_petit_vecteur(const double,const double,const double,const double); //Surcharge de la fonction qui n'utilise pas de array comme paramètre
-//Je fais le choix de return un array comme ça ya tout qui passe et c'est mieux(sinon on avait les deux valeur du vecteur qui restaient à 0 parcque c'est dans un autre module)
+double norme_plus_petit_vecteur(const double,
+								  const double,
+								  const double,
+								  const double); 
 
 #endif
