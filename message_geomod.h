@@ -1,3 +1,15 @@
+/* Nom:
+ * message_geomod.h
+ * 
+ * Auteurs:
+ * Yassin Al-Nuaime
+ * Adrien Maillet Gonzalez
+ * 
+ * Version: 10
+ * 
+ * 
+ */
+
 #ifndef MESSAGE_GEOMOD_H_INCLUDED
 #define MESSAGE_GEOMOD_H_INCLUDED
 

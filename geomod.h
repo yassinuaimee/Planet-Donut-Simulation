@@ -1,3 +1,15 @@
+/* Nom:
+ * geomod.h
+ * 
+ * Auteurs:
+ * Yassin Al-Nuaime
+ * Adrien Maillet Gonzalez
+ * 
+ * Version: 5
+ * 
+ * 
+ */
+ 
 #ifndef GEOMOD_H_INCLUDED
 #define GEOMOD_H_INCLUDED
 #include <array>
@@ -74,8 +86,8 @@ double normalisation_point(double);
 
 
 double norme_plus_petit_vecteur(const double,
-								  const double,
-								  const double,
-								  const double); 
+								const double,
+								const double,
+								const double); 
 
 #endif

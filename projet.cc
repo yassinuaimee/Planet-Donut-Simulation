@@ -1,5 +1,14 @@
-//yass la menace
-//adri gros kiki
+/* Nom:
+ * projet.cc
+ * 
+ * Auteurs:
+ * Yassin Al-Nuaime
+ * Adrien Maillet Gonzalez
+ * 
+ * Version: 10
+ * 
+ * 
+ */
 
 #include <iostream>
 #include <array>
@@ -57,6 +66,7 @@ void verification_nb_arguments(const int argc, char* argv[])
 			break;
 	}
 }
+
 void case_1(int argc, char* argv[])
 {
 	if(argc-2!=1)
@@ -104,18 +114,18 @@ void case_3(int argc, char* argv[])
 	}
 	else
 	{
-	set_max( atof(argv[2]) ); 
+	set_max(atof(argv[2])); 
 						
-	Point point_1( atof(argv[3] ), atof(argv[4] ) );
-	Point point_2( atof(argv[5] ), atof(argv[6] ) );
+	Point point_1(atof(argv[3]), atof(argv[4]));
+	Point point_2(atof(argv[5]), atof(argv[6]));
 						
 	Vecteur vecteur;
 						
 	vecteur.norme_plus_petit_vecteur(point_1, point_2 , vecteur);
 						
-	message_geomod::print_vect( vecteur.get_norme(), 
-									   vecteur.get_x() ,
-									   vecteur.get_y() );
+	message_geomod::print_vect( vecteur.get_norme(),
+								vecteur.get_x(),
+								vecteur.get_y() );
 							
 	}
 }
@@ -133,11 +143,11 @@ void case_4(int argc, char* argv[])
 		Point point_1( atof(argv[3] ) , atof(argv[4] ) );
 		Point point_2( atof(argv[5] ) , atof(argv[6] ) );
 						
-		message_geomod::print_equal_point( point_1 == point_2, 
-												   point_1.get_x(),
-												   point_1.get_y(), 
-												   point_2.get_x(), 
-												   point_2.get_y());
+		message_geomod::print_equal_point(point_1 == point_2, 
+										  point_1.get_x(),
+										  point_1.get_y(), 
+										  point_2.get_x(), 
+										  point_2.get_y());
 	}
 }
 
@@ -156,12 +166,12 @@ void case_5(int argc, char* argv[])
 		Point centre( atof(argv[5] ), atof(argv[6] ) );
 		Cercle cercle(centre, atof(argv[7] ));
 							
-		message_geomod::print_include_point( cercle.point_appartient(point), 
-													 point.get_x(), 
-													 point.get_y(), 
-													 cercle.get_centre_x(), 
-													 cercle.get_centre_y(), 
-													 cercle.get_rayon() );
+		message_geomod::print_include_point(cercle.point_appartient(point), 
+											point.get_x(), 
+											point.get_y(), 
+											cercle.get_centre_x(), 
+											cercle.get_centre_y(), 
+											cercle.get_rayon() );
 	}
 }
 
@@ -183,12 +193,12 @@ void case_6(int argc, char* argv[])
 		Cercle cercle_2(centre_2, atof(argv[8] ));
 						
 		message_geomod::print_intersect(cercle_1.intersection_cercle(cercle_2),
-											   cercle_1.get_centre_x(), 
-											   cercle_1.get_centre_y(), 
-											   cercle_1.get_rayon(), 
-											   cercle_2.get_centre_x(), 
-											   cercle_2.get_centre_y(), 
-											   cercle_2.get_rayon());
+										cercle_1.get_centre_x(), 
+										cercle_1.get_centre_y(), 
+										cercle_1.get_rayon(), 
+										cercle_2.get_centre_x(), 
+										cercle_2.get_centre_y(), 
+										cercle_2.get_rayon());
 						
 	}
 }

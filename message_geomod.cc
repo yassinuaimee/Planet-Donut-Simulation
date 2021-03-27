@@ -1,3 +1,15 @@
+/* Nom:
+ * message_geomod.cc
+ * 
+ * Auteurs:
+ * Yassin Al-Nuaime
+ * Adrien Maillet Gonzalez
+ * 
+ * Version: 10
+ * 
+ * 
+ */
+
 #include <iostream>
 #include "message_geomod.h"
 #include <string>
