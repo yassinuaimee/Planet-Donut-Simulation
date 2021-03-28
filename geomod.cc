@@ -2,7 +2,7 @@
  * geomod.cc
  * 
  * Auteurs:
- * Yassin Al-Nuaime
+ * Yassin Al-Nuaimee
  * Adrien Maillet Gonzalez
  * 
  * Version: 10
@@ -19,8 +19,8 @@ using namespace std;
 
 namespace
 {
-double epsilon_zero;
-double max_(0);
+	double epsilon_zero;
+	double max_(0);
 }
 
 
@@ -376,9 +376,9 @@ double get_epsilon_zero()
 
 
 double norme_plus_petit_vecteur( const double init_x1, 
-								  const double init_y1, 
-								  const double init_x2,
-								  const double init_y2 )
+								 const double init_y1, 
+								 const double init_x2,
+								 const double init_y2 )
 {
 	double distance_min(0.);
 	double delta_x(0.),delta_y(0.);
