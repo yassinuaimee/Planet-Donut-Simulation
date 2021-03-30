@@ -12,9 +12,37 @@
 
 #include <iostream>
 #include <array>
+#include <fstream>
 #include "geomod.h"
-#include "message_geomod.h"
+#include "simulation.h"
+#include "message.h"
+
 using namespace std;
+
+int main() 
+{ 
+	ifstream fichier("test1.txt");     
+	
+	if(fichier.fail())     
+	{        
+		exit();    
+	} else {               //on va envoyer des trucs a simulation ici
+		lecture(fichier);  // lecture se trouve dans simulation (on a choisi la methode 2)
+		cout << message::success();
+		
+	}
+}
+
+
+
+
+
+
+
+
+
+
+/*  notre ancien programme
 
 void verification_nb_arguments(const int, char**);
 
@@ -200,3 +228,4 @@ void case_6(int argc, char* argv[])
 						
 	}
 }
+*/
