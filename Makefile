@@ -1,23 +1,23 @@
 # Makefile
 COMPILE = g++ -g -Wall -std=c++11 -O3
-CXXFILES = projet.cc geomod.cc message_geomod.cc
-OFILES = projet.o geomod.o message_geomod.o
+CXXFILES = projet.cc simulation.cc gisement.cc base.cc robot.cc message.cc geomod.cc 
+OFILES = projet.o simulation.o gisement.o base.o robot.o message.o geomod.o 
 
 
-projet: geomod.o  message_geomod.o  projet.o
-					$(COMPILE)  geomod.o message_geomod.o projet.o -o projet
+projet: projet.o simulation.o geomod.o  message_geomod.o  
+					$(COMPILE)  $(OFILES) -o projet
 					
-projet.o : message_geomod.h  geomod.h  projet.cc
-					$(COMPILE) -c projet.cc -o projet.o
-
-message_geomod.o : message_geomod.h  message_geomod.cc
-					$(COMPILE) -c message_geomod.cc -o message_geomod.o
-
-
-geomod.o : geomod.cc  geomod.h
-					$(COMPILE) -c geomod.cc -o geomod.o
+simulation.o : simulation.cc simulation.h gisement.h base.h geomod.h
+			$(COMPILE) simulation.cc gisement.cc base.cc geomod.cc -o simulation.o
+			
+gisement.o : gisement.cc gisement.h message.h geomod.h
+			$(COMPILE) gisement.cc message.cc geomod.cc -o gisement.o
+			
+base.o : base.cc base.h gisement.h message.h geomod.h robot.h
+			$(COMPILE) base.cc gisement.cc message.cc geomod.cc robot.cc
 					
-					
+robot.o : robot.cc robot.h gisement.h message.h geomod.h
+			$(COMPILE) robot.cc gisement.cc message.cc geomod.cc -o robot.o
 depend:
 	@echo " *** MISE A JOUR DES DEPENDANCES ***"
 	@(sed '/^# DO NOT DELETE THIS LINE/q' Makefile && \
