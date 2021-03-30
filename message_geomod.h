@@ -2,7 +2,7 @@
  * message_geomod.h
  * 
  * Auteurs:
- * Yassin Al-Nuaime
+ * Yassin Al-Nuaimee
  * Adrien Maillet Gonzalez
  * 
  * Version: 10

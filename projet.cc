@@ -2,7 +2,7 @@
  * projet.cc
  * 
  * Auteurs:
- * Yassin Al-Nuaime
+ * Yassin Al-Nuaimee
  * Adrien Maillet Gonzalez
  * 
  * Version: 10
@@ -99,9 +99,7 @@ void case_2(int argc, char* argv[])
 							
 		Point point(x_init, y_init);//Le constructeur normalise directement les points
 							
-		message_geomod::print_point(x_init, y_init, 
-										   point.get_x(),
-										   point.get_y());
+		message_geomod::print_point(x_init, y_init, point.get_x(), point.get_y());
 	}
 }
 
