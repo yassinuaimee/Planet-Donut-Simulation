@@ -27,8 +27,9 @@ int main()
 	{        
 		exit();    
 	} else {               //on va envoyer des trucs a simulation ici
-		lecture(fichier);  // lecture se trouve dans simulation (on a choisi la methode 2)
 		cout << message::success();
+		lecture(fichier);  // lecture se trouve dans simulation (on a choisi la methode 2)
+		
 		
 	}
 }
