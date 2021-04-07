@@ -9,11 +9,11 @@ class Simulation
 {
 public:
 	Simulation();
-	void intersection_gisement_base(); //demande la position de chaque base
 private:
-
-vector<Base>;
-vector<Gisement>;
+	unsigned nbG;
+	unsigned nbB;
+	vector<Base> Eb;
+	vector<Gisement> Eg;
 	
 };
 
