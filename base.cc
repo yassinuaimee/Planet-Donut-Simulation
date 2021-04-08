@@ -5,11 +5,9 @@
 #include "geomod.h"
 #include "gisement.h"
 
-
+using namespace std;
 
 //===================================================================================//
 // definition de Base
 
-Base::Base()
-:
-{}
+

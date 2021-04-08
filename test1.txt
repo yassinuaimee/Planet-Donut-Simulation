@@ -4,8 +4,9 @@
 2 # Nombre de Gisements
 	#x y rayon capacite
 
-	700 200 200 300
-	-200 -100 100 100
+	700 200 200 3000
+	700 200 100 3000
+	0 0 200 3000
 
 1 #Nombre de bases
 	#x y ressource nbP nbF nbT nbC

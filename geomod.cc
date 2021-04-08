@@ -14,13 +14,15 @@
 #include <cmath>
 #include <array>
 #include "geomod.h"
+#include "constantes.h"
 
 using namespace std;
 
 namespace
 {
-	double epsilon_zero;
-	double max_(0);
+	
+	double max_(dim_max);
+	double epsilon_zero(max_*pow(10,-10));
 }
 
 

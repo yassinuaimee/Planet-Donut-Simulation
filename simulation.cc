@@ -2,11 +2,13 @@
 #include <sstream>
 #include <fstream>
 #include <string>
-#include "simulation.h"
 #include "gisement.h"
 #include "base.h"
 #include "geomod.h"
+#include "simulation.h"
 
+
+using namespace std;
 
 void lecture(ifstream & entree)
 {
@@ -33,30 +35,69 @@ void lecture(ifstream & entree)
 			break;
 		}
 	}
+	unsigned test_nbG(0);
 	
-	unsigned test_nbG;
 	while(getline(entree, line))
 	{
 		istringstream data(line);
 		if( !(data>>valeur))
 			continue;
+		
 		if(not( Eg_ok))
 		{
-			Eb.push_back( Decodage_Ligne(line ,Eg, nbG));
+			Eg.push_back( Decodage_Ligne(line ,Eg));
 			++test_nbG;
-		}
+			
+			
+			
 		if(test_nbG==nbG)
 		{
 			Eg_ok=true;
+			
+			for(size_t i(0); i<Eg.size(); ++i)//Permet de voir tout s'il n'y a pas intersection
+			{
+				cout<<"Eg["<<i<<"]  : centre x : "<<( (Eg[i]).get_field()).get_centre_x()<<", centre y: "<<(( Eg[i]).get_field()).get_centre_y()<<endl;
+			}
+			cout<<endl<<"Il n'y a pas d'intersection si on est la."<<endl<<endl;
+			break;
+		}
+		}
+	}
+	
+	while(getline(entree, line)) //Partie pour la lecture de nbB
+	{
+		istringstream data(line);
+		if( !(data>>valeur))
+			continue;
+		if(not( nbB_ok))
+		{
+			nbB=valeur;
+			nbB_ok=true;
 			break;
 		}
 	}
+	unsigned test_nbG(0);
+	
+	while(getline(entree, line))
+	{
+		istringstream data(line);
+		if(!(data>>valeur))
+			continue;
+		
+		if(not(Eb_ok)
+	}
+	
 }
 
 
 //===================================================================================//
 //definition de Simulation
 
+//A faire plus tard!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+/*
 Simulation::Simulation()
 :
-{}
+{
+	
+}
+ */

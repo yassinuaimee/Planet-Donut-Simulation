@@ -19,13 +19,13 @@
 
 using namespace std;
 
-int main() 
+int main(int argc, char ** argv) 
 { 
-	ifstream fichier("test1.txt");     
+	ifstream fichier("test2.txt");     //argv[1]
 	
 	if(fichier.fail())     
 	{        
-		exit();    
+		exit(0);    
 	} else {               //on va envoyer des trucs a simulation ici
 		cout << message::success();
 		lecture(fichier);  // lecture se trouve dans simulation (on a choisi la methode 2)

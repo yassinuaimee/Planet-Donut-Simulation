@@ -2,8 +2,10 @@
 #define SIMULATION_H_INCLUDED
 
 #include <vector>
-
-void lecture(ifstream &){}
+#include <fstream>
+#include "base.h"
+#include "gisement.h"
+void lecture(std::ifstream &);
 
 class Simulation
 {
@@ -12,8 +14,8 @@ public:
 private:
 	unsigned nbG;
 	unsigned nbB;
-	vector<Base> Eb;
-	vector<Gisement> Eg;
+	std::vector<Base> Eb;
+	std::vector<Gisement> Eg;
 	
 };
 
