@@ -48,17 +48,9 @@ void lecture(ifstream & entree)
 			Eg.push_back( Decodage_Ligne(line ,Eg));
 			++test_nbG;
 			
-			
-			
 		if(test_nbG==nbG)
 		{
 			Eg_ok=true;
-			
-			for(size_t i(0); i<Eg.size(); ++i)//Permet de voir tout s'il n'y a pas intersection
-			{
-				cout<<"Eg["<<i<<"]  : centre x : "<<( (Eg[i]).get_field()).get_centre_x()<<", centre y: "<<(( Eg[i]).get_field()).get_centre_y()<<endl;
-			}
-			cout<<endl<<"Il n'y a pas d'intersection si on est la."<<endl<<endl;
 			break;
 		}
 		}
@@ -77,7 +69,7 @@ void lecture(ifstream & entree)
 		}
 	}
 	unsigned test_nbB(0);
-	/*
+	
 	while(getline(entree, line))
 	{
 		istringstream data(line);
@@ -85,7 +77,12 @@ void lecture(ifstream & entree)
 			continue;
 		
 		if(not(Eb_ok)
-	}*/
+		{
+			Eb.push_back( Decodage_Ligne(line, Eb, entree));
+			++test_nbB;
+		}
+	}
+	
 	
 }
 
