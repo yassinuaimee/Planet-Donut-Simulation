@@ -76,8 +76,8 @@ void lecture(ifstream & entree)
 			break;
 		}
 	}
-	unsigned test_nbG(0);
-	
+	unsigned test_nbB(0);
+	/*
 	while(getline(entree, line))
 	{
 		istringstream data(line);
@@ -85,7 +85,7 @@ void lecture(ifstream & entree)
 			continue;
 		
 		if(not(Eb_ok)
-	}
+	}*/
 	
 }
 

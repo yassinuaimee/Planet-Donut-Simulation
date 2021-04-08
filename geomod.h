@@ -60,6 +60,7 @@ class Cercle
 {
 public:
 	Cercle (Point, double); 
+	Cercle (double, double, double);
 	Cercle();
     bool point_appartient(Point);
     bool intersection_cercle(Cercle);
