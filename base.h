@@ -21,10 +21,13 @@ private:
 	
 
 public:
-	Base(double, double, double, double, double, double, double, std::vector<Base> &, std::ifstream & );
+	Base(double, double, double, double, double, double, double, std::vector<Base> &, vector<Gisement>&, std::ifstream & );
+	Point get_centre();
+	double get_x();
+	double get_y();
 };
 
 void verif_uid(const unsigned, std::vector<unsigned> &);
-Base Decodage_Ligne(string, std::vector<Base> &, std::ifstream &);
+Base Decodage_Ligne(string, std::vector<Base> &,vector<Gisement>&, std::ifstream &);
 
 #endif

@@ -78,7 +78,7 @@ void lecture(ifstream & entree)
 		
 		if(not(Eb_ok)
 		{
-			Eb.push_back( Decodage_Ligne(line, Eb, entree));
+			Eb.push_back( Decodage_Ligne(line, Eb, Eg, entree));
 			++test_nbB;
 		}
 	}
