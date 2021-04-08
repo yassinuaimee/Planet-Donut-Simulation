@@ -5,6 +5,7 @@
 #include "gisement.h"
 #include "message.h"
 #include "geomod.h"
+#include "constantes.h"
 
 using namespace std;
 
@@ -16,6 +17,10 @@ Gisement::Gisement(double x, double y, double rayon, double capacite, vector<Gis
 {
 	if(capacite<0)
 		exit(0);
+	if (rayon<rayon_min or rayon>rayon_max)
+	{
+		exit(0);
+	}
 	
 	for(size_t i(0); i<Eg.size(); ++i)
 	{
@@ -27,6 +32,10 @@ Gisement::Gisement(double x, double y, double rayon, double capacite, vector<Gis
 	}
 	
 }
+
+Gisement::Gisement(double x, double y, double rayon, double capacite)
+: field( x, y, rayon), capacite(capacite)
+{}
 
 Cercle Gisement::get_field()
 {

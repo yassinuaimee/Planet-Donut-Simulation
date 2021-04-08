@@ -7,27 +7,36 @@ class Robot
 {
 protected:
 	unsigned uid;
+	double dp;   //compteur de distance parcourue
+	Point Pos;
+	Point PosBut;
+	bool atteint;
 public:
-
+	Robot(unsigned, double, double, double, double, double, bool);
+	double get_Pos_x();
+	double get_Pos_y();
+	double get_PosBut_x();
+	double get_PosBut_y();
 };
 
 class Prospection : public Robot
 {
 private:
-	const double cout_prosp;
-	const double maxD_prosp;
 	bool found;
 	Gisement gisement;  //Mémorise un objet de la classe gisement.
 	bool retour;
+	
 public:
+	Prospection(unsigned, double, double, double, double, double, bool, bool, bool, double, double, double, double);
+	Prospection(unsigned, double, double, double, double, double, bool, bool, bool);
 };
 
 class Forage : public Robot
 {
 private:
-	const double cout_forage;
-	const double maxD_forage;
+	
 public:
+	Forage(unsigned, double, double, double, double, double, bool); 
 };
 
 
@@ -35,9 +44,9 @@ public:
 class Transport : public Robot
 {
 private:
-
+	
 public:
-
+	Transport(unsigned, double, double, double, double, double, bool, bool);
 };
 
 class Communication : public Robot
@@ -45,6 +54,6 @@ class Communication : public Robot
 private:
 
 public:
-
+	Communication(unsigned, double, double, double, double, double, bool);
 };
 #endif
