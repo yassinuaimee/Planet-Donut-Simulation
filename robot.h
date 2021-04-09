@@ -8,15 +8,15 @@ class Robot
 protected:
 	unsigned uid;
 	double dp;   //compteur de distance parcourue
-	Point Pos;
-	Point PosBut;
+	Point position;
+	Point but;
 	bool atteint;
 public:
 	Robot(unsigned, double, double, double, double, double, bool);
-	double get_Pos_x();
-	double get_Pos_y();
-	double get_PosBut_x();
-	double get_PosBut_y();
+	double get_x();
+	double get_y();
+	double get_xb();
+	double get_yb();
 };
 
 class Prospection : public Robot
@@ -44,7 +44,7 @@ public:
 class Transport : public Robot
 {
 private:
-	
+	bool retour;
 public:
 	Transport(unsigned, double, double, double, double, double, bool, bool);
 };

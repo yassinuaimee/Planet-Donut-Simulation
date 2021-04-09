@@ -16,18 +16,18 @@ private:
 	std::vector<Communication> E_C;
 	Point centre;
 	double ressources;
-	double nbP, nbF, nbT, nbC;
+	int nbP, nbF, nbT, nbC;
 	
 	
 
 public:
-	Base(double, double, double, double, double, double, double, std::vector<Base> &, vector<Gisement>&, std::ifstream & );
+	Base(double, double, double, int, int, int, int, std::vector<Base> &, std::vector<Gisement>&, std::ifstream & );
 	Point get_centre();
 	double get_x();
 	double get_y();
 };
 
 void verif_uid(const unsigned, std::vector<unsigned> &);
-Base Decodage_Ligne(string, std::vector<Base> &,vector<Gisement>&, std::ifstream &);
+Base Decodage_Ligne(std::string, std::vector<Base> &,std::vector<Gisement>&, std::ifstream &);
 
 #endif

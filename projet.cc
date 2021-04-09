@@ -27,9 +27,8 @@ int main(int argc, char ** argv)
 	{        
 		exit(0);    
 	} else {               //on va envoyer des trucs a simulation ici
-		cout << message::success();
 		lecture(fichier);  // lecture se trouve dans simulation (on a choisi la methode 2)
-		
+		cout << message::success();
 		
 	}
 	fichier.close();

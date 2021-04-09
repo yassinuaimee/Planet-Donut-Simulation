@@ -9,6 +9,7 @@ class Gisement
 public:
 	Gisement(double, double, double, double,  std::vector<Gisement> &);
 	Gisement(double, double, double, double);
+	Gisement();
 	Cercle get_field();
 	double get_centre_x();
 	double get_centre_y();

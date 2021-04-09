@@ -37,6 +37,10 @@ Gisement::Gisement(double x, double y, double rayon, double capacite)
 : field( x, y, rayon), capacite(capacite)
 {}
 
+Gisement::Gisement()
+: field(0.0, 0.0, 0.0), capacite(0.0)
+{}
+
 Cercle Gisement::get_field()
 {
 	return field;

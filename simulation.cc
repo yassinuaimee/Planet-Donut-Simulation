@@ -76,10 +76,15 @@ void lecture(ifstream & entree)
 		if(!(data>>valeur))
 			continue;
 		
-		if(not(Eb_ok)
+		if(not(Eb_ok))
 		{
 			Eb.push_back( Decodage_Ligne(line, Eb, Eg, entree));
 			++test_nbB;
+		}
+		if(test_nbB==nbB)
+		{
+			Eb_ok=true;
+			break;
 		}
 	}
 	
