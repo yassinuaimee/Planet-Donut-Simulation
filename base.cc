@@ -15,35 +15,15 @@ using namespace std;
 
 //===================================================================================//
 
-Base::Base(double x, double y, double ressources, int nbP, int nbF, int nbT, int nbC, vector<Base> & Eb,vector<Gisement>& Eg, ifstream & entree )
-: centre(x, y), ressources(ressources), nbP(nbP), nbF(nbF), nbT(nbT), nbC(nbC)
+Base::Base(double x, double y, double ressources, int nbP, int nbF, int nbT, int nbC, ifstream & entree )
+: centre(x, y, rayon_base), ressources(ressources), nbP(nbP), nbF(nbF), nbT(nbT), nbC(nbC)
 {
-	
-	Cercle base_cercle(centre, rayon_base*2);//Je met un rayon de deux pour pouvoir faire la verification sur cercle + point au lieu de faire cercle+cercle
-	
-	for(size_t i(0); i<Eb.size(); ++i)//Boucle de vérification que deux bases ne se superposent pas
-	{
-		if(base_cercle.point_appartient((Eb[i]).get_centre()))
-		{
-			cout<<message::base_superposition(x, y,  (Eb[i]).get_x(),  (Eb[i]).get_y() );
-			exit(0);
-		}
-	}
-	
-	for(size_t i(0); i<Eg.size(); ++i)//Boucle de vérification que Base et Field ne se superposent pas
-	{
-		if(((Eg[i]).get_field()).point_appartient(centre))
-		{
-			cout<<message::base_field_superposition(centre.get_x(), centre.get_y(), (Eg[i]).get_centre_x(), (Eg[i]).get_centre_y());
-			exit(0);
-		}
-	}
-	
 	string line;
 	int test_nbP(0);
 	
-	while(test_nbP<nbP and getline(entree, line) )
-	{
+    while(test_nbP<nbP and getline(entree, line))
+    
+    {
 		istringstream data(line);
 		unsigned uid(0);
 		if( !(data>>uid))//permet de faire la vérification si on a un saut à la ligne ou une connerie comme ça
@@ -69,7 +49,10 @@ Base::Base(double x, double y, double ressources, int nbP, int nbF, int nbT, int
 		++test_nbP;
 			
 	}
-	
+    /*{
+        (this->E_P).push_back(decodage_ligne_prospection(entree));
+        
+    }*/
 	
 	
 	int test_nbF(0);
@@ -132,7 +115,7 @@ Base::Base(double x, double y, double ressources, int nbP, int nbF, int nbT, int
 		(this->E_C).push_back(communication);
 		++test_nbC;
 		
-		if(equal_zero( sqrt( pow(x-centre.get_x(), 2 ) + pow( y-centre.get_y(), 2))))
+		if(equal_zero( sqrt( pow(x-centre.get_centre_x(), 2 ) + pow( y-centre.get_centre_y(), 2))))
 			
 		communication_centre=true;
 		
@@ -140,7 +123,7 @@ Base::Base(double x, double y, double ressources, int nbP, int nbF, int nbT, int
 	
 	if(not(communication_centre))
 	{
-		cout<<message::missing_robot_communication(centre.get_x(), centre.get_y());
+		cout<<message::missing_robot_communication(centre.get_centre_x(), centre.get_centre_y());
 		exit(0);
 	}
 	
@@ -150,15 +133,14 @@ Base::Base(double x, double y, double ressources, int nbP, int nbF, int nbT, int
 
 // definition de Base
 
-Base Decodage_Ligne(string line, vector<Base> & Eb, vector<Gisement>& Eg, ifstream & entree)
+Base decodage_ligne_base(string line, ifstream & entree)
 {
 	istringstream data(line);
 	double x(0.0), y(0.0), ressources(0.0);
 	int nbP(0), nbF(0), nbT(0),nbC(0);
 	data>> x >> y >> ressources >> nbP >> nbF >> nbT >> nbC;
-	Base base(x, y, ressources, nbP, nbF, nbT, nbC, Eb, Eg, entree);
-	
-	return base;
+	Base base(x, y, ressources, nbP, nbF, nbT, nbC, entree);
+    return base;
 }
 
 void verif_uid(const unsigned uid, vector<unsigned> & E_uid)
@@ -173,17 +155,17 @@ void verif_uid(const unsigned uid, vector<unsigned> & E_uid)
 	}
 }
 
-Point Base::get_centre()
+Cercle Base::get_centre()
 {
 	return centre;
 }
 
 double Base::get_x()
 {
-	return centre.get_x();
+	return centre.get_centre_x();
 }
 
 double Base::get_y()
 {
-	return centre.get_y();
+	return centre.get_centre_y();
 }

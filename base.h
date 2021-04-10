@@ -14,20 +14,20 @@ private:
 	std::vector<Forage> E_F;
 	std::vector<Transport> E_T;
 	std::vector<Communication> E_C;
-	Point centre;
+	Cercle centre;
 	double ressources;
 	int nbP, nbF, nbT, nbC;
 	
 	
 
 public:
-	Base(double, double, double, int, int, int, int, std::vector<Base> &, std::vector<Gisement>&, std::ifstream & );
-	Point get_centre();
+	Base(double, double, double, int, int, int, int, std::ifstream & );
+	Cercle get_centre();
 	double get_x();
 	double get_y();
 };
 
 void verif_uid(const unsigned, std::vector<unsigned> &);
-Base Decodage_Ligne(std::string, std::vector<Base> &,std::vector<Gisement>&, std::ifstream &);
+Base decodage_ligne_base(std::string, std::ifstream &);
 
 #endif

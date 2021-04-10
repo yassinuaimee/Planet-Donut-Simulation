@@ -7,7 +7,6 @@
 class Gisement 
 {
 public:
-	Gisement(double, double, double, double,  std::vector<Gisement> &);
 	Gisement(double, double, double, double);
 	Gisement();
 	Cercle get_field();
@@ -20,6 +19,6 @@ private:
 	double capacite; 
 };
 
-Gisement Decodage_Ligne( std::string, std::vector<Gisement> &);
+Gisement decodage_ligne_gisement(std::string);
 
 #endif

@@ -249,17 +249,14 @@ Cercle::Cercle(Point centre, double rayon)
 {}
 ///================================================================================///
 Cercle::Cercle(double x, double y, double rayon)
-: rayon(rayon) 
-{
-	Point centre_(x, y );
-	this->centre=centre_;
-}
+: centre(x,y), rayon(rayon)
+{}
 
 ///================================================================================///
 
 
 Cercle::Cercle()
-: centre( Point(0.0 , 0.0) ) , rayon(0.0)
+: centre(0.,0.) , rayon(0.0)
 {}
 ///================================================================================///
 

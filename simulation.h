@@ -5,12 +5,15 @@
 #include <fstream>
 #include "base.h"
 #include "gisement.h"
-void lecture(std::ifstream &);
 
 class Simulation
 {
 public:
 	Simulation();
+    void lecture(std::ifstream &);
+    void verifications();
+    unsigned get_nbG();
+    unsigned get_nbB();
 private:
 	unsigned nbG;
 	unsigned nbB;
@@ -18,6 +21,7 @@ private:
 	std::vector<Gisement> Eg;
 	
 };
+
 
 
 #endif

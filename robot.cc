@@ -1,4 +1,6 @@
 #include <iostream>
+#include <sstream>
+#include <fstream>
 #include "robot.h"
 #include "message.h"
 #include "geomod.h"
@@ -42,7 +44,7 @@ Prospection::Prospection(unsigned uid, double dp, double x, double y, double xb,
 
 Prospection::Prospection(unsigned uid, double dp, double x, double y, double xb, 
                          double yb, bool atteint, bool retour, bool found)
-:Robot(uid, dp, x, y, xb, yb, atteint), retour(retour), found(found)
+:Robot(uid, dp, x, y, xb, yb, atteint), retour(retour), found(found), gisement()
 {}
 //Robot Forage
 
@@ -61,4 +63,9 @@ Communication::Communication(unsigned uid, double dp, double x, double y, double
 : Robot(uid, dp, x, y, xb, yb, atteint)
 {}
 
-
+/*
+Prospection decodage_ligne_prospection(ifstream& entree);
+Forage decodage_ligne_forage(std::ifstream & entree);
+Transport decodage_ligne_transport(std::ifstream & entree);
+Communication decodage_ligne_communication(std::ifstream & entree);
+ */

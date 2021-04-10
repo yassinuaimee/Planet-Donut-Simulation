@@ -1,6 +1,6 @@
 #ifndef ROBOT_H_INCLUDED
 #define ROBOT_H_INCLUDED
-
+#include <fstream>
 #include "gisement.h"
 
 class Robot
@@ -56,4 +56,10 @@ private:
 public:
 	Communication(unsigned, double, double, double, double, double, bool);
 };
+/*
+Prospection decodage_ligne_prospection(std::ifstream &);
+Forage decodage_ligne_forage(std::ifstream &);
+Transport decodage_ligne_transport(std::ifstream &);
+Communication decodage_ligne_communication(std::ifstream &);
+ */
 #endif
