@@ -9,8 +9,26 @@
 
 using namespace std;
 
+//===================================================================================//
+
+Gisement::Gisement()
+: field(0.0, 0.0, 0.0), capacite(0.0)
+{}
 
 //===================================================================================//
+
+Gisement::Gisement(double x, double y, double rayon, double capacite)//On verifie direct dedans que les autres gisements n'intersectent pas
+: field( x, y, rayon), capacite(capacite)
+{
+    if(capacite<0)
+        exit(0);
+    if (rayon<rayon_min or rayon>rayon_max)
+        exit(0);
+    
+}
+
+//===================================================================================//
+
 Gisement decodage_ligne_gisement(string line)
 {
     istringstream data(line);
@@ -21,18 +39,7 @@ Gisement decodage_ligne_gisement(string line)
     
 };
 
-
-//definition de Gisement
-Gisement::Gisement(double x, double y, double rayon, double capacite)//On verifie direct dedans que les autres gisements n'intersectent pas
-: field( x, y, rayon), capacite(capacite)
-{
-	if(capacite<0)
-		exit(0);
-	if (rayon<rayon_min or rayon>rayon_max)
-        exit(0);
-	
-}
-
+//===================================================================================//
 
 void Gisement::verification(std::vector<Gisement>& Eg)
 {
@@ -49,37 +56,42 @@ void Gisement::verification(std::vector<Gisement>& Eg)
     }
 }
 
-
-
-
-
-Gisement::Gisement()
-: field(0.0, 0.0, 0.0), capacite(0.0)
-{}
+//===================================================================================//
 
 Cercle Gisement::get_field()
 {
 	return field;
 }
 
+//===================================================================================//
+
 double Gisement::get_centre_x()
 {
 	return field.get_centre_x();
 }
+
+//===================================================================================//
 
 double Gisement::get_centre_y()
 {
 	return field.get_centre_y();
 }
 
+//===================================================================================//
+
 double Gisement::get_rayon()
 {
 	return field.get_rayon();
 }
+
+//===================================================================================//
+
 double Gisement::get_capacite()
 {
     return capacite;
 }
+
+//===================================================================================//
 
 void Gisement::affiche()
 {

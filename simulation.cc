@@ -11,25 +11,37 @@
 
 using namespace std;
 
-
+///================================================================================///
 
 Simulation::Simulation()
 : nbG(0), nbB(0)
 {}
+
+///================================================================================///
+
+Simulation::~Simulation()
+{
+    for(auto& base : Eb)
+    {
+        base.destruction();
+    }
+}
+
+///================================================================================///
 
 unsigned Simulation::get_nbG()
 {
     return nbG;
 }
 
+///================================================================================///
+
 unsigned Simulation::get_nbB()
 {
     return nbB;
 }
 
-
-
-
+///================================================================================///
 
 void Simulation::lecture(ifstream & entree)
 {
@@ -95,6 +107,7 @@ void Simulation::lecture(ifstream & entree)
     }
 }
 
+///================================================================================///
 
 void Simulation::verifications()
 {
@@ -132,6 +145,8 @@ void Simulation::verifications()
     }
 }
 
+///================================================================================///
+
 void Simulation::affichage()
 {
     cout<<nbG<<endl;
@@ -146,10 +161,4 @@ void Simulation::affichage()
     }
 }
 
-Simulation::~Simulation()
-{
-    for(auto& base : Eb)
-    {
-        base.destruction();
-    }
-}
+

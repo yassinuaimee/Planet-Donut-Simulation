@@ -34,14 +34,10 @@ void lecture_main(int argc, char** argv)
         exit(0);
     
     Simulation simulation;
-    
     simulation.lecture(fichier);
     simulation.verifications();
-    
     simulation.affichage();
     
     cout <<message::success();
-        
-    
     fichier.close();
 }
