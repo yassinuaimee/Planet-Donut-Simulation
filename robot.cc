@@ -47,6 +47,8 @@ Prospection::Prospection(unsigned uid, double dp, double x, double y, double xb,
 :Robot(uid, dp, x, y, xb, yb, atteint), retour(retour), found(found), gisement()
 {}
 
+
+
 void Prospection::affiche()
 {
     if(found)

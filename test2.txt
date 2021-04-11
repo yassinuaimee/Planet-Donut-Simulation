@@ -10,7 +10,7 @@
 2 # nbB
 
 500 800 100 3 1 0 3
-   2  0 200 950 150 950 false false false
+   2  0 200 950 150 950 true true false
    3  0 800 950 850 950 false false false
    31 0 200 450 200 450 false false false
 
