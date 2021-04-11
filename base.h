@@ -6,10 +6,11 @@
 #include <fstream>
 #include "robot.h"
 
+Prospection decodage_ligne_prospection(unsigned, std::string);
+
 class Base
 {
 private:
-	std::vector<unsigned> E_uid;
 	std::vector<Prospection> E_P;
 	std::vector<Forage> E_F;
 	std::vector<Transport> E_T;
@@ -22,12 +23,13 @@ private:
 
 public:
 	Base(double, double, double, int, int, int, int, std::ifstream & );
+    void affiche();
 	Cercle get_centre();
 	double get_x();
 	double get_y();
 };
 
-void verif_uid(const unsigned, std::vector<unsigned> &);
+void verif_uid(const unsigned);
 Base decodage_ligne_base(std::string, std::ifstream &);
 
 #endif

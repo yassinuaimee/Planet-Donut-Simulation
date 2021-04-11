@@ -36,8 +36,9 @@ void lecture_main(int argc, char** argv)
     Simulation simulation;
     
     simulation.lecture(fichier);
+    simulation.verifications();
     
-    //simulation.verifications();
+    simulation.affichage();
     
     cout <<message::success();
         

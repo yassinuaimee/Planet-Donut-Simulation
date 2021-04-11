@@ -13,6 +13,11 @@
 
 using namespace std;
 
+namespace
+{
+    std::vector<unsigned> E_uid;
+}
+
 //===================================================================================//
 
 Base::Base(double x, double y, double ressources, int nbP, int nbF, int nbT, int nbC, ifstream & entree )
@@ -21,44 +26,28 @@ Base::Base(double x, double y, double ressources, int nbP, int nbF, int nbT, int
 	string line;
 	int test_nbP(0);
 	
-    while(test_nbP<nbP and getline(entree, line))
+    while(test_nbP<nbP)
     
     {
+        getline(entree, line);
+        
 		istringstream data(line);
 		unsigned uid(0);
-		if( !(data>>uid))//permet de faire la vérification si on a un saut à la ligne ou une connerie comme ça
+		if(not(data>>uid))//verif sauts ligne
 			continue;
-		
-		double dp(0.0), x(0.0), y(0.0), xb(0.0), yb(0.0);
-		bool atteint(false), retour(false), found(false);
-		data>>dp>>x>>y>>xb>>yb>>atteint>>retour>>found;
-		verif_uid(uid, this->E_uid);
-		E_uid.push_back(uid);
-		if(found)
-		{
-			double xg(0.0), yg(0.0), rayong(0.0), capaciteg(0.0);
-			data>>xg>>yg>>rayong>>capaciteg;
-			Prospection prospection(uid, dp, x, y, xb, yb, atteint, retour, found, xg, yg, rayong, capaciteg);
-			(this->E_P).push_back(prospection);
-		}
-		else
-		{
-			Prospection prospection(uid, dp, x, y, xb, yb, atteint, retour, found);
-			(this->E_P).push_back(prospection);
-		}
+        
+        verif_uid(uid);
+        
+        (this->E_P).push_back(decodage_ligne_prospection(uid, line));
 		++test_nbP;
 			
 	}
-    /*{
-        (this->E_P).push_back(decodage_ligne_prospection(entree));
-        
-    }*/
-	
 	
 	int test_nbF(0);
 	
-	while(test_nbF<nbF and getline(entree, line))
+	while(test_nbF<nbF)
 	{
+        getline(entree, line);
 		istringstream data(line);
 		unsigned uid(0);
 		if( !(data>>uid))//permet de faire la vérification si on a un saut à la ligne ou une connerie comme ça
@@ -67,16 +56,16 @@ Base::Base(double x, double y, double ressources, int nbP, int nbF, int nbT, int
 		double dp(0.0), x(0.0), y(0.0), xb(0.0), yb(0.0);
 		bool atteint(false);
 		data>>dp>>x>>y>>xb>>yb>>atteint;
-		verif_uid(uid, this->E_uid);
-		E_uid.push_back(uid);
+        verif_uid(uid);
 		Forage forage(uid, dp, x, y, xb, yb, atteint);
 		(this->E_F).push_back(forage);
 		++test_nbF;
 	}
 	int test_nbT(0);
 	
-	while( test_nbT<nbT and getline(entree, line))
+	while( test_nbT<nbT)
 	{
+        getline(entree, line);
 		istringstream data(line);
 		unsigned uid(0);
 		if( !(data>>uid))//permet de faire la vérification si on a un saut à la ligne ou une connerie comme ça
@@ -85,8 +74,7 @@ Base::Base(double x, double y, double ressources, int nbP, int nbF, int nbT, int
 		double dp(0.0), x(0.0), y(0.0), xb(0.0), yb(0.0);
 		bool atteint(false), retour(false);
 		data>>dp>>x>>y>>xb>>yb>>atteint>>retour;
-		verif_uid(uid, this->E_uid);
-		E_uid.push_back(uid);
+        verif_uid(uid);
 		Transport transport(uid, dp, x, y, xb, yb, atteint, retour);
 		(this->E_T).push_back(transport);
 		++test_nbT;
@@ -97,8 +85,9 @@ Base::Base(double x, double y, double ressources, int nbP, int nbF, int nbT, int
 
 		
 	
-	while(test_nbC<nbC and getline(entree, line))
+	while(test_nbC<nbC)
 	{
+        getline(entree, line);
 		istringstream data(line);
 		int uid(0);
 		if( not(data>>uid) )
@@ -109,8 +98,8 @@ Base::Base(double x, double y, double ressources, int nbP, int nbF, int nbT, int
 		data>>dp>>x>>y>>xb>>yb>>atteint;
 		
 		
-		verif_uid(uid, this->E_uid);
-		E_uid.push_back(uid);
+		verif_uid(uid);
+        
 		Communication communication(uid, dp, x, y, xb, yb, atteint);
 		(this->E_C).push_back(communication);
 		++test_nbC;
@@ -143,7 +132,7 @@ Base decodage_ligne_base(string line, ifstream & entree)
     return base;
 }
 
-void verif_uid(const unsigned uid, vector<unsigned> & E_uid)
+void verif_uid(const unsigned uid)
 {
 	for(auto& element : E_uid)
 	{
@@ -153,6 +142,33 @@ void verif_uid(const unsigned uid, vector<unsigned> & E_uid)
 			exit(0);
 		}
 	}
+    E_uid.push_back(uid);
+}
+
+void Base::affiche()
+{
+    cout<<"   "<<centre.get_x()<<"  "<<centre.get_centre_y()<<" "<<ressources<<" "<<nbP<<" "<<nbF<<" "<<nbT<<" "<<nbC<<endl;
+    for(auto& prospection : E_P)
+    {
+        prospection.affiche();
+    }
+    cout<<endl;
+    for(auto& forage : E_F)
+    {
+        forage.affiche();
+    }
+    cout<<endl;
+    for(auto& transport : E_T)
+    {
+        transport.affiche();
+    }
+    cout<<endl;
+    for(auto& communication : E_C)
+    {
+        communication.affiche();
+    }
+    cout<<endl;
+    
 }
 
 Cercle Base::get_centre()
@@ -168,4 +184,28 @@ double Base::get_x()
 double Base::get_y()
 {
 	return centre.get_centre_y();
+}
+
+
+Prospection decodage_ligne_prospection(unsigned uid, string line)
+{
+
+    
+    istringstream data(line);
+    double dp(0.0), x(0.0), y(0.0), xb(0.0), yb(0.0);
+    bool atteint(false), retour(false), found(false);
+    data>>dp>>x>>y>>xb>>yb>>atteint>>retour>>found;
+    if(found)
+    {
+        double xg(0.0), yg(0.0), rayong(0.0), capaciteg(0.0);
+        data>>xg>>yg>>rayong>>capaciteg;
+        Prospection prospection(uid, dp, x, y, xb, yb, atteint, retour, found, xg, yg, rayong, capaciteg);
+        return prospection;
+    }
+    else
+    {
+        Prospection prospection(uid, dp, x, y, xb, yb, atteint, retour, found);
+        return prospection;
+    }
+    
 }

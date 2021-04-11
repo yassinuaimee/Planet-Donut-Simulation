@@ -34,6 +34,25 @@ Gisement::Gisement(double x, double y, double rayon, double capacite)//On verifi
 }
 
 
+void Gisement::verification(std::vector<Gisement>& Eg)
+{
+    for(auto& gisement : Eg)
+    {
+        if(field.intersection_cercle(gisement.get_field()))
+        {
+            cout<<message::field_superposition(field.get_centre_x(),
+                                               field.get_centre_y(),
+                                               gisement.get_centre_x(),
+                                               gisement.get_centre_y());
+            exit(0);
+        }
+    }
+}
+
+
+
+
+
 Gisement::Gisement()
 : field(0.0, 0.0, 0.0), capacite(0.0)
 {}
@@ -57,4 +76,12 @@ double Gisement::get_rayon()
 {
 	return field.get_rayon();
 }
+double Gisement::get_capacite()
+{
+    return capacite;
+}
 
+void Gisement::affiche()
+{
+    cout<<"   "<<field.get_x()<<" "<<field.get_y()<<" "<<field.get_rayon()<<" "<<capacite<<endl;
+}

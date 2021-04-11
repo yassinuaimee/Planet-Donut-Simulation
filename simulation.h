@@ -12,6 +12,7 @@ public:
 	Simulation();
     void lecture(std::ifstream &);
     void verifications();
+    void affichage();
     unsigned get_nbG();
     unsigned get_nbB();
 private:

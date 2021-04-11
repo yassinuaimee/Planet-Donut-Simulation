@@ -67,6 +67,8 @@ public:
     Point get_centre();
     double get_centre_x();
     double get_centre_y();
+    double get_x();
+    double get_y();
     double get_rayon();
 private:
     Point centre;

@@ -9,10 +9,13 @@ class Gisement
 public:
 	Gisement(double, double, double, double);
 	Gisement();
-	Cercle get_field();
+    void affiche();
+    void verification(std::vector<Gisement>&);
+    Cercle get_field();
 	double get_centre_x();
 	double get_centre_y();
 	double get_rayon();
+    double get_capacite();
 	
 private:
 	Cercle field;

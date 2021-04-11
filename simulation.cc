@@ -40,7 +40,7 @@ void Simulation::lecture(ifstream & entree)
     while(getline(entree, line)) //Partie pour la lecture de nbG
     {
         istringstream data(line);
-        if( !(data>>nbG))
+        if(not(data>>nbG))
             continue;
         else
             break;
@@ -53,8 +53,13 @@ void Simulation::lecture(ifstream & entree)
         
         if(not(data>>valeur))
             continue;
+        Gisement gisement=decodage_ligne_gisement(line);
         
+        gisement.verification(Eg);
+            
         Eg.push_back(decodage_ligne_gisement(line));
+        
+        
         ++test_nbG;
             
         if(test_nbG==nbG)
@@ -67,7 +72,7 @@ void Simulation::lecture(ifstream & entree)
     while(getline(entree, line)) //Partie pour la lecture de nbG
     {
         istringstream data(line);
-        if( !(data>>nbG))
+        if(not(data>>nbB))
             continue;
         else
             break;
@@ -93,22 +98,6 @@ void Simulation::lecture(ifstream & entree)
 
 void Simulation::verifications()
 {
-    for(size_t i(0); i<nbG; ++i)
-    {
-        for(size_t j(i+1); j<nbG; ++j)
-        {
-            if(( (Eg[i]).get_field() ).intersection_cercle( (Eg[i]).get_field()) )
-            {
-                cout<<message::field_superposition((Eg[i]).get_centre_x(),
-                                                   (Eg[i]).get_centre_y(),
-                                                   (Eg[j]).get_centre_x(),
-                                                   (Eg[j]).get_centre_y());
-                exit(0);
-            }
-        }
-    }
-    
-    
     for(auto& base : Eb)//Boucle de vérification que Base et Field ne se superposent pas
     {
         for(auto& gisement : Eg)
@@ -118,13 +107,14 @@ void Simulation::verifications()
                 cout<<message::base_field_superposition(base.get_x(),
                                                         base.get_y(),
                                                         gisement.get_centre_x(),
-                                                        gisement.get_centre_x());
+                                                        gisement.get_centre_y());
                 exit(0);
             }
         }
     }
     
-    for(size_t i(0); i<nbB; ++i)
+    
+    for(size_t i(0); i<nbB; ++i)//Verificaiton Base intersection
     {
         
         for(size_t j(i+1); j<nbB; ++j)
@@ -140,5 +130,18 @@ void Simulation::verifications()
         }
         
     }
-    
+}
+
+void Simulation::affichage()
+{
+    cout<<nbG<<endl;
+    for(auto& gisement : Eg)
+    {
+        gisement.affiche();
+    }
+    cout<<endl<<nbB<<endl;
+    for(auto& base : Eb)
+    {
+        base.affiche();
+    }
 }

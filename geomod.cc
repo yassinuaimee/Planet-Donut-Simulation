@@ -287,12 +287,25 @@ double Cercle::get_centre_y()
 	return centre.get_y();
 }
 ///================================================================================///
+double Cercle::get_x()
+{
+    return centre.get_x();
+}
+///================================================================================///
+double Cercle::get_y()
+{
+    return centre.get_y();
+}
+
+///================================================================================///
 
 
 bool Cercle::point_appartient(Point point )
 {
-    double n(norme_plus_petit_vecteur( centre.get_x(), centre.get_y(), point.get_x(), 
-                                       point.get_y() ));
+    double n(norme_plus_petit_vecteur(centre.get_x(),
+                                      centre.get_y(),
+                                      point.get_x(),
+                                      point.get_y()));
     if(n<rayon-epsilon_zero)
         return true;
     else
@@ -303,9 +316,10 @@ bool Cercle::point_appartient(Point point )
 
 bool Cercle::intersection_cercle(Cercle cercle)
 {
-    double  n(norme_plus_petit_vecteur(centre.get_x(), centre.get_y(), 
+    double  n(norme_plus_petit_vecteur(centre.get_x(),
+                                       centre.get_y(),
 	                                   cercle.centre.get_x(), 
-	                                   cercle.centre.get_y() ) );
+	                                   cercle.centre.get_y()));
     
     if(n < rayon + cercle.get_rayon() - epsilon_zero)
         return true;
