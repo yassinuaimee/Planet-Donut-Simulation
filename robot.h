@@ -10,6 +10,7 @@ public:
     Robot(unsigned, double, double, double, double, double, bool);
     double get_x();
     double get_y();
+    Point get_position();
     double get_xb();
     double get_yb();
     

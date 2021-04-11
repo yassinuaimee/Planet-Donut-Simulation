@@ -145,3 +145,11 @@ void Simulation::affichage()
         base.affiche();
     }
 }
+
+Simulation::~Simulation()
+{
+    for(auto& base : Eb)
+    {
+        base.destruction();
+    }
+}

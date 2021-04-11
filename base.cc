@@ -30,7 +30,9 @@ Communication* decodage_ligne_communication(unsigned, std::istringstream&);
 std::vector<Prospection*> liste_propecteur(int, std::ifstream&);
 std::vector<Forage*> liste_forage(int, std::ifstream&);
 std::vector<Transport*> liste_transport(int, std::ifstream&);
-std::vector<Communication*> liste_communication(int, std::ifstream&);
+std::vector<Communication*> liste_communication(int, std::ifstream&, Cercle&);
+
+void communication_centre(std::vector<Communication*>&, Cercle&);
 
 //===================================================================================//
 //std::vector<Forage*> liste_forage(std::ifstream&);
@@ -110,11 +112,10 @@ std::vector<Transport*> liste_transport(int nbT, std::ifstream& entree)
     
 }
 
-std::vector<Communication*> liste_communication(int nbC, std::ifstream& entree)
+std::vector<Communication*> liste_communication(int nbC, std::ifstream& entree, Cercle& centre)
 {
     string line;
     int test_nbC(0);
-    bool communication_centre(false);
     vector<Communication*> E_C;
     
     
@@ -133,6 +134,7 @@ std::vector<Communication*> liste_communication(int nbC, std::ifstream& entree)
         ++test_nbC;
         
     }
+    communication_centre(E_C, centre);
     /*
     for(auto& communication : E_C)
     {
@@ -147,6 +149,20 @@ std::vector<Communication*> liste_communication(int nbC, std::ifstream& entree)
     */
     return E_C;
 }
+void communication_centre(std::vector<Communication*>& E_C, Cercle& centre)
+{
+    bool centre_ok(false);
+    for(auto& robot : E_C)
+    {
+        if(centre.point_appartient(robot->get_position()))
+            centre_ok=true;
+    }
+    if(not(centre_ok))
+    {
+        cout<<message::missing_robot_communication(centre.get_centre_x(), centre.get_centre_y());
+        exit(0);
+    }
+}
 
 
 Base::Base(double x, double y, double ressources, int nbP, int nbF, int nbT, int nbC, ifstream & entree )
@@ -157,38 +173,33 @@ Base::Base(double x, double y, double ressources, int nbP, int nbF, int nbT, int
     (this->E_P)=liste_propecteur(nbP, entree);
     (this->E_F)=liste_forage(nbF, entree);
     (this->E_T)=liste_transport(nbT, entree);
-    (this->E_C)=liste_communication(nbC, entree);
+    (this->E_C)=liste_communication(nbC, entree, centre);
+}
+void Base::destruction()
+{
+    
+    for(auto& ptr_Prospection: E_P)
+    {
+        delete ptr_Prospection;
+        ptr_Prospection=nullptr;
+    }
+    for(auto& ptr_Forage: E_F)
+    {
+        delete ptr_Forage;
+        ptr_Forage=nullptr;
+    }
+    for(auto& ptr_Transport: E_T)
+    {
+        delete ptr_Transport;
+        ptr_Transport=nullptr;
+    }
+    for(auto& ptr_Communication: E_C)
+    {
+        delete ptr_Communication;
+        ptr_Communication=nullptr;
+    }
 }
 
-Base::~Base()
-{
-	cout<<"on detruit sa mere la \n";
-	
-	for(auto& ptr_Prospection: E_P)
-	{
-		delete ptr_Prospection;
-		ptr_Prospection=nullptr;
-	}
-	cout<<"on a detruit la mere de prospection\n";
-	for(auto& ptr_Forage: E_F)
-	{
-		delete ptr_Forage;
-		ptr_Forage=nullptr;
-	}
-	cout<<"on a detruit la mere de forage\n";
-	for(auto& ptr_Transport: E_T)
-	{
-		delete ptr_Transport;
-		ptr_Transport=nullptr;
-	}
-	cout<<"on a detruit la mere de transport\n";
-	for(auto& ptr_Communication: E_C)
-	{
-		delete ptr_Communication;
-		ptr_Communication=nullptr;
-	}
-	cout<<"on a detruit la mere de communiaction\n";
-}
 
 
 
@@ -220,7 +231,7 @@ void verif_uid(const unsigned uid)
 
 void Base::affiche()
 {
-    cout<<"   "<<centre.get_x()<<"  "<<centre.get_centre_y()<<" "<<ressources<<" "<<nbP<<" "<<nbF<<" "<<nbT<<" "<<nbC<<endl;
+    cout<<"\t"<<centre.get_x()<<" "<<centre.get_centre_y()<<" "<<ressources<<" "<<nbP<<" "<<nbF<<" "<<nbT<<" "<<nbC<<endl;
     for(auto& prospection : E_P)
     {
         prospection->affiche();
@@ -281,7 +292,6 @@ Prospection* decodage_ligne_prospection(unsigned uid, istringstream& data)
     retour=lecture_bool(data);
     found=lecture_bool(data);
     
-    cout<<"atteint : "<<atteint<<", retour : "<<retour<<", found : "<<found<<endl;
     if(found)
     {
         double xg(0.0), yg(0.0), rayong(0.0), capaciteg(0.0);

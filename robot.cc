@@ -33,6 +33,10 @@ double Robot::get_yb()
 {
 	return but.get_y();
 }
+Point Robot::get_position()
+{
+    return position;
+}
 
 //Robot prospection
 Prospection::Prospection(unsigned uid, double dp, double x, double y, double xb, 
@@ -53,27 +57,39 @@ void Prospection::affiche()
 {
     if(found)
     {
-        cout<<"     "<<uid<<" "<<dp<<" "<<position.get_x()<<" "<<position.get_y()<<" "<<but.get_x()<<" "<<but.get_y()<<" "<<atteint<<" "<<retour<<" "<<found<<" "<<gisement.get_centre_x()<<" "<<gisement.get_centre_y()<<" "<<gisement.get_rayon()<<" "<<gisement.get_capacite()<<endl;
+        cout<<"\t\t"<<uid<<" "
+                    <<dp<<" "
+                    <<position.get_x()<<" "
+                    <<position.get_y()<<" "
+                    <<but.get_x()<<" "
+                    <<but.get_y()<<" "
+                    <<atteint<<" "
+                    <<retour<<" "
+                    <<found<<" "
+                    <<gisement.get_centre_x()<<" "
+                    <<gisement.get_centre_y()<<" "
+                    <<gisement.get_rayon()<<" "
+                    <<gisement.get_capacite()<<endl;
     }
     else
     {
-        cout<<"     "<<uid<<" "<<dp<<" "<<position.get_x()<<" "<<position.get_y()<<" "<<but.get_x()<<" "<<but.get_y()<<" "<<atteint<<" "<<retour<<" "<<found<<endl;
+        cout<<"\t\t"<<uid<<" "<<dp<<" "<<position.get_x()<<" "<<position.get_y()<<" "<<but.get_x()<<" "<<but.get_y()<<" "<<atteint<<" "<<retour<<" "<<found<<endl;
     }
 }
 
 void Forage::affiche()
 {
-    cout<<"     "<<uid<<" "<<dp<<" "<<position.get_x()<<" "<<position.get_y()<<" "<<but.get_x()<<" "<<but.get_y()<<" "<<atteint<<endl;
+    cout<<"\t\t"<<uid<<" "<<dp<<" "<<position.get_x()<<" "<<position.get_y()<<" "<<but.get_x()<<" "<<but.get_y()<<" "<<atteint<<endl;
 }
 
 void Transport::affiche()
 {
-    cout<<"     "<<uid<<" "<<dp<<" "<<position.get_x()<<" "<<position.get_y()<<" "<<but.get_x()<<" "<<but.get_y()<<" "<<atteint<<" "<<retour<<endl;
+    cout<<"\t\t"<<uid<<" "<<dp<<" "<<position.get_x()<<" "<<position.get_y()<<" "<<but.get_x()<<" "<<but.get_y()<<" "<<atteint<<" "<<retour<<endl;
 }
 
 void Communication::affiche()
 {
-    cout<<"     "<<uid<<" "<<dp<<" "<<position.get_x()<<" "<<position.get_y()<<" "<<but.get_x()<<" "<<but.get_y()<<" "<<atteint<<endl;
+    cout<<"\t\t"<<uid<<" "<<dp<<" "<<position.get_x()<<" "<<position.get_y()<<" "<<but.get_x()<<" "<<but.get_y()<<" "<<atteint<<endl;
 }
 //Robot Forage
 
@@ -91,10 +107,3 @@ Transport::Transport(unsigned uid, double dp, double x, double y, double xb,
 Communication::Communication(unsigned uid, double dp, double x, double y, double xb, double yb, bool atteint)
 : Robot(uid, dp, x, y, xb, yb, atteint)
 {}
-
-/*
-Prospection decodage_ligne_prospection(ifstream& entree);
-Forage decodage_ligne_forage(std::ifstream & entree);
-Transport decodage_ligne_transport(std::ifstream & entree);
-Communication decodage_ligne_communication(std::ifstream & entree);
- */

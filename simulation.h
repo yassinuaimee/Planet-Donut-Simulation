@@ -10,6 +10,7 @@ class Simulation
 {
 public:
 	Simulation();
+    ~Simulation();
     void lecture(std::ifstream &);
     void verifications();
     void affichage();

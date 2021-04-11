@@ -23,8 +23,8 @@ private:
 
 public:
 	Base(double, double, double, int, int, int, int, std::ifstream & );
-    ~Base();
     void affiche();
+    void destruction();
 	Cercle get_centre();
 	double get_x();
 	double get_y();

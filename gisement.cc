@@ -83,5 +83,5 @@ double Gisement::get_capacite()
 
 void Gisement::affiche()
 {
-    cout<<"   "<<field.get_x()<<" "<<field.get_y()<<" "<<field.get_rayon()<<" "<<capacite<<endl;
+    cout<<"\t"<<field.get_x()<<" "<<field.get_y()<<" "<<field.get_rayon()<<" "<<capacite<<endl;
 }
