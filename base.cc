@@ -148,6 +148,7 @@ std::vector<Communication*> liste_communication(int nbC, std::ifstream& entree)
     return E_C;
 }
 
+
 Base::Base(double x, double y, double ressources, int nbP, int nbF, int nbT, int nbC, ifstream & entree )
 : centre(x, y, rayon_base), ressources(ressources), nbP(nbP), nbF(nbF), nbT(nbT), nbC(nbC)
 {
@@ -157,102 +158,38 @@ Base::Base(double x, double y, double ressources, int nbP, int nbF, int nbT, int
     (this->E_F)=liste_forage(nbF, entree);
     (this->E_T)=liste_transport(nbT, entree);
     (this->E_C)=liste_communication(nbC, entree);
-    /*
-	int test_nbP(0);
-	
-    while(test_nbP<nbP)
-    
-    {
-        getline(entree, line);
-        
-		istringstream data(line);
-		unsigned uid(0);
-		if(not(data>>uid))//verif sauts ligne
-			continue;
-        
-        verif_uid(uid);
-        
-        (this->E_P).push_back(decodage_ligne_prospection(uid, line));
-		++test_nbP;
-			
-	}
-	
-	int test_nbF(0);
-	
-	while(test_nbF<nbF)
-	{
-        getline(entree, line);
-		istringstream data(line);
-		unsigned uid(0);
-		if( !(data>>uid))//permet de faire la vérification si on a un saut à la ligne ou une connerie comme ça
-			continue;
-		
-		double dp(0.0), x(0.0), y(0.0), xb(0.0), yb(0.0);
-		bool atteint(false);
-		data>>dp>>x>>y>>xb>>yb>>atteint;
-        verif_uid(uid);
-		Forage forage(uid, dp, x, y, xb, yb, atteint);
-		(this->E_F).push_back(forage);
-		++test_nbF;
-	}
-     
-    
-	int test_nbT(0);
-	
-	while( test_nbT<nbT)
-	{
-        getline(entree, line);
-		istringstream data(line);
-		unsigned uid(0);
-		if( !(data>>uid))//permet de faire la vérification si on a un saut à la ligne ou une connerie comme ça
-			continue;
-			
-		double dp(0.0), x(0.0), y(0.0), xb(0.0), yb(0.0);
-		bool atteint(false), retour(false);
-		data>>dp>>x>>y>>xb>>yb>>atteint>>retour;
-        verif_uid(uid);
-		Transport transport(uid, dp, x, y, xb, yb, atteint, retour);
-		(this->E_T).push_back(transport);
-		++test_nbT;
-	}
-	
-	bool communication_centre(false);
-	int test_nbC(0);
-
-		
-	
-	while(test_nbC<nbC)
-	{
-        getline(entree, line);
-		istringstream data(line);
-		int uid(0);
-		if( not(data>>uid) )
-			continue;
-			
-		double dp(0.0), x(0.0), y(0.0), xb(0.0), yb(0.0);
-		bool atteint(false);
-		data>>dp>>x>>y>>xb>>yb>>atteint;
-		
-		
-		verif_uid(uid);
-        
-		Communication communication(uid, dp, x, y, xb, yb, atteint);
-		(this->E_C).push_back(communication);
-		++test_nbC;
-		
-		if(equal_zero( sqrt( pow(x-centre.get_centre_x(), 2 ) + pow( y-centre.get_centre_y(), 2))))
-			
-		communication_centre=true;
-		
-	}
-	
-	if(not(communication_centre))
-	{
-		cout<<message::missing_robot_communication(centre.get_centre_x(), centre.get_centre_y());
-		exit(0);
-	}
-	*/
 }
+
+Base::~Base()
+{
+	cout<<"on detruit sa mere la \n";
+	
+	for(auto& ptr_Prospection: E_P)
+	{
+		delete ptr_Prospection;
+		ptr_Prospection=nullptr;
+	}
+	cout<<"on a detruit la mere de prospection\n";
+	for(auto& ptr_Forage: E_F)
+	{
+		delete ptr_Forage;
+		ptr_Forage=nullptr;
+	}
+	cout<<"on a detruit la mere de forage\n";
+	for(auto& ptr_Transport: E_T)
+	{
+		delete ptr_Transport;
+		ptr_Transport=nullptr;
+	}
+	cout<<"on a detruit la mere de transport\n";
+	for(auto& ptr_Communication: E_C)
+	{
+		delete ptr_Communication;
+		ptr_Communication=nullptr;
+	}
+	cout<<"on a detruit la mere de communiaction\n";
+}
+
 
 
 

@@ -2,7 +2,9 @@
 #define GISEMENT_H_INCLUDED
 
 #include <string>
+#include <vector>
 #include "geomod.h"
+
 
 class Gisement 
 {
