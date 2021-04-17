@@ -16,59 +16,61 @@ public:
     
 protected:
 	unsigned uid;
-	double dp;   //compteur de distance parcourue
+	double dp;
 	Point position;
 	Point but;
 	bool atteint;
-
 };
+
+//================================================================================//
 
 class Prospection : public Robot
 {
+public:
+    Prospection(unsigned, double, double, double, double, double, bool, bool, bool, double, double, double, double);
+    Prospection(unsigned, double, double, double, double, double, bool, bool, bool);
+    void affiche();
+    
 private:
     bool retour;
 	bool found;
-	Gisement gisement;  //Mémorise un objet de la classe gisement.
-	
-	
-public:
-	Prospection(unsigned, double, double, double, double, double, bool, bool, bool, double, double, double, double);
-	Prospection(unsigned, double, double, double, double, double, bool, bool, bool);
-    void affiche();
+	Gisement gisement;
 };
+
+//================================================================================//
 
 class Forage : public Robot
 {
-private:
-	
 public:
-	Forage(unsigned, double, double, double, double, double, bool);
+    Forage(unsigned, double, double, double, double, double, bool);
     void affiche();
+    
+private:
+    
 };
 
-
+//================================================================================//
 
 class Transport : public Robot
 {
+public:
+    Transport(unsigned, double, double, double, double, double, bool, bool);
+    void affiche();
+    
 private:
 	bool retour;
-public:
-	Transport(unsigned, double, double, double, double, double, bool, bool);
-    void affiche();
+
 };
+
+//================================================================================//
 
 class Communication : public Robot
 {
+public:
+    Communication(unsigned, double, double, double, double, double, bool);
+    void affiche();
+
 private:
 
-public:
-	Communication(unsigned, double, double, double, double, double, bool);
-    void affiche();
 };
-/*
-Prospection decodage_ligne_prospection(std::ifstream &);
-Forage decodage_ligne_forage(std::ifstream &);
-Transport decodage_ligne_transport(std::ifstream &);
-Communication decodage_ligne_communication(std::ifstream &);
- */
 #endif

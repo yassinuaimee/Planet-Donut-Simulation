@@ -17,7 +17,7 @@
 #include "simulation.h"
 #include "message.h"
 
-using namespace std;
+//using namespace std;
 
 void lecture_main(int, char **);
 
@@ -28,16 +28,19 @@ int main(int argc, char ** argv)
 
 void lecture_main(int argc, char** argv)
 {
-    ifstream fichier(argv[1]);     //argv[1]
+    std::ifstream fichier(argv[1]);
     
     if(fichier.fail() or argc!=2)
+    {
         exit(0);
-    
+    }
+        
     Simulation simulation;
+        
     simulation.lecture(fichier);
     simulation.verifications();
-    simulation.affichage();
+    //simulation.affichage();
     
-    cout <<message::success();
+    std::cout <<message::success();//Si on arrive la ça signifie que tout est bon
     fichier.close();
 }

@@ -5,7 +5,6 @@
 #include <vector>
 #include "geomod.h"
 
-
 class Gisement 
 {
 public:
@@ -14,8 +13,8 @@ public:
     void affiche();
     void verification(std::vector<Gisement>&);
     Cercle get_field();
-	double get_centre_x();
-	double get_centre_y();
+	double get_x();
+	double get_y();
 	double get_rayon();
     double get_capacite();
 	
@@ -24,6 +23,6 @@ private:
 	double capacite; 
 };
 
-Gisement decodage_ligne_gisement(std::string);
+Gisement creation_gisement(std::string);
 
 #endif

@@ -8,9 +8,9 @@
 
 class Simulation
 {
+    
 public:
 	Simulation();
-    ~Simulation();
     void lecture(std::ifstream &);
     void verifications();
     void affichage();
@@ -21,9 +21,5 @@ private:
 	unsigned nbB;
 	std::vector<Base> Eb;
 	std::vector<Gisement> Eg;
-	
 };
-
-
-
 #endif

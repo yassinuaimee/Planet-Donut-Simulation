@@ -6,14 +6,18 @@
 #include "geomod.h"
 #include "gisement.h"
 
-using namespace std;
+//using namespace std;
 
 
+/*
+//================================================================================//
+ //ROBOT//
+//================================================================================//
+*/
 
-//ROBOT========================================================================//
 Robot::Robot(unsigned uid, double dp, double x, double y,
              double xb, double yb, bool atteint)
-: uid(uid), dp(dp), position(x,y), but(xb, yb) , atteint(atteint)
+: uid(uid), dp(dp), position(x, y), but(xb, yb) , atteint(atteint)
 {}
 
 //================================================================================//
@@ -25,7 +29,7 @@ double Robot::get_x()
 	
 //================================================================================//
 
-double Robot:: get_y() 
+double Robot::get_y()
 {
 	return position.get_y();
 }
@@ -51,19 +55,25 @@ Point Robot::get_position()
     return position;
 }
 
-//ROBOT-PROSPECTION============================================================//
+
+/*
+//================================================================================//
+ //ROBOT-PROSPECTION//
+//================================================================================//
+*/
 
 Prospection::Prospection(unsigned uid, double dp, double x, double y,
                          double xb, double yb, bool atteint, bool retour,
                          bool found, double xg, double yg, double rayong, double capaciteg)
-: Robot(uid, dp, x, y, xb, yb, atteint) , retour(retour), found(found), gisement(xg, yg, rayong, capaciteg)
+:   Robot(uid, dp, x, y, xb, yb, atteint),
+    retour(retour), found(found), gisement(xg, yg, rayong, capaciteg)
 {}
 
 //================================================================================//
 
 Prospection::Prospection(unsigned uid, double dp, double x, double y,
                          double xb, double yb, bool atteint, bool retour, bool found)
-:Robot(uid, dp, x, y, xb, yb, atteint), retour(retour), found(found), gisement()
+: Robot(uid, dp, x, y, xb, yb, atteint), retour(retour), found(found), gisement()
 {}
 
 //================================================================================//
@@ -72,56 +82,74 @@ void Prospection::affiche()
 {
     if(found)
     {
-        cout<<"\t\t"<<uid<<" "
+        std::cout<<"\t\t"<<uid<<" "
                     <<dp<<" "
-                    <<position.get_x()<<" "
-                    <<position.get_y()<<" "
-                    <<but.get_x()<<" "
-                    <<but.get_y()<<" "
-                    <<atteint<<" "
-                    <<retour<<" "
-                    <<found<<" "
-                    <<gisement.get_centre_x()<<" "
-                    <<gisement.get_centre_y()<<" "
+                    <<position.get_x()<<" "<<position.get_y()<<" "
+                    <<but.get_x()<<" "<<but.get_y()<<" "
+                    <<atteint<<" "<<retour<<" "<<found<<" "
+                    <<gisement.get_x()<<" "<<gisement.get_y()<<" "
                     <<gisement.get_rayon()<<" "
-                    <<gisement.get_capacite()<<endl;
+                    <<gisement.get_capacite()<<std::endl;
     }
     else
     {
-        cout<<"\t\t"<<uid<<" "<<dp<<" "<<position.get_x()<<" "<<position.get_y()<<" "<<but.get_x()<<" "<<but.get_y()<<" "<<atteint<<" "<<retour<<" "<<found<<endl;
+        std::cout<<"\t\t"<<uid<<" "<<dp<<" "
+            <<position.get_x()<<" "<<position.get_y()<<" "
+            <<but.get_x()<<" "<<but.get_y()<<" "
+            <<atteint<<" "<<retour<<" "<<found<<std::endl;
     }
 }
 
-//ROBOT-FORAGE============================================================//
+
+/*
+//================================================================================//
+ //ROBOT-FORAGE//
+//================================================================================//
+*/
 
 Forage::Forage(unsigned uid, double dp, double x, double y,
                double xb, double yb, bool atteint)
-:Robot(uid, dp, x, y, xb, yb, atteint)
+: Robot(uid, dp, x, y, xb, yb, atteint)
 {}
 
 //================================================================================//
 
-
 void Forage::affiche()
 {
-    cout<<"\t\t"<<uid<<" "<<dp<<" "<<position.get_x()<<" "<<position.get_y()<<" "<<but.get_x()<<" "<<but.get_y()<<" "<<atteint<<endl;
+    std::cout<<"\t\t"<<uid<<" "<<dp<<" "
+        <<position.get_x()<<" "<<position.get_y()<<" "
+        <<but.get_x()<<" "<<but.get_y()<<" "
+        <<atteint<<std::endl;
 }
 
-//ROBOT-TRANSPORT============================================================//
+
+/*
+//================================================================================//
+ //ROBOT-TRANSPORT//
+//================================================================================//
+*/
 
 Transport::Transport(unsigned uid, double dp, double x, double y,
                      double xb, double yb, bool atteint, bool retour)
-:Robot(uid, dp, x, y, xb, yb, atteint), retour(retour)
+: Robot(uid, dp, x, y, xb, yb, atteint), retour(retour)
 {}
 
 //================================================================================//
 
 void Transport::affiche()
 {
-    cout<<"\t\t"<<uid<<" "<<dp<<" "<<position.get_x()<<" "<<position.get_y()<<" "<<but.get_x()<<" "<<but.get_y()<<" "<<atteint<<" "<<retour<<endl;
+    std::cout<<"\t\t"<<uid<<" "<<dp<<" "
+        <<position.get_x()<<" "<<position.get_y()<<" "
+        <<but.get_x()<<" "<<but.get_y()<<" "
+        <<atteint<<" "<<retour<<std::endl;
 }
 
-//ROBOT-COMMUNICATION============================================================//
+
+/*
+//================================================================================//
+ //ROBOT-COMMUNICATION//
+//================================================================================//
+*/
 
 Communication::Communication(unsigned uid, double dp, double x, double y,
                              double xb, double yb, bool atteint)
@@ -132,9 +160,8 @@ Communication::Communication(unsigned uid, double dp, double x, double y,
 
 void Communication::affiche()
 {
-    cout<<"\t\t"<<uid<<" "<<dp<<" "<<position.get_x()<<" "<<position.get_y()<<" "<<but.get_x()<<" "<<but.get_y()<<" "<<atteint<<endl;
+    std::cout<<"\t\t"<<uid<<" "<<dp<<" "
+        <<position.get_x()<<" "<<position.get_y()<<" "
+        <<but.get_x()<<" "<<but.get_y()<<" "
+        <<atteint<<std::endl;
 }
-
-
-
-

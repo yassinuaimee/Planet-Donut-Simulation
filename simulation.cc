@@ -9,156 +9,161 @@
 #include "message.h"
 #include "constantes.h"
 
-using namespace std;
+//using namespace std;
 
-///================================================================================///
+//================================================================================//
 
 Simulation::Simulation()
 : nbG(0), nbB(0)
 {}
 
-///================================================================================///
-
-Simulation::~Simulation()
-{
-    for(auto& base : Eb)
-    {
-        base.destruction();
-    }
-}
-
-///================================================================================///
+//================================================================================//
 
 unsigned Simulation::get_nbG()
 {
     return nbG;
 }
 
-///================================================================================///
+//================================================================================//
 
 unsigned Simulation::get_nbB()
 {
     return nbB;
 }
 
-///================================================================================///
+//================================================================================//
 
-void Simulation::lecture(ifstream & entree)
+void Simulation::lecture(std::ifstream & entree)
 {
-    string line;
+    std::string line;
     double valeur;
     unsigned test_nbG(0);
     
-    while(getline(entree, line)) //Partie pour la lecture de nbG
+    while(getline(entree>>std::ws, line))
     {
-        istringstream data(line);
+        std::istringstream data(line);
         if(not(data>>nbG))
+        {
             continue;
+        }
         else
+        {
             break;
+        }
     }
     
-    
-    while(getline(entree, line))
+    if(nbG!=0)
     {
-        istringstream data(line);
+        while(getline(entree>>std::ws, line))
+        {
+            std::istringstream data(line);
         
-        if(not(data>>valeur))
-            continue;
-        Gisement gisement=decodage_ligne_gisement(line);
-        
-        gisement.verification(Eg);
+            if(not(data>>valeur))
+            {
+                continue;
+            }
             
-        Eg.push_back(decodage_ligne_gisement(line));
-        
-        
-        ++test_nbG;
+            Gisement gisement=creation_gisement(line);
+            gisement.verification(Eg);
+            Eg.push_back(creation_gisement(line));
             
-        if(test_nbG==nbG)
-            break;
-        
+            ++test_nbG;
+            
+            if(test_nbG==nbG)
+            {
+                break;
+            }
+        }
     }
-    //On passe à la lecture des BASES
+    
+    //LECTURE BASES=====================================================
+    
     unsigned test_nbB(0);
     
-    while(getline(entree, line)) //Partie pour la lecture de nbG
+    while(getline(entree>>std::ws, line)) //Partie pour la lecture de nbG
     {
-        istringstream data(line);
+        std::istringstream data(line);
         if(not(data>>nbB))
+        {
             continue;
+        }
         else
+        {
             break;
+        }
     }
     
-    
-    while(getline(entree, line))
+    if(nbB!=0)
     {
-        istringstream data(line);
+        while(getline(entree>>std::ws, line))
+        {
+            std::istringstream data(line);
         
-        if(not(data>>valeur))
-            continue;
-        
-        Eb.push_back( decodage_ligne_base(line, entree));
-        ++test_nbB;
+            if(not(data>>valeur))
+            {
+                continue;
+            }
             
-        if(test_nbB==nbB)
-            break;
-        
+            Eb.push_back( creation_base(line, entree));
+            ++test_nbB;
+            
+            if(test_nbB==nbB)
+            {
+                break;
+            }
+        }
     }
 }
 
-///================================================================================///
+//================================================================================//
 
 void Simulation::verifications()
 {
-    for(auto& base : Eb)//Boucle de vérification que Base et Field ne se superposent pas
+    for(auto& base : Eb)//Vérification intersection BASES et GISEMENTS
     {
         for(auto& gisement : Eg)
         {
             if((gisement.get_field()).intersection_cercle(base.get_centre()))
             {
-                cout<<message::base_field_superposition(base.get_x(),
+                std::cout<<message::base_field_superposition(base.get_x(),
                                                         base.get_y(),
-                                                        gisement.get_centre_x(),
-                                                        gisement.get_centre_y());
+                                                        gisement.get_x(),
+                                                        gisement.get_y());
                 exit(0);
             }
         }
     }
     
     
-    for(size_t i(0); i<nbB; ++i)//Verificaiton Base intersection
+    for(size_t i(0); i<nbB; ++i)//Verification intersection BASES
     {
-        
         for(size_t j(i+1); j<nbB; ++j)
         {
             if(((Eb[i]).get_centre()).intersection_cercle((Eb[j]).get_centre()))
             {
-                cout<<message::base_superposition((Eb[i]).get_x(),
+                std::cout<<message::base_superposition((Eb[i]).get_x(),
                                                   (Eb[i]).get_y(),
                                                   (Eb[j]).get_x(),
                                                   (Eb[j]).get_y() );
                 exit(0);
             }
         }
-        
     }
 }
 
-///================================================================================///
+//================================================================================//
 
 void Simulation::affichage()
 {
-    cout<<nbG<<endl;
+    std::cout<<nbG<<" #Nombre GISEMENTS"<<std::endl;
     for(auto& gisement : Eg)
     {
         gisement.affiche();
     }
-    cout<<endl<<nbB<<endl;
+    
+    std::cout<<std::endl<<nbB<<" #Nombre BASES"<<std::endl;
     for(auto& base : Eb)
     {
         base.affiche();
     }
 }
-
-
