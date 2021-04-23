@@ -25,12 +25,17 @@ bool lecture_bool(std::stringstream&);
 std::unique_ptr<Prospection> creation_robot_prospection(unsigned, std::stringstream&);
 std::unique_ptr<Forage> creation_robot_forage(unsigned, std::stringstream&);
 std::unique_ptr<Transport> creation_robot_transport(unsigned, std::stringstream&);
-std::unique_ptr<Communication> creation_robot_communication(unsigned, std::stringstream&);
+std::unique_ptr<Communication> creation_robot_communication(unsigned, 
+															std::stringstream&);
 
-void init_liste_propecteur(int, std::ifstream&, std::vector<std::unique_ptr<Prospection>>&);
-void init_liste_forage(int, std::ifstream&, std::vector<std::unique_ptr<Forage>>&);
-void init_liste_transport(int, std::ifstream&, std::vector<std::unique_ptr<Transport>>&);
-void init_liste_communication(int, std::ifstream&, Cercle&, std::vector<std::unique_ptr<Communication>>&);
+void init_liste_propecteur(int, std::ifstream&, 
+						   std::vector<std::unique_ptr<Prospection>>&);
+void init_liste_forage(int, std::ifstream&, 
+					   std::vector<std::unique_ptr<Forage>>&);
+void init_liste_transport(int, std::ifstream&, 
+						  std::vector<std::unique_ptr<Transport>>&);
+void init_liste_communication(int, std::ifstream&, Cercle&, 
+							  std::vector<std::unique_ptr<Communication>>&);
 
 void communication_centre(std::vector<std::unique_ptr<Communication>>&, Cercle&);
 
@@ -55,7 +60,8 @@ Base creation_base(std::string line, std::ifstream & entree)
 
 Base::Base(double x, double y, double ressources,
            int nbP, int nbF, int nbT, int nbC, std::ifstream & entree )
-: centre(x, y, rayon_base), ressources(ressources), nbP(nbP), nbF(nbF), nbT(nbT), nbC(nbC)
+: centre(x, y, rayon_base), ressources(ressources), nbP(nbP), nbF(nbF), nbT(nbT), 
+  nbC(nbC)
 {
     if(nbP!=0)
     {
@@ -141,7 +147,8 @@ PROSPECTION
 */
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void init_liste_propecteur(int nbP, std::ifstream& entree, std::vector<std::unique_ptr<Prospection>>& E_P)
+void init_liste_propecteur(int nbP, std::ifstream& entree, 
+						   std::vector<std::unique_ptr<Prospection>>& E_P)
 {
     std::string line;
     int test_nbP(0);
@@ -226,6 +233,7 @@ void init_liste_forage(int nbF, std::ifstream& entree,
         ++test_nbF;
     }
 }
+
 //================================================================================//
 
 std::unique_ptr<Forage> creation_robot_forage(unsigned uid, std::stringstream& data)
@@ -330,7 +338,6 @@ std::unique_ptr<Communication> creation_robot_communication(unsigned uid,
 }
 
 //================================================================================//
-
 
 void communication_centre(std::vector<std::unique_ptr<Communication>>& E_C,
                           Cercle& centre)

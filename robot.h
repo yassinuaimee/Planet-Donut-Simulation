@@ -27,7 +27,9 @@ protected:
 class Prospection : public Robot
 {
 public:
-    Prospection(unsigned, double, double, double, double, double, bool, bool, bool, double, double, double, double);
+    Prospection(unsigned, double, double, double, double, double, 
+				bool, bool, bool, 
+				double, double, double, double);
     Prospection(unsigned, double, double, double, double, double, bool, bool, bool);
     void affiche();
     

@@ -37,6 +37,9 @@ void Simulation::lecture(std::ifstream & entree)
 {
     std::string line;
     double valeur;
+    
+    //LECTURE GISEMENTS=====================================================
+    
     unsigned test_nbG(0);
     
     while(getline(entree>>std::ws, line))

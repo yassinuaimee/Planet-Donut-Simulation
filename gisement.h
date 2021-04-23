@@ -23,6 +23,8 @@ private:
 	double capacite; 
 };
 
+//================================================================================//
+
 Gisement creation_gisement(std::string);
 
 #endif

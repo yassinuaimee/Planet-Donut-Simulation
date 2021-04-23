@@ -64,7 +64,8 @@ Point Robot::get_position()
 
 Prospection::Prospection(unsigned uid, double dp, double x, double y,
                          double xb, double yb, bool atteint, bool retour,
-                         bool found, double xg, double yg, double rayong, double capaciteg)
+                         bool found, double xg, double yg, double rayong, 
+						 double capaciteg)
 :   Robot(uid, dp, x, y, xb, yb, atteint),
     retour(retour), found(found), gisement(xg, yg, rayong, capaciteg)
 {}

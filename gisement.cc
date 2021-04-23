@@ -17,7 +17,7 @@ Gisement::Gisement()
 
 //===================================================================================//
 
-Gisement::Gisement(double x, double y, double rayon, double capacite)//On verifie direct dedans que les autres gisements n'intersectent pas
+Gisement::Gisement(double x, double y, double rayon, double capacite)
 : field(x, y, rayon), capacite(capacite)
 {
     if(capacite<0)
@@ -99,5 +99,8 @@ double Gisement::get_capacite()
 
 void Gisement::affiche()
 {
-    std::cout<<"\t"<<field.get_x()<<" "<<field.get_y()<<" "<<field.get_rayon()<<" "<<capacite<<std::endl;
+    std::cout<<"\t"<<field.get_x()<<" "
+				   <<field.get_y()<<" "
+				   <<field.get_rayon()<<" "
+				   <<capacite<<std::endl;
 }

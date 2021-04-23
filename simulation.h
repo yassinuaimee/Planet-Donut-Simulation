@@ -22,4 +22,5 @@ private:
 	std::vector<Base> Eb;
 	std::vector<Gisement> Eg;
 };
+
 #endif
