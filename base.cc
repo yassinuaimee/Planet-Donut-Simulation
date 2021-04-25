@@ -34,10 +34,10 @@ void init_liste_forage(int, std::ifstream&,
 					   std::vector<std::unique_ptr<Forage>>&);
 void init_liste_transport(int, std::ifstream&, 
 						  std::vector<std::unique_ptr<Transport>>&);
-void init_liste_communication(int, std::ifstream&, Cercle&, 
+void init_liste_communication(int, std::ifstream&, Point&,
 							  std::vector<std::unique_ptr<Communication>>&);
 
-void communication_centre(std::vector<std::unique_ptr<Communication>>&, Cercle&);
+void communication_centre(std::vector<std::unique_ptr<Communication>>&, Point&);
 
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -60,8 +60,8 @@ Base creation_base(std::string line, std::ifstream & entree)
 
 Base::Base(double x, double y, double ressources,
            int nbP, int nbF, int nbT, int nbC, std::ifstream & entree )
-: centre(x, y, rayon_base), ressources(ressources), nbP(nbP), nbF(nbF), nbT(nbT), 
-  nbC(nbC)
+:   centre(x, y, rayon_base), point_centre(x, y), ressources(ressources),
+    nbP(nbP), nbF(nbF), nbT(nbT), nbC(nbC)
 {
     if(nbP!=0)
     {
@@ -79,7 +79,7 @@ Base::Base(double x, double y, double ressources,
     }
     if(nbC!=0)
     {
-        init_liste_communication(nbC, entree, centre, this->E_C);
+        init_liste_communication(nbC, entree, point_centre, this->E_C);
     }
     else
     {
@@ -297,7 +297,7 @@ COMMUNICATION
 */
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void init_liste_communication(int nbC, std::ifstream& entree, Cercle& centre,
+void init_liste_communication(int nbC, std::ifstream& entree, Point& centre,
                               std::vector<std::unique_ptr<Communication>>& E_C)
 {
 
@@ -340,13 +340,15 @@ std::unique_ptr<Communication> creation_robot_communication(unsigned uid,
 //================================================================================//
 
 void communication_centre(std::vector<std::unique_ptr<Communication>>& E_C,
-                          Cercle& centre)
+                          Point& centre)
 {
     bool centre_ok(false);
     for(auto& robot : E_C)
     {
-        if(centre.point_appartient(robot->get_position()))
+        if((robot->get_position())==centre)
+        {
             centre_ok=true;
+        }
     }
     if(not(centre_ok))
     {

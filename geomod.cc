@@ -88,12 +88,10 @@ bool Point::operator==(Point & autre) const
     if(equal_zero(norme))
     {
         return true;
-        
     }
     else
     {
         return false;
-        
     }
 }
 
