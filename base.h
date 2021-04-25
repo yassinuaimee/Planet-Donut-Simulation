@@ -22,7 +22,6 @@ private:
 	std::vector<std::unique_ptr<Transport>> E_T;
 	std::vector<std::unique_ptr<Communication>> E_C;
 	Cercle centre;
-    Point point_centre;
     double ressources;
 	int nbP, nbF, nbT, nbC;
 };

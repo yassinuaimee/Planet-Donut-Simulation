@@ -26,6 +26,7 @@ public:
 	void set_x(double);
 	void set_y(double);
 	bool operator==(Point &) const;
+    bool same_position(Point);
     
 private:
 	double x;

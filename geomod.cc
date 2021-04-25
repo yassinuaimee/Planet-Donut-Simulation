@@ -95,6 +95,22 @@ bool Point::operator==(Point & autre) const
     }
 }
 
+//================================================================================//
+
+bool Point::same_position(Point autre)
+{
+    double norme(0.0);
+    norme= norme_plus_petit_vecteur( x, y, autre.get_x(), autre.get_y());
+    if(equal_zero(norme))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /*
