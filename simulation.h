@@ -1,3 +1,15 @@
+/* Nom:
+ * simulation.h
+ *
+ * Auteurs:
+ * Yassin Al-Nuaimee
+ * Adrien Maillet Gonzalez
+ *
+ * Version: 12
+ *
+ *
+ */
+
 #ifndef SIMULATION_H_INCLUDED
 #define SIMULATION_H_INCLUDED
 

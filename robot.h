@@ -1,3 +1,15 @@
+/* Nom:
+ * robot.h
+ *
+ * Auteurs:
+ * Yassin Al-Nuaimee
+ * Adrien Maillet Gonzalez
+ *
+ * Version: 12
+ *
+ *
+ */
+
 #ifndef ROBOT_H_INCLUDED
 #define ROBOT_H_INCLUDED
 

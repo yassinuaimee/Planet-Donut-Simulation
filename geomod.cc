@@ -15,6 +15,7 @@
 #include <array>
 #include "geomod.h"
 #include "constantes.h"
+#include "graphic.h"
 
 //using namespace std;
 

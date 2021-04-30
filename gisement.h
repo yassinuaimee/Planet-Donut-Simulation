@@ -1,3 +1,15 @@
+/* Nom:
+ * gisement.h
+ *
+ * Auteurs:
+ * Yassin Al-Nuaimee
+ * Adrien Maillet Gonzalez
+ *
+ * Version: 12
+ *
+ *
+ */
+
 #ifndef GISEMENT_H_INCLUDED
 #define GISEMENT_H_INCLUDED
 

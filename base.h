@@ -1,3 +1,15 @@
+/* Nom:
+ * base.h
+ *
+ * Auteurs:
+ * Yassin Al-Nuaimee
+ * Adrien Maillet Gonzalez
+ *
+ * Version: 12
+ *
+ *
+ */
+
 #ifndef BASE_H_INCLUDED
 #define BASE_H_INCLUDED
 

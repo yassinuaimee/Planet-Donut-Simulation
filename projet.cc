@@ -13,17 +13,24 @@
 #include <iostream>
 #include <array>
 #include <fstream>
+#include <gtkmm/application.h>
 #include "geomod.h"
 #include "simulation.h"
 #include "message.h"
+#include "gui.h"
 
 //using namespace std;
 
 void lecture_main(int, char **);
 
 int main(int argc, char ** argv) 
-{ 
-    lecture_main(argc, argv);
+{
+    
+    //lecture_main(argc, argv);
+    auto app = Gtk::Application::create(argc, argv, "org.gtkmm.example");
+    Interface window;
+    //eventWindow.set_resizable(true);
+    return app->run(window);
 }
 
 void lecture_main(int argc, char** argv)

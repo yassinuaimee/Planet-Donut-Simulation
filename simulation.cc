@@ -1,3 +1,15 @@
+/* Nom:
+ * simulation.cc
+ *
+ * Auteurs:
+ * Yassin Al-Nuaimee
+ * Adrien Maillet Gonzalez
+ *
+ * Version: 12
+ *
+ *
+ */
+
 #include <iostream>
 #include <sstream>
 #include <fstream>
