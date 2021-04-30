@@ -23,7 +23,8 @@ public:
     virtual ~MyArea();
 protected:
     bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
-    //void draw_frame(const Cairo::RefPtr<Cairo::Context>& cr);
+    bool test;
+    void draw_frame(const Cairo::RefPtr<Cairo::Context>& cr);
     
 private:
     
@@ -45,9 +46,9 @@ protected:
     void on_button_clicked_toggle_link();
     void on_button_clicked_toggle_range();
     
-    //bool on_key_press_event(GdkEventKey * key_event);
+    bool on_key_press_event(GdkEventKey * key_event);
     
-    Gtk::Box m_Box, m_Box_Left, m_Box_Right;
+    Gtk::Box m_Box, m_Box_Left, m_Box_Right, m_Box_General, m_Box_Toggle_Display;
     
     Gtk::Button m_Button_exit;
     Gtk::Button m_Button_open;
@@ -56,6 +57,8 @@ protected:
     Gtk::Button m_Button_step;
     Gtk::Button m_Button_toggle_link;
     Gtk::Button m_Button_toggle_range;
+    
+    Gtk::Frame m_Frame1, m_Frame2;
     
     MyArea m_Area;
 };
