@@ -15,7 +15,6 @@
 
 #include <gtkmm.h>
 #include "geomod.h"
-#include "graphic.h"
 
 class MyArea : public Gtk::DrawingArea
 {

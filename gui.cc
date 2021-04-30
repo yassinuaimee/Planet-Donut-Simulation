@@ -13,7 +13,6 @@
 #include <cairomm/context.h>
 #include "gui.h"
 #include "geomod.h"
-#include "graphic.h"
 
 //=================================================================================//
 

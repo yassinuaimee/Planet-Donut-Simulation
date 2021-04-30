@@ -12,7 +12,7 @@ LGTKMM = `pkg-config gtkmm-3.0 --cflags --libs`
 all: $(OUT)
 	
 geomod.o: geomod.cc geomod.h graphic.h
-	$(COMPILE) -c geomod.cc -o geomod.o
+	$(COMPILE) $(LINKING) -c geomod.cc -o geomod.o $(LINKING)
 graphic.o: graphic.cc graphic.h
 	$(COMPILE) $(LINKING) -c graphic.cc -o graphic.o $(LINKING)
 	
