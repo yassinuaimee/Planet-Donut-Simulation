@@ -16,7 +16,7 @@
 
 //=================================================================================//
 
-MyArea::MyArea(): test(true)
+MyArea::MyArea()
 {}
 
 MyArea::~MyArea()
@@ -73,7 +73,10 @@ m_Box_Toggle_Display(Gtk::ORIENTATION_VERTICAL,10),
     m_Button_start("start"),
     m_Button_step("step"),
     m_Button_toggle_link("toggle link"),
-    m_Button_toggle_range("toggle range")
+    m_Button_toggle_range("toggle range"),
+
+count(0),
+start(false)
 
 {
     set_title("Planet Donut - DEMO");
@@ -131,7 +134,20 @@ m_Box_Toggle_Display(Gtk::ORIENTATION_VERTICAL,10),
     m_Button_toggle_range.signal_clicked().connect(sigc::mem_fun(*this,
                 &Interface::on_button_clicked_toggle_range));
     
+    Glib::signal_timeout().connect( sigc::mem_fun(*this, &Interface::on_idle),80);//Ligne avec le timer
+    
     show_all_children();//J'ai pris tellement longtemps à capter cette erreur
+}
+
+bool Interface::on_idle()
+{
+  
+  if(start)
+  {
+    std::cout << "Mise à jour de la simulation numéro : " << ++count << std::endl;
+  }
+  
+  return true;  // return false when done
 }
 
 bool Interface::on_key_press_event(GdkEventKey * key_event)
@@ -168,6 +184,44 @@ void Interface::on_button_clicked_exit()
 void Interface::on_button_clicked_open()
 {
     std::cout<<"Open\n";
+    Gtk::FileChooserDialog dialog("Please choose a file",
+            Gtk::FILE_CHOOSER_ACTION_OPEN);
+    dialog.set_transient_for(*this);
+
+    //Add response buttons the the dialog:
+    dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
+    dialog.add_button("_Open", Gtk::RESPONSE_OK);
+
+    m_Button_open.set_label("choosing a file");
+
+    //Show the dialog and wait for a user response:
+    int result = dialog.run();
+
+    m_Button_open.set_label("Done choosing a file");
+
+    //Handle the response:
+    switch(result)
+    {
+      case(Gtk::RESPONSE_OK):
+      {
+        std::cout << "Open clicked." << std::endl;
+
+        //Notice that this is a std::string, not a Glib::ustring.
+        std::string filename = dialog.get_filename();
+        std::cout << "File selected: " <<  filename << std::endl;
+        break;
+      }
+      case(Gtk::RESPONSE_CANCEL):
+      {
+        std::cout << "Cancel clicked." << std::endl;
+        break;
+      }
+      default:
+      {
+        std::cout << "Unexpected button clicked." << std::endl;
+        break;
+      }
+    }
 }
 
 void Interface::on_button_clicked_save()
@@ -177,12 +231,29 @@ void Interface::on_button_clicked_save()
 
 void Interface::on_button_clicked_start()
 {
-    std::cout<<"Start\n";
+    if(start)
+    {
+        std::cout<<"Stop\n";
+        start=false;
+        m_Button_start.set_label("start");
+        
+    }
+    else
+    {
+        std::cout<<"Start\n";
+        start=true;
+        m_Button_start.set_label("stop");
+    }
 }
 
 void Interface::on_button_clicked_step()
 {
     std::cout<<"Step\n";
+    if(not start)
+    {
+        std::cout<<"Step OK\n";
+        std::cout << "Mise à jour de la simulation numéro : " << ++count << std::endl;
+    }
 }
 
 void Interface::on_button_clicked_toggle_link()

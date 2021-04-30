@@ -23,7 +23,6 @@ public:
     virtual ~MyArea();
 protected:
     bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
-    bool test;
     void draw_frame(const Cairo::RefPtr<Cairo::Context>& cr);
     
 private:
@@ -38,6 +37,8 @@ public:
     Interface();
     virtual ~Interface();
 protected:
+    bool on_idle();
+    
     void on_button_clicked_exit();
     void on_button_clicked_open();
     void on_button_clicked_save();
@@ -61,6 +62,9 @@ protected:
     Gtk::Frame m_Frame1, m_Frame2;
     
     MyArea m_Area;
+private:
+    unsigned int count;
+    bool start;
 };
 
 #endif
