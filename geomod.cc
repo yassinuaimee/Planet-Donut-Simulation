@@ -336,39 +336,71 @@ bool Cercle::intersection_cercle(Cercle cercle)
 }
 
 //================================================================================//
+
 void Cercle::affiche(const Cairo::RefPtr<Cairo::Context>& cr)
 {
+    cr->set_source_rgb(0.1, 0.1, 0.1);
+    
     cr->save();
     cr->arc(centre.get_x(), centre.get_y(), rayon, 0, 2*M_PI);
     cr->fill_preserve();
     cr->stroke();
     
+    bool x_plus(false), x_moins(false), y_plus(false), y_moins(false);
     if(centre.get_x()+rayon>dim_max)
     {
-        cr->arc(centre.get_x()-dim_max, centre.get_y(), rayon, 0, 2*M_PI);
+        cr->arc(centre.get_x()-2*dim_max, centre.get_y(), rayon, 0, 2*M_PI);
         cr->fill_preserve();
         cr->stroke();
+        x_plus=true;
     }
     if(centre.get_x()-rayon<-dim_max)
     {
-        cr->arc(centre.get_x()+dim_max, centre.get_y(), rayon, 0, 2*M_PI);
+        cr->arc(centre.get_x()+2*dim_max, centre.get_y(), rayon, 0, 2*M_PI);
         cr->fill_preserve();
         cr->stroke();
+        x_moins=true;
     }
     if(centre.get_y()+rayon>dim_max)
     {
-        cr->arc(centre.get_x(), centre.get_y()-dim_max, rayon, 0, 2*M_PI);
+        cr->arc(centre.get_x(), centre.get_y()-2*dim_max, rayon, 0, 2*M_PI);
         cr->fill_preserve();
         cr->stroke();
+        y_plus=true;
     }
     if(centre.get_y()-rayon<-dim_max)
     {
-        cr->arc(centre.get_x(), centre.get_y()+dim_max, rayon, 0, 2*M_PI);
+        cr->arc(centre.get_x(), centre.get_y()+2*dim_max, rayon, 0, 2*M_PI);
+        cr->fill_preserve();
+        cr->stroke();
+        y_moins=true;
+    }
+    if(x_plus and y_plus)
+    {
+        cr->arc(centre.get_x()-2*dim_max, centre.get_y()-2*dim_max, rayon, 0, 2*M_PI);
         cr->fill_preserve();
         cr->stroke();
     }
-    
+    if(x_plus and y_moins)
+    {
+        cr->arc(centre.get_x()-2*dim_max, centre.get_y()+2*dim_max, rayon, 0, 2*M_PI);
+        cr->fill_preserve();
+        cr->stroke();
+    }
+    if(x_moins and y_moins)
+    {
+        cr->arc(centre.get_x()+2*dim_max, centre.get_y()+2*dim_max, rayon, 0, 2*M_PI);
+        cr->fill_preserve();
+        cr->stroke();
+    }
+    if(x_moins and y_plus)
+    {
+        cr->arc(centre.get_x()+2*dim_max, centre.get_y()-2*dim_max, rayon, 0, 2*M_PI);
+        cr->fill_preserve();
+        cr->stroke();
+    }
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /*

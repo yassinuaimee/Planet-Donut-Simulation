@@ -31,24 +31,18 @@ MyArea::~MyArea()
 void MyArea::draw_frame(const Cairo::RefPtr<Cairo::Context>& cr)
 {
     cr->set_line_width(10.0);
-    cr->set_source_rgb(0.1, 0.1, 0.1);
+    cr->set_source_rgb(0.7, 0.7, 0.7);
     cr->rectangle(0,0,get_allocation().get_width(),get_allocation().get_height());
     cr->stroke();
 }
 //=================================================================================//
 
-static void orthographic_projection(const Cairo::RefPtr<Cairo::Context>& cr, Frame frame)
+static void orthographic_projection(const Cairo::RefPtr<Cairo::Context>& cr,
+                                    Frame frame)
 {
-    cr->set_identity_matrix();
-    // déplace l'origine au centre de la fenêtre
     cr->translate(frame.width/2, frame.height/2);
-  
-    // normalise la largeur et hauteur aux valeurs fournies par le cadrage
-    // ET inverse la direction de l'axe Y
-    
-    cr->scale(frame.width/(frame.xMax - frame.xMin), -frame.height/(frame.yMax - frame.yMin));
-    // décalage au centre du cadrage
-    cr->translate(-(frame.xMin + frame.xMax)/2, -(frame.yMin + frame.yMax)/2);
+    cr->scale(frame.width/(frame.xMax - frame.xMin),
+              -frame.height/(frame.yMax - frame.yMin));
 }
 //=================================================================================//
 
@@ -69,17 +63,19 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
     frame.height = height;
     
     orthographic_projection(cr, frame);
+    
+    
     cr->set_line_width(2.0);
     
-    cr->arc(0, 0, 50, 0, 2*M_PI);
+    
     cr->fill_preserve();
     cr->stroke();
     
     
     
-    Cercle test(0, 0, 50);
+    Cercle test(900, -900, 300);
     
-    //test.affiche(cr);
+    test.affiche(cr);
     return true;
 }
 
