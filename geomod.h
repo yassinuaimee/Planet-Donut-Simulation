@@ -13,7 +13,7 @@
 #ifndef GEOMOD_H_INCLUDED
 #define GEOMOD_H_INCLUDED
 #include <array>
-
+#include <gtkmm.h>
 
 class Point
 {
@@ -70,6 +70,8 @@ public:
     double get_x();
     double get_y();
     double get_rayon();
+    
+    void affiche(const Cairo::RefPtr<Cairo::Context>&);
     
 private:
     Point centre;

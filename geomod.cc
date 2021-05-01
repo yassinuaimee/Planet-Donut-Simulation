@@ -13,8 +13,11 @@
 #include <iostream>
 #include <cmath>
 #include <array>
+#include <gtkmm.h>
+#include <cairomm/context.h>
 #include "geomod.h"
 #include "constantes.h"
+#include "graphic.h"
 
 //using namespace std;
 
@@ -332,6 +335,40 @@ bool Cercle::intersection_cercle(Cercle cercle)
     }
 }
 
+//================================================================================//
+void Cercle::affiche(const Cairo::RefPtr<Cairo::Context>& cr)
+{
+    cr->save();
+    cr->arc(centre.get_x(), centre.get_y(), rayon, 0, 2*M_PI);
+    cr->fill_preserve();
+    cr->stroke();
+    
+    if(centre.get_x()+rayon>dim_max)
+    {
+        cr->arc(centre.get_x()-dim_max, centre.get_y(), rayon, 0, 2*M_PI);
+        cr->fill_preserve();
+        cr->stroke();
+    }
+    if(centre.get_x()-rayon<-dim_max)
+    {
+        cr->arc(centre.get_x()+dim_max, centre.get_y(), rayon, 0, 2*M_PI);
+        cr->fill_preserve();
+        cr->stroke();
+    }
+    if(centre.get_y()+rayon>dim_max)
+    {
+        cr->arc(centre.get_x(), centre.get_y()-dim_max, rayon, 0, 2*M_PI);
+        cr->fill_preserve();
+        cr->stroke();
+    }
+    if(centre.get_y()-rayon<-dim_max)
+    {
+        cr->arc(centre.get_x(), centre.get_y()+dim_max, rayon, 0, 2*M_PI);
+        cr->fill_preserve();
+        cr->stroke();
+    }
+    
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /*

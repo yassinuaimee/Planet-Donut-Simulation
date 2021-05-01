@@ -1,3 +1,15 @@
+/* Nom:
+ * base.cc
+ *
+ * Auteurs:
+ * Yassin Al-Nuaimee
+ * Adrien Maillet Gonzalez
+ *
+ * Version: 12
+ *
+ *
+ */
+
 #include <iostream>
 #include <string>
 #include <fstream>
