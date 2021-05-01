@@ -29,8 +29,7 @@ int main(int argc, char ** argv)
     //lecture_main(argc, argv);
     auto app = Gtk::Application::create(argc, argv, "org.gtkmm.example");
     Interface window;
-    window.set_resizable(false
-                         );
+    window.set_resizable(false);
     return app->run(window);
 }
 
