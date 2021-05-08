@@ -73,6 +73,10 @@ protected:
     Gtk::Button m_Button_toggle_range;
     
     Gtk::Frame m_Frame1, m_Frame2;
+    class Model_columns : public Gtk::TreeModel::ColumnRecord
+    {
+    public:
+        
      Model_columns()
      {
        add(_col_id);

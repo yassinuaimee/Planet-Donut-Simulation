@@ -10,17 +10,12 @@
  *
  */
 #include <iostream>
+#include <vector>
 #include <gtkmm.h>
 #include <cairomm/context.h>
 #include "gui.h"
 #include "geomod.h"
 #include "constantes.h"
-
-static Frame frame;
-namespace
-{
-  static std::vector<SimData> report(max_tab); // init with zeros
-}
 
 #define GTK_COMPATIBILITY_MODE
 
@@ -37,6 +32,8 @@ namespace Gtk
 
 constexpr unsigned max_tab(10);
 
+static Frame frame;
+
 struct SimData
 {
   unsigned nbP;
@@ -46,6 +43,15 @@ struct SimData
   double ressource;
   double ressource_p;
 };
+
+
+namespace
+{
+  static std::vector<SimData> report(max_tab); // init with zeros
+}
+
+
+
 
 //=================================================================================//
 
