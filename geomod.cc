@@ -13,8 +13,6 @@
 #include <iostream>
 #include <cmath>
 #include <array>
-#include <gtkmm.h>
-#include <cairomm/context.h>
 #include "geomod.h"
 #include "constantes.h"
 #include "graphic.h"
@@ -117,11 +115,11 @@ bool Point::same_position(Point autre)
 
 //================================================================================//
 
-void Point::ligne_reseau(Point p,const Cairo::RefPtr<Cairo::Context>& cr)
+void Point::ligne_reseau(Point p)
 {
     std::array<double,2> direction(plus_courte_direction(*this, p));
-    ligne_dessin(x, y, direction[0], direction[1], cr);
-    ligne_dessin(p.get_x(), p.get_y(), -direction[0], -direction[1], cr);
+    ligne_dessin(x, y, direction[0], direction[1]);
+    ligne_dessin(p.get_x(), p.get_y(), -direction[0], -direction[1]);
     //On fait une sorte d'allé retour c'est inutile
         //dans des situation mais c'est cool quand même
     
@@ -129,46 +127,45 @@ void Point::ligne_reseau(Point p,const Cairo::RefPtr<Cairo::Context>& cr)
 
 //================================================================================//
 
-void Point::cercle_communication(const Cairo::RefPtr<Cairo::Context>& cr)
+void Point::cercle_communication()
 {
     bool x_plus(false), x_moins(false), y_plus(false), y_moins(false);
-    cr->set_source_rgb(0.1, 0.1, 0.1);
-    cercle_communication_dessin(x, y, cr);
+    cercle_communication_dessin(x, y);
     if(x+rayon_comm>dim_max)
     {
-        cercle_communication_dessin(x-2*dim_max, y, cr);
+        cercle_communication_dessin(x-2*dim_max, y);
         x_plus=true;
     }
     if(x-rayon_comm<-dim_max)
     {
-        cercle_communication_dessin(x+2*dim_max, y, cr);
+        cercle_communication_dessin(x+2*dim_max, y);
         x_moins=true;
     }
     if(y+rayon_comm>dim_max)
     {
-        cercle_communication_dessin(x, y-2*dim_max, cr);
+        cercle_communication_dessin(x, y-2*dim_max);
         y_plus=true;
     }
     if(y-rayon_comm<-dim_max)
     {
-        cercle_communication_dessin(x, y+2*dim_max, cr);
+        cercle_communication_dessin(x, y+2*dim_max);
         y_moins=true;
     }
     if(x_plus and y_plus)
     {
-        cercle_communication_dessin(x-2*dim_max, y-2*dim_max, cr);
+        cercle_communication_dessin(x-2*dim_max, y-2*dim_max);
     }
     if(x_plus and y_moins)
     {
-        cercle_communication_dessin(x-2*dim_max, y+2*dim_max, cr);
+        cercle_communication_dessin(x-2*dim_max, y+2*dim_max);
     }
     if(x_moins and y_moins)
     {
-        cercle_communication_dessin(x+2*dim_max, y+2*dim_max, cr);
+        cercle_communication_dessin(x+2*dim_max, y+2*dim_max);
     }
     if(x_moins and y_plus)
     {
-        cercle_communication_dessin(x+2*dim_max, y-2*dim_max, cr);
+        cercle_communication_dessin(x+2*dim_max, y-2*dim_max);
     }
 }
 
@@ -395,47 +392,46 @@ bool Cercle::intersection_cercle(Cercle cercle)
 
 //================================================================================//
 
-void Cercle::affiche(const Cairo::RefPtr<Cairo::Context>& cr)
+void Cercle::affiche()
 {
     double x(centre.get_x()), y(centre.get_y());
     bool x_plus(false), x_moins(false), y_plus(false), y_moins(false);
-    cr->set_source_rgb(0.1, 0.1, 0.1);
-    cercle_dessin(x, y, rayon, cr);
+    cercle_dessin(x, y, rayon);
     if(x+rayon>dim_max)
     {
-        cercle_dessin(x-2*dim_max, y, rayon, cr);
+        cercle_dessin(x-2*dim_max, y, rayon);
         x_plus=true;
     }
     if(x-rayon<-dim_max)
     {
-        cercle_dessin(x+2*dim_max, y, rayon, cr);
+        cercle_dessin(x+2*dim_max, y, rayon);
         x_moins=true;
     }
     if(y+rayon>dim_max)
     {
-        cercle_dessin(x, y-2*dim_max, rayon, cr);
+        cercle_dessin(x, y-2*dim_max, rayon);
         y_plus=true;
     }
     if(y-rayon<-dim_max)
     {
-        cercle_dessin(x, y+2*dim_max, rayon, cr);
+        cercle_dessin(x, y+2*dim_max, rayon);
         y_moins=true;
     }
     if(x_plus and y_plus)
     {
-        cercle_dessin(x-2*dim_max, y-2*dim_max, rayon, cr);
+        cercle_dessin(x-2*dim_max, y-2*dim_max, rayon);
     }
     if(x_plus and y_moins)
     {
-        cercle_dessin(x-2*dim_max, y+2*dim_max, rayon, cr);
+        cercle_dessin(x-2*dim_max, y+2*dim_max, rayon);
     }
     if(x_moins and y_moins)
     {
-        cercle_dessin(x+2*dim_max, y+2*dim_max, rayon, cr);
+        cercle_dessin(x+2*dim_max, y+2*dim_max, rayon);
     }
     if(x_moins and y_plus)
     {
-        cercle_dessin(x+2*dim_max, y-2*dim_max, rayon, cr);
+        cercle_dessin(x+2*dim_max, y-2*dim_max, rayon);
     }
 }
 
@@ -541,7 +537,6 @@ double norme_plus_petit_vecteur( const double init_x1,
             if(distance_min>distance_test)
             {
                 distance_min=distance_test;
-                
             }
 		}
 	}

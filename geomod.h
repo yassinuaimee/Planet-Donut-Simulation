@@ -27,8 +27,8 @@ public:
 	void set_y(double);
 	bool operator==(Point &) const;
     bool same_position(Point);
-    void ligne_reseau(Point, const Cairo::RefPtr<Cairo::Context>&);
-    void cercle_communication(const Cairo::RefPtr<Cairo::Context>&);
+    void ligne_reseau(Point);
+    void cercle_communication();
     
 private:
 	double x;
@@ -72,7 +72,7 @@ public:
     double get_x();
     double get_y();
     double get_rayon();
-    void affiche(const Cairo::RefPtr<Cairo::Context>&);
+    void affiche();
 
 private:
     Point centre;

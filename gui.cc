@@ -16,9 +16,9 @@
 #include "gui.h"
 #include "geomod.h"
 #include "constantes.h"
+#include "graphic.h"
 
 #define GTK_COMPATIBILITY_MODE
-
 #ifndef GTK_COMPATIBILITY_MODE
 namespace Gtk
 {
@@ -31,6 +31,7 @@ namespace Gtk
 #endif
 
 constexpr unsigned max_tab(10);
+
 
 struct Frame // Framing and window parameters
 {
@@ -57,7 +58,12 @@ struct SimData
 //=================================================================================//
 
 MyArea::MyArea()
-{}
+{
+    frame.xMax=dim_max;
+    frame.xMin=-dim_max;
+    frame.yMax=dim_max;
+    frame.yMin=-dim_max;
+}
 
 //=================================================================================//
 
@@ -71,7 +77,7 @@ void MyArea::draw_frame(const Cairo::RefPtr<Cairo::Context>& cr)
 {
     cr->set_line_width(10.0);
     cr->set_source_rgb(0.7, 0.7, 0.7);
-    cr->rectangle(0,0,get_allocation().get_width(),get_allocation().get_height());
+    cr->rectangle(-dim_max,-dim_max,2*dim_max,2*dim_max);
     cr->stroke();
 }
 
@@ -80,43 +86,33 @@ void MyArea::draw_frame(const Cairo::RefPtr<Cairo::Context>& cr)
 
 bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 {
-    //activate_graphic(cr);//A mettre dans GRAPHIC
-    draw_frame(cr);
-    
+    activate_graphic(cr);
     Gtk::Allocation allocation = get_allocation();
     const int width = allocation.get_width();
     const int height = allocation.get_height();
 
     
-    double new_aspect_ratio(width/height);
     double size(0.0);
-    if(new_aspect_ratio>1)
+    
+    if(width>=height)
     {
         size=height;
-        frame.yMax= dim_max;
-        frame.yMin=-dim_max;
-        frame.xMax = (new_aspect_ratio)*dim_max ;
-        frame.xMin =-(new_aspect_ratio)*dim_max ;
     }
     else
-    { // keep XMAX and XMIN. Adjust YMAX and YMIN
+    {
         size=width;
-        frame.xMax= dim_max;
-        frame.xMin=-dim_max;
-              
-
-        frame.yMax=dim_max/new_aspect_ratio ;
-        frame.yMin =-dim_max/new_aspect_ratio;
     }
+    
     cr->translate(size/2, size/2);
     cr->scale(size/(frame.xMax - frame.xMin), -size/(frame.yMax - frame.yMin));
+    draw_frame(cr);
     
     Cercle test(700, -900, 300);
-    Point p1(900,0), p2(0,0);
-    p1.cercle_communication(cr);
-    p1.ligne_reseau(p2, cr);
+    Point p1(-700,900), p2(-600,-800);
+    p1.cercle_communication();
+    p1.ligne_reseau(p2);
     
-    test.affiche(cr);
+    test.affiche();
     return true;
 }
 

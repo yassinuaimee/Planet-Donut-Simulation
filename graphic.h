@@ -15,10 +15,14 @@
 
 #include <iostream>
 #include <gtkmm.h>
+#include <cairomm/context.h>
 #include "gui.h"
-void cercle_dessin(double, double, double, const Cairo::RefPtr<Cairo::Context>&);
-void cercle_communication_dessin(double, double, const Cairo::RefPtr<Cairo::Context>&);
-void ligne_dessin(double, double, double, double, const Cairo::RefPtr<Cairo::Context>&);
-void color_base(int index, const Cairo::RefPtr<Cairo::Context>&);
+
+void activate_graphic(const Cairo::RefPtr<Cairo::Context>&);
+
+void cercle_dessin(double, double, double);
+void cercle_communication_dessin(double, double);
+void ligne_dessin(double, double, double, double);
+void color_base(int index);
 
 #endif 
