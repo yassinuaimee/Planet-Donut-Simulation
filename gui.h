@@ -48,7 +48,7 @@ class Interface : public Gtk::Window
 public:
     Interface();
     virtual ~Interface();
-    
+    void tree_view_update();
 protected:
     MyArea m_Area;
     bool on_idle();
@@ -79,7 +79,7 @@ protected:
         
      Model_columns()
      {
-       add(_col_id);
+       add(_col_uid);
        add(_col_nbP);
        add(_col_nbF);
        add(_col_nbT);
@@ -88,7 +88,7 @@ protected:
        add(_col_resource_percentage);
      }
 
-     Gtk::TreeModelColumn<int> _col_id;
+     Gtk::TreeModelColumn<int> _col_uid;
      Gtk::TreeModelColumn<int> _col_nbP;
      Gtk::TreeModelColumn<int> _col_nbF;
      Gtk::TreeModelColumn<int> _col_nbT;

@@ -36,19 +36,16 @@ static Frame frame;
 
 struct SimData
 {
-  unsigned nbP;
-  unsigned nbF;
-  unsigned nbT;
-  unsigned nbC;
-  double ressource;
-  double ressource_p;
+	unsigned uid;
+	unsigned nbP;
+	unsigned nbF;
+	unsigned nbT;
+	unsigned nbC;
+	double ressource;
+	double ressource_p;
 };
 
 
-namespace
-{
-  static std::vector<SimData> report(max_tab); // init with zeros
-}
 
 
 
@@ -210,6 +207,7 @@ Interface::Interface()
 							  Gtk::PolicyType::POLICY_AUTOMATIC);
 	_scrolled_window.set_hexpand();
 	
+	_tree_view.append_column("uid", _columns._col_uid);
 	_tree_view.append_column("nbP", _columns._col_nbP);
 	_tree_view.append_column("nbF", _columns._col_nbF);
 	_tree_view.append_column("nbT", _columns._col_nbT);
@@ -223,7 +221,7 @@ Interface::Interface()
 	if(progress_col)
 	progress_col->add_attribute(cell->property_value(),
 								_columns._col_resource_percentage);
-	
+	tree_view_update();
 
     show_all_children();//J'ai pris tellement longtemps à capter cette erreur
 }
@@ -375,7 +373,7 @@ void Interface::tree_view_update()
 {
   Glib::RefPtr<Gtk::ListStore> ref_tree_model = Gtk::ListStore::create(_columns);
   _tree_view.set_model(ref_tree_model);
-
+ static std::vector<SimData> report(max_tab);
   if(true) // here there should be a test about the existence of a simulation
   {
 	// here a call to a method from your simulation class should create and 
@@ -384,23 +382,23 @@ void Interface::tree_view_update()
 	if(count > report.size()) 
 		std::cout << max_tab << " lines max are displayed" << std::endl;
 
-	for(size_t i = 0 ; i < count and i <report.size() ; ++i)
-	{
-	  report[i].nbP = i;
-	  report[i].nbF = i;
-	  report[i].nbT = i;
-	  report[i].nbC = i;
-	  report[i].ressource   = 1000*i;
-	  report[i].ressource_p = 10*i;
+	//for(size_t i = 0 ; i < count and i <report.size() ; ++i){
+	report[0].uid = 1;
+	  report[0].nbP = 8;
+	  report[0].nbF = 9;
+	  report[0].nbT = 4;
+	  report[0].nbC = 4;
+	  report[0].ressource   = 1000*2;
+	  report[0].ressource_p = 10*1;
 		
 	  auto row = *(ref_tree_model->append());
-	  row[_columns._col_nbP] = report[i].nbP;
-	  row[_columns._col_nbF] = report[i].nbF;
-	  row[_columns._col_nbT] = report[i].nbT;
-      row[_columns._col_nbC] = report[i].nbC;
-	  row[_columns._col_resource] = report[i].ressource;
-	  row[_columns._col_resource_percentage] = report[i].ressource_p;
-	}
+	  row[_columns._col_nbP] = report[0].nbP;
+	  row[_columns._col_nbF] = report[0].nbF;
+	  row[_columns._col_nbT] = report[0].nbT;
+      row[_columns._col_nbC] = report[0].nbC;
+	  row[_columns._col_resource] = report[0].ressource;
+	  row[_columns._col_resource_percentage] = report[0].ressource_p;
+	
 	
 	// please note that you have to bring the mouse cursor to the right side 
 	// of the scroll window to see the scrolling widget
