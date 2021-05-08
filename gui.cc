@@ -21,7 +21,7 @@
 #include "simulation.h"
 
 #define GTK_COMPATIBILITY_MODE
-#ifndef GTK_COMPATIBILITY_MODE
+#ifdef GTK_COMPATIBILITY_MODE
 namespace Gtk
 {
   template<class T, class... T_Args>
@@ -33,7 +33,8 @@ namespace Gtk
 #endif
 
 
-static Simulation* ptr_simulation=new Simulation;
+static Simulation* simulation;
+
 struct Frame // Framing and window parameters
 {
     double xMin;
@@ -109,17 +110,16 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
     cr->translate(size/2, size/2);
     cr->scale(size/(frame.xMax - frame.xMin), -size/(frame.yMax - frame.yMin));
     draw_frame(cr);
-    if(ptr_simulation!=nullptr){
-        std::cout<<"On rentre dans la fonction pour afficher etat\n";
-    ptr_simulation->affiche_dessin();
-    }
-    /*
+    
+    simulation->affiche_dessin();
+    
+    
     Cercle test(700, -900, 300);
     Point p1(-700,900), p2(-600,-800);
     p1.cercle_communication();
     p1.ligne_reseau(p2);
     
-    test.affiche_dessin();*/
+    test.affiche_dessin(0,0);
     return true;
 }
 
@@ -143,7 +143,7 @@ Interface::Interface(int argc, char** argv)
     count(0),
     start(false)
 {
-    init_simulation(argc, argv);
+    init_simulation(argc, argv);//Cette fonction ne marche pas et je sais pas pouraauoi
     std::cout<<"Juste après initialisation simulation\n";
     
     set_title("Planet Donut - DEMO");
@@ -214,11 +214,16 @@ void init_simulation(int argc, char** argv)
     if(argc==2)
     {
         std::cout<<"ON a des bons arguments pour notre fonction\n";
-        
+        Simulation* simulation2(new Simulation);
         std::ifstream fichier(argv[1]);
-        ptr_simulation->lecture(fichier);
-        ptr_simulation->verifications();
-        std::cout<<"adresse de simulation : "<<&ptr_simulation<<"\n";
+        std::cout<<"Probleme lecture du fichier\n";
+        simulation2->lecture(fichier);
+        std::cout<<"lecture ok\n";
+        simulation2->verifications();
+        std::cout<<"verif ok\n";
+        simulation=simulation2;
+        std::cout<<"on a affecte la veleur  "<<&simulation<<"\n";
+        
     }
     else
     {
