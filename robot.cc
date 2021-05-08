@@ -113,6 +113,13 @@ void Prospection::affiche()
     }
 }
 
+//================================================================================//
+
+void Prospection::affiche_dessin(int index)
+{
+    position.affiche_dessin(1,index);
+}
+
 
 /*
 //================================================================================//
@@ -133,6 +140,13 @@ void Forage::affiche()
         <<position.get_x()<<" "<<position.get_y()<<" "
         <<but.get_x()<<" "<<but.get_y()<<" "
         <<atteint<<std::endl;
+}
+
+//================================================================================//
+
+void Forage::affiche_dessin(int index)
+{
+    position.affiche_dessin(2,index);
 }
 
 
@@ -157,6 +171,13 @@ void Transport::affiche()
         <<atteint<<" "<<retour<<std::endl;
 }
 
+//================================================================================//
+
+void Transport::affiche_dessin(int index)
+{
+    position.affiche_dessin(3,index);
+}
+
 
 /*
 //================================================================================//
@@ -177,4 +198,11 @@ void Communication::affiche()
         <<position.get_x()<<" "<<position.get_y()<<" "
         <<but.get_x()<<" "<<but.get_y()<<" "
         <<atteint<<std::endl;
+}
+
+//================================================================================//
+
+void Communication::affiche_dessin(int index)
+{
+    position.affiche_dessin(4,index);
 }

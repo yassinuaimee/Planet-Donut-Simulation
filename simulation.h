@@ -26,6 +26,7 @@ public:
     void lecture(std::ifstream &);
     void verifications();
     void affichage();
+    void affiche_dessin();
     unsigned get_nbG();
     unsigned get_nbB();
 private:

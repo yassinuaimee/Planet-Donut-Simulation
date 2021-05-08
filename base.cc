@@ -151,6 +151,27 @@ void Base::affiche()
     std::cout<<std::endl;
     
 }
+//================================================================================//
+
+void Base::affiche_dessin(int index)
+{
+    for(auto& prospection : E_P)
+    {
+        prospection->affiche_dessin(index);
+    }
+    for(auto& forage : E_F)
+    {
+        forage->affiche_dessin(index);
+    }
+    for(auto& transport : E_T)
+    {
+        transport->affiche_dessin(index);
+    }
+    for(auto& communication : E_C)
+    {
+        communication->affiche_dessin(index);
+    }
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////////////

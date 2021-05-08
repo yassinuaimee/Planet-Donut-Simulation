@@ -24,8 +24,10 @@ void activate_graphic(const Cairo::RefPtr<Cairo::Context>& cr)
     ptcr=&cr;
 }
 
-void cercle_dessin(double x, double y, double rayon)
+void cercle_noir_dessin(double x, double y, double rayon)
 {
+    (*ptcr)->set_line_width(1.0);
+    (*ptcr)->set_source_rgb(0.1, 0.1, 0.1);
     (*ptcr)->arc(x, y, rayon, 0, 2*M_PI);
     (*ptcr)->fill_preserve();
     (*ptcr)->stroke();
@@ -40,6 +42,28 @@ void cercle_communication_dessin(double x, double y)
     (*ptcr)->stroke();
     
 }
+
+void cercle_base_dessin(double x, double y, int indice)
+{
+    color_base(indice);
+    (*ptcr)->set_line_width(2.0);
+    (*ptcr)->arc(x, y, 5, 0, 2*M_PI);
+    (*ptcr)->stroke();
+    (*ptcr)->set_line_width(1.0);
+    (*ptcr)->arc(x, y, 1, 0, 2*M_PI);
+    (*ptcr)->fill_preserve();
+    (*ptcr)->stroke();
+}
+
+void cercle_robot_dessin(double x, double y,int indice)
+{
+    color_base(indice);
+    (*ptcr)->set_line_width(1.0);
+    (*ptcr)->arc(x, y, 1, 0, 2*M_PI);
+    (*ptcr)->fill_preserve();
+    (*ptcr)->stroke();
+}
+
 
 void ligne_dessin(double x1, double y1, double x2, double y2)
 {

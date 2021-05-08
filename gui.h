@@ -37,7 +37,7 @@ private:
 class Interface : public Gtk::Window
 {
 public:
-    Interface();
+    Interface(int, char**);
     virtual ~Interface();
     void tree_view_update();
 protected:

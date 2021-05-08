@@ -182,3 +182,17 @@ void Simulation::affichage()
         base.affiche();
     }
 }
+
+//================================================================================//
+
+void Simulation::affiche_dessin()
+{
+    for(auto& gisement : Eg)
+    {
+        gisement.affiche_dessin();
+    }
+    for(int i(0);i<nbB;++i)
+    {
+        Eb[i].affiche_dessin(i);
+    }
+}

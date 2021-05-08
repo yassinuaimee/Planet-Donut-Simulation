@@ -27,6 +27,10 @@ namespace
 
 std::array<double,2> plus_courte_direction(Point &, Point &);
 
+void affiche_cercle_gisement(double,double,double);
+void affiche_cercle_communication(double, double);
+void affiche_cercle_base(double,double, int);
+void affiche_cercle_robot(double,double, int);
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /*
@@ -392,47 +396,121 @@ bool Cercle::intersection_cercle(Cercle cercle)
 
 //================================================================================//
 
-void Cercle::affiche()
+void Cercle::affiche_dessin(int type, int index)//Va falloir donner en argument pointeur sur fonction de graphic
 {
     double x(centre.get_x()), y(centre.get_y());
+    switch (type) {
+        case 1:
+            affiche_cercle_gisement(x, y, rayon);
+            break;
+        case 2:
+            affiche_cercle_communication(x, y);
+            break;
+        case 3:
+            affiche_cercle_base(x, y, index);
+            break;
+        default:
+            break;
+    }
+    
+}
+void Point::affiche_dessin(int type,int index)//Pratique si dans le futur on veut differencier affichage robots
+{
+    affiche_cercle_robot(x, y, index);
+}
+
+void affiche_cercle_gisement(double x, double y, double rayon)
+{
     bool x_plus(false), x_moins(false), y_plus(false), y_moins(false);
-    cercle_dessin(x, y, rayon);
+    cercle_noir_dessin(x, y, rayon);
     if(x+rayon>dim_max)
     {
-        cercle_dessin(x-2*dim_max, y, rayon);
+        cercle_noir_dessin(x-2*dim_max, y, rayon);
         x_plus=true;
     }
     if(x-rayon<-dim_max)
     {
-        cercle_dessin(x+2*dim_max, y, rayon);
+        cercle_noir_dessin(x+2*dim_max, y, rayon);
         x_moins=true;
     }
     if(y+rayon>dim_max)
     {
-        cercle_dessin(x, y-2*dim_max, rayon);
+        cercle_noir_dessin(x, y-2*dim_max, rayon);
         y_plus=true;
     }
     if(y-rayon<-dim_max)
     {
-        cercle_dessin(x, y+2*dim_max, rayon);
+        cercle_noir_dessin(x, y+2*dim_max, rayon);
         y_moins=true;
     }
     if(x_plus and y_plus)
     {
-        cercle_dessin(x-2*dim_max, y-2*dim_max, rayon);
+        cercle_noir_dessin(x-2*dim_max, y-2*dim_max, rayon);
     }
     if(x_plus and y_moins)
     {
-        cercle_dessin(x-2*dim_max, y+2*dim_max, rayon);
+        cercle_noir_dessin(x-2*dim_max, y+2*dim_max, rayon);
     }
     if(x_moins and y_moins)
     {
-        cercle_dessin(x+2*dim_max, y+2*dim_max, rayon);
+        cercle_noir_dessin(x+2*dim_max, y+2*dim_max, rayon);
     }
     if(x_moins and y_plus)
     {
-        cercle_dessin(x+2*dim_max, y-2*dim_max, rayon);
+        cercle_noir_dessin(x+2*dim_max, y-2*dim_max, rayon);
     }
+}
+
+void affiche_cercle_communication(double x, double y)
+{
+    bool x_plus(false), x_moins(false), y_plus(false), y_moins(false);
+    cercle_communication_dessin(x, y);
+    if(x+rayon_comm>dim_max)
+    {
+        cercle_communication_dessin(x-2*dim_max, y);
+        x_plus=true;
+    }
+    if(x-rayon_comm<-dim_max)
+    {
+        cercle_communication_dessin(x+2*dim_max, y);
+        x_moins=true;
+    }
+    if(y+rayon_comm>dim_max)
+    {
+        cercle_communication_dessin(x, y-2*dim_max);
+        y_plus=true;
+    }
+    if(y-rayon_comm<-dim_max)
+    {
+        cercle_communication_dessin(x, y+2*dim_max);
+        y_moins=true;
+    }
+    if(x_plus and y_plus)
+    {
+        cercle_communication_dessin(x-2*dim_max, y-2*dim_max);
+    }
+    if(x_plus and y_moins)
+    {
+        cercle_communication_dessin(x-2*dim_max, y+2*dim_max);
+    }
+    if(x_moins and y_moins)
+    {
+        cercle_communication_dessin(x+2*dim_max, y+2*dim_max);
+    }
+    if(x_moins and y_plus)
+    {
+        cercle_communication_dessin(x+2*dim_max, y-2*dim_max);
+    }
+}
+
+void affiche_cercle_base(double x, double y, int index)
+{
+    cercle_base_dessin(x, y, index);
+}
+
+void affiche_cercle_robot(double x, double y, int index)
+{
+    cercle_robot_dessin(x, y, index);
 }
 
 

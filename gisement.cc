@@ -115,3 +115,9 @@ void Gisement::affiche()
 				   <<field.get_rayon()<<" "
 				   <<capacite<<std::endl;
 }
+//===================================================================================//
+
+void Gisement::affiche_dessin()
+{
+    field.affiche_dessin(1,0);//true si c'est un cercle plein et false sinon
+}

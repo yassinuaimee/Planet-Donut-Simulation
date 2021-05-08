@@ -29,6 +29,7 @@ public:
     bool same_position(Point);
     void ligne_reseau(Point);
     void cercle_communication();
+    void affiche_dessin(int, int);
     
 private:
 	double x;
@@ -72,7 +73,7 @@ public:
     double get_x();
     double get_y();
     double get_rayon();
-    void affiche();
+    void affiche_dessin(int, int);
 
 private:
     Point centre;

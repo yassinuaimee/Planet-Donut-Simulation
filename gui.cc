@@ -12,11 +12,13 @@
 #include <iostream>
 #include <vector>
 #include <gtkmm.h>
+#include <fstream>
 #include <cairomm/context.h>
 #include "gui.h"
 #include "geomod.h"
 #include "constantes.h"
 #include "graphic.h"
+#include "simulation.h"
 
 #define GTK_COMPATIBILITY_MODE
 #ifndef GTK_COMPATIBILITY_MODE
@@ -30,9 +32,8 @@ namespace Gtk
 }
 #endif
 
-constexpr unsigned max_tab(10);
 
-
+static Simulation* ptr_simulation=new Simulation;
 struct Frame // Framing and window parameters
 {
     double xMin;
@@ -41,7 +42,6 @@ struct Frame // Framing and window parameters
     double yMax;
     
 };
-
 static Frame frame;
 
 struct SimData
@@ -54,6 +54,9 @@ struct SimData
 	double ressource;
 	double ressource_p;
 };
+
+void init_simulation(int, char**);
+
 
 //=================================================================================//
 
@@ -106,19 +109,23 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
     cr->translate(size/2, size/2);
     cr->scale(size/(frame.xMax - frame.xMin), -size/(frame.yMax - frame.yMin));
     draw_frame(cr);
-    
+    if(ptr_simulation!=nullptr){
+        std::cout<<"On rentre dans la fonction pour afficher etat\n";
+    ptr_simulation->affiche_dessin();
+    }
+    /*
     Cercle test(700, -900, 300);
     Point p1(-700,900), p2(-600,-800);
     p1.cercle_communication();
     p1.ligne_reseau(p2);
     
-    test.affiche();
+    test.affiche_dessin();*/
     return true;
 }
 
 //=================================================================================//
 
-Interface::Interface()
+Interface::Interface(int argc, char** argv)
 :   m_Box(Gtk::ORIENTATION_VERTICAL, 20),
     m_Box_Up(Gtk::ORIENTATION_HORIZONTAL, 20),
     m_Box_Left(Gtk::ORIENTATION_VERTICAL, 20),
@@ -136,95 +143,91 @@ Interface::Interface()
     count(0),
     start(false)
 {
+    init_simulation(argc, argv);
+    std::cout<<"Juste après initialisation simulation\n";
+    
     set_title("Planet Donut - DEMO");
     set_border_width(10);
     set_default_size(400, 400);
-    
     add(m_Box);
-    
-    
     m_Box.pack_start(m_Box_Up);
-    
     m_Box_Up.pack_start(m_Box_Left, false, true);
     m_Box_Up.pack_start(m_Area);
-    
-    
     m_Box_Left.pack_start(m_Frame1, false, true);
     m_Box_Left.pack_start(m_Frame2, false, true);
-    
     m_Frame1.add(m_Box_General);
     m_Frame2.add(m_Box_Toggle_Display);
-
     m_Frame1.set_label("General");
     m_Frame2.set_label("Toggle Display");
-    
     m_Box_General.pack_start(m_Button_exit,false,false);
     m_Box_General.pack_start(m_Button_open,false,false);
     m_Box_General.pack_start(m_Button_save,false,false);
     m_Box_General.pack_start(m_Button_start,false,false);
     m_Box_General.pack_start(m_Button_step,false,false);
-    
     m_Box_Toggle_Display.pack_start(m_Button_toggle_link,false,false);
     m_Box_Toggle_Display.pack_start(m_Button_toggle_range,false,false);
-
     m_Area.set_size_request(dim_max/2, dim_max/2);
-    
-
-    
     m_Button_exit.signal_clicked().connect(sigc::mem_fun(*this,
                 &Interface::on_button_clicked_exit));
-
     m_Button_open.signal_clicked().connect(sigc::mem_fun(*this,
                 &Interface::on_button_clicked_open));
-    
     m_Button_save.signal_clicked().connect(sigc::mem_fun(*this,
                 &Interface::on_button_clicked_save));
-    
     m_Button_start.signal_clicked().connect(sigc::mem_fun(*this,
                 &Interface::on_button_clicked_start));
-    
     m_Button_step.signal_clicked().connect(sigc::mem_fun(*this,
                 &Interface::on_button_clicked_step));
-    
     m_Button_toggle_link.signal_clicked().connect(sigc::mem_fun(*this,
                 &Interface::on_button_clicked_toggle_link));
-    
     m_Button_toggle_range.signal_clicked().connect(sigc::mem_fun(*this,
                 &Interface::on_button_clicked_toggle_range));
-    
     Glib::signal_timeout().connect(sigc::mem_fun(*this,
                 &Interface::on_idle), 100);//Ligne avec le timer
-    
-	m_Box.add(_scrolled_window);
-	
+    m_Box.add(_scrolled_window);
 	_scrolled_window.set_size_request(-1, 200);
 	_scrolled_window.add(_tree_view);
-	
 	_scrolled_window.set_policy(Gtk::PolicyType::POLICY_AUTOMATIC,
 							  Gtk::PolicyType::POLICY_AUTOMATIC);
 	_scrolled_window.set_hexpand();
-	
 	_tree_view.append_column("uid", _columns._col_uid);
 	_tree_view.append_column("nbP", _columns._col_nbP);
 	_tree_view.append_column("nbF", _columns._col_nbF);
 	_tree_view.append_column("nbT", _columns._col_nbT);
 	_tree_view.append_column("nbC", _columns._col_nbC);
 	_tree_view.append_column_numeric("Amount resource", _columns._col_resource, "%.2f");
-	
 	auto cell = Gtk::make_managed<Gtk::CellRendererProgress>();
 	int cols_count = _tree_view.append_column("Mission completeness", *cell);
-	
 	auto progress_col = _tree_view.get_column(cols_count - 1);
 	if(progress_col)
 	progress_col->add_attribute(cell->property_value(),
 								_columns._col_resource_percentage);
+    
 	tree_view_update();
-
+    std::cout<<"Juste avant de montrer tous les enfants\n";
     show_all_children();//J'ai pris tellement longtemps à capter cette erreur
 }
 
 //=================================================================================//
 
+void init_simulation(int argc, char** argv)
+{
+    if(argc==2)
+    {
+        std::cout<<"ON a des bons arguments pour notre fonction\n";
+        
+        std::ifstream fichier(argv[1]);
+        ptr_simulation->lecture(fichier);
+        ptr_simulation->verifications();
+        std::cout<<"adresse de simulation : "<<&ptr_simulation<<"\n";
+    }
+    else
+    {
+        std::cout<<"On va devoir utiliser le bouton open\n";
+    }
+    
+}
+
+//=================================================================================//
 
 bool Interface::on_idle()
 {
@@ -288,7 +291,7 @@ void Interface::on_button_clicked_open()
     //Show the dialog and wait for a user response:
     int result = dialog.run();
 
-    m_Button_open.set_label("Done choosing a file");
+    m_Button_open.set_label("Open");
 
     //Handle the response:
     switch(result)
@@ -370,14 +373,14 @@ void Interface::tree_view_update()
 {
   Glib::RefPtr<Gtk::ListStore> ref_tree_model = Gtk::ListStore::create(_columns);
   _tree_view.set_model(ref_tree_model);
- static std::vector<SimData> report(max_tab);
+ static std::vector<SimData> report(10);
   if(true) // here there should be a test about the existence of a simulation
   {
 	// here a call to a method from your simulation class should create and 
 	// return a vector like report, except its number of lines will be
 	// determined by the simulation (not a constant like in this toy example).
 	if(count > report.size()) 
-		std::cout << max_tab << " lines max are displayed" << std::endl;
+		std::cout << 10 << " lines max are displayed" << std::endl;
 
 	//for(size_t i = 0 ; i < count and i <report.size() ; ++i){
 	report[0].uid = 1;

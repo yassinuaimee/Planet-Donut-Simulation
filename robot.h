@@ -44,6 +44,7 @@ public:
 				double, double, double, double);
     Prospection(unsigned, double, double, double, double, double, bool, bool, bool);
     void affiche();
+    void affiche_dessin(int);
     
 private:
     bool retour;
@@ -58,6 +59,7 @@ class Forage : public Robot
 public:
     Forage(unsigned, double, double, double, double, double, bool);
     void affiche();
+    void affiche_dessin(int);
     
 private:
     
@@ -70,6 +72,7 @@ class Transport : public Robot
 public:
     Transport(unsigned, double, double, double, double, double, bool, bool);
     void affiche();
+    void affiche_dessin(int);
     
 private:
 	bool retour;
@@ -83,6 +86,7 @@ class Communication : public Robot
 public:
     Communication(unsigned, double, double, double, double, double, bool);
     void affiche();
+    void affiche_dessin(int);
 
 private:
 
