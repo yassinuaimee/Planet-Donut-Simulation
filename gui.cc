@@ -19,7 +19,7 @@
 
 #define GTK_COMPATIBILITY_MODE
 
-#ifdef GTK_COMPATIBILITY_MODE
+#ifndef GTK_COMPATIBILITY_MODE
 namespace Gtk
 {
   template<class T, class... T_Args>
@@ -31,6 +31,15 @@ namespace Gtk
 #endif
 
 constexpr unsigned max_tab(10);
+
+struct Frame // Framing and window parameters
+{
+    double xMin;
+    double xMax;
+    double yMin;
+    double yMax;
+    
+};
 
 static Frame frame;
 
@@ -44,11 +53,6 @@ struct SimData
 	double ressource;
 	double ressource_p;
 };
-
-
-
-
-
 
 //=================================================================================//
 
@@ -71,44 +75,41 @@ void MyArea::draw_frame(const Cairo::RefPtr<Cairo::Context>& cr)
     cr->stroke();
 }
 
-//=================================================================================//
-
-static void orthographic_projection(const Cairo::RefPtr<Cairo::Context>& cr,
-                                    Frame frame)
-{
-    cr->translate(frame.width/2, frame.height/2);
-    cr->scale(frame.width/(frame.xMax - frame.xMin),
-              -frame.height/(frame.yMax - frame.yMin));
-}
 
 //=================================================================================//
 
 bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 {
+    //activate_graphic(cr);//A mettre dans GRAPHIC
     draw_frame(cr);
     
     Gtk::Allocation allocation = get_allocation();
     const int width = allocation.get_width();
     const int height = allocation.get_height();
 
-    frame.xMax = dim_max;
-    frame.xMin = -dim_max;
-    frame.yMax = dim_max;
-    frame.yMin = -dim_max;
-    frame.asp = (frame.xMax-frame.xMin)/(frame.yMax-frame.yMin);
-    frame.width = width ;
-    frame.height = height;
     
-    orthographic_projection(cr, frame);
-    
-    
-    cr->set_line_width(2.0);
-    
-    
-    cr->fill_preserve();
-    cr->stroke();
-    
-    
+    double new_aspect_ratio(width/height);
+    double size(0.0);
+    if(new_aspect_ratio>1)
+    {
+        size=height;
+        frame.yMax= dim_max;
+        frame.yMin=-dim_max;
+        frame.xMax = (new_aspect_ratio)*dim_max ;
+        frame.xMin =-(new_aspect_ratio)*dim_max ;
+    }
+    else
+    { // keep XMAX and XMIN. Adjust YMAX and YMIN
+        size=width;
+        frame.xMax= dim_max;
+        frame.xMin=-dim_max;
+              
+
+        frame.yMax=dim_max/new_aspect_ratio ;
+        frame.yMin =-dim_max/new_aspect_ratio;
+    }
+    cr->translate(size/2, size/2);
+    cr->scale(size/(frame.xMax - frame.xMin), -size/(frame.yMax - frame.yMin));
     
     Cercle test(700, -900, 300);
     Point p1(900,0), p2(0,0);
@@ -148,12 +149,12 @@ Interface::Interface()
     
     m_Box.pack_start(m_Box_Up);
     
-    m_Box_Up.pack_start(m_Box_Left);
+    m_Box_Up.pack_start(m_Box_Left, false, true);
     m_Box_Up.pack_start(m_Area);
     
     
-    m_Box_Left.add(m_Frame1);
-    m_Box_Left.add(m_Frame2);
+    m_Box_Left.pack_start(m_Frame1, false, true);
+    m_Box_Left.pack_start(m_Frame2, false, true);
     
     m_Frame1.add(m_Box_General);
     m_Frame2.add(m_Box_Toggle_Display);

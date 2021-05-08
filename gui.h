@@ -16,16 +16,7 @@
 #include <gtkmm.h>
 #include "geomod.h"
 
-struct Frame // Framing and window parameters
-{
-    double xMin;
-    double xMax;
-    double yMin;
-    double yMax;
-    double asp;
-    int height;
-    int width;
-};
+
 
 //==================================================================================//
 

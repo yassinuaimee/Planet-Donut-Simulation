@@ -26,4 +26,6 @@ constexpr double cost_com(iniR/1000.);              // ktonne
 
 constexpr unsigned max_line(200);
 
+constexpr unsigned taille_dessin(800);
+
 #endif // CONSTANTES_H_INCLUDED
