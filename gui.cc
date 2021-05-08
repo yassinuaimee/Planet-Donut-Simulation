@@ -78,7 +78,10 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
     
     
     
-    Cercle test(900, -900, 300);
+    Cercle test(700, -900, 300);
+    Point p1(900,0), p2(0,0);
+    p1.cercle_communication(cr);
+    p1.ligne_reseau(p2, cr);
     
     test.affiche(cr);
     return true;
@@ -89,7 +92,6 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 Interface::Interface()
 :   m_Box(Gtk::ORIENTATION_VERTICAL, 20),
     m_Box_Up(Gtk::ORIENTATION_HORIZONTAL, 20),
-    m_Box_Down(Gtk::ORIENTATION_VERTICAL, 20),
     m_Box_Left(Gtk::ORIENTATION_VERTICAL, 20),
     m_Box_General(Gtk::ORIENTATION_VERTICAL, 20),
     m_Box_Toggle_Display(Gtk::ORIENTATION_VERTICAL, 20),
@@ -113,12 +115,10 @@ Interface::Interface()
     
     
     m_Box.pack_start(m_Box_Up);
-    m_Box.pack_start(m_Box_Down);
     
     m_Box_Up.pack_start(m_Box_Left);
     m_Box_Up.pack_start(m_Area);
     
-    m_Box_Down.pack_start(m_ScrolledWindow);
     
     m_Box_Left.add(m_Frame1);
     m_Box_Left.add(m_Frame2);
@@ -166,56 +166,7 @@ Interface::Interface()
     Glib::signal_timeout().connect(sigc::mem_fun(*this,
                 &Interface::on_idle), 100);//Ligne avec le timer
     
-    m_ScrolledWindow.add(m_TreeView);
 
-    //Only show the scrollbars when they are necessary:
-    //m_ScrolledWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-
-    m_Box_Down.pack_start(m_ScrolledWindow);
-
-    //Create the Tree model:
-    m_refTreeModel = Gtk::ListStore::create(m_Columns);
-    m_TreeView.set_model(m_refTreeModel);
-
-    //Fill the TreeView's model
-    Gtk::TreeModel::Row row = *(m_refTreeModel->append());
-    row[m_Columns.m_col_uid] = 31;
-    row[m_Columns.m_col_nbP] = 16;
-    row[m_Columns.m_col_nbF] = 2;
-    row[m_Columns.m_col_nbT] = 1;
-    row[m_Columns.m_col_nbC] = 6;
-    row[m_Columns.m_col_amount_ressource] = 10;
-    row[m_Columns.m_col_mission_acompleteness] = 15;
-
-    row = *(m_refTreeModel->append());
-    row[m_Columns.m_col_uid] = 19;
-    row[m_Columns.m_col_nbP] = 6;
-    row[m_Columns.m_col_nbF] = 20;
-    row[m_Columns.m_col_nbT] = 19;
-    row[m_Columns.m_col_nbC] = 6;
-    row[m_Columns.m_col_amount_ressource] = 1000;
-    row[m_Columns.m_col_mission_acompleteness] = 80;
-
-    //Add the TreeView's view columns:
-    //This number will be shown with the default numeric formatting.
-    m_TreeView.append_column("Uid", m_Columns.m_col_uid);
-    m_TreeView.append_column("nbP", m_Columns.m_col_nbP);
-    m_TreeView.append_column("nbF", m_Columns.m_col_nbF);
-    m_TreeView.append_column("nbT", m_Columns.m_col_nbT);
-    m_TreeView.append_column("nbC", m_Columns.m_col_nbC);
-
-
-    m_TreeView.append_column_numeric("Amount ressource", m_Columns.m_col_amount_ressource,
-            "%010d" /* 10 digits, using leading zeroes. */);
-
-    //Display a progress bar instead of a decimal number:
-    auto cell = Gtk::manage(new Gtk::CellRendererProgress);
-    int cols_count = m_TreeView.append_column("Mission completeness", *cell);
-    auto pColumn = m_TreeView.get_column(cols_count - 1);
-    if(pColumn)
-    {
-      pColumn->add_attribute(cell->property_value(), m_Columns.m_col_mission_acompleteness);
-    }
 
 
     show_all_children();//J'ai pris tellement longtemps à capter cette erreur

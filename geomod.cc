@@ -27,6 +27,7 @@ namespace
 	double epsilon_zero(max_*pow(10,-10));
 }
 
+std::array<double,2> plus_courte_direction(Point &, Point &);
 
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -111,6 +112,63 @@ bool Point::same_position(Point autre)
     else
     {
         return false;
+    }
+}
+
+//================================================================================//
+
+void Point::ligne_reseau(Point p,const Cairo::RefPtr<Cairo::Context>& cr)
+{
+    std::array<double,2> direction(plus_courte_direction(*this, p));
+    ligne_dessin(x, y, direction[0], direction[1], cr);
+    ligne_dessin(p.get_x(), p.get_y(), -direction[0], -direction[1], cr);
+    //On fait une sorte d'allé retour c'est inutile
+        //dans des situation mais c'est cool quand même
+    
+}
+
+//================================================================================//
+
+void Point::cercle_communication(const Cairo::RefPtr<Cairo::Context>& cr)
+{
+    bool x_plus(false), x_moins(false), y_plus(false), y_moins(false);
+    cr->set_source_rgb(0.1, 0.1, 0.1);
+    cercle_communication_dessin(x, y, cr);
+    if(x+rayon_comm>dim_max)
+    {
+        cercle_communication_dessin(x-2*dim_max, y, cr);
+        x_plus=true;
+    }
+    if(x-rayon_comm<-dim_max)
+    {
+        cercle_communication_dessin(x+2*dim_max, y, cr);
+        x_moins=true;
+    }
+    if(y+rayon_comm>dim_max)
+    {
+        cercle_communication_dessin(x, y-2*dim_max, cr);
+        y_plus=true;
+    }
+    if(y-rayon_comm<-dim_max)
+    {
+        cercle_communication_dessin(x, y+2*dim_max, cr);
+        y_moins=true;
+    }
+    if(x_plus and y_plus)
+    {
+        cercle_communication_dessin(x-2*dim_max, y-2*dim_max, cr);
+    }
+    if(x_plus and y_moins)
+    {
+        cercle_communication_dessin(x-2*dim_max, y+2*dim_max, cr);
+    }
+    if(x_moins and y_moins)
+    {
+        cercle_communication_dessin(x+2*dim_max, y+2*dim_max, cr);
+    }
+    if(x_moins and y_plus)
+    {
+        cercle_communication_dessin(x+2*dim_max, y-2*dim_max, cr);
     }
 }
 
@@ -339,65 +397,45 @@ bool Cercle::intersection_cercle(Cercle cercle)
 
 void Cercle::affiche(const Cairo::RefPtr<Cairo::Context>& cr)
 {
-    cr->set_source_rgb(0.1, 0.1, 0.1);
-    
-    cr->save();
-    cr->arc(centre.get_x(), centre.get_y(), rayon, 0, 2*M_PI);
-    cr->fill_preserve();
-    cr->stroke();
-    
+    double x(centre.get_x()), y(centre.get_y());
     bool x_plus(false), x_moins(false), y_plus(false), y_moins(false);
-    if(centre.get_x()+rayon>dim_max)
+    cr->set_source_rgb(0.1, 0.1, 0.1);
+    cercle_dessin(x, y, rayon, cr);
+    if(x+rayon>dim_max)
     {
-        cr->arc(centre.get_x()-2*dim_max, centre.get_y(), rayon, 0, 2*M_PI);
-        cr->fill_preserve();
-        cr->stroke();
+        cercle_dessin(x-2*dim_max, y, rayon, cr);
         x_plus=true;
     }
-    if(centre.get_x()-rayon<-dim_max)
+    if(x-rayon<-dim_max)
     {
-        cr->arc(centre.get_x()+2*dim_max, centre.get_y(), rayon, 0, 2*M_PI);
-        cr->fill_preserve();
-        cr->stroke();
+        cercle_dessin(x+2*dim_max, y, rayon, cr);
         x_moins=true;
     }
-    if(centre.get_y()+rayon>dim_max)
+    if(y+rayon>dim_max)
     {
-        cr->arc(centre.get_x(), centre.get_y()-2*dim_max, rayon, 0, 2*M_PI);
-        cr->fill_preserve();
-        cr->stroke();
+        cercle_dessin(x, y-2*dim_max, rayon, cr);
         y_plus=true;
     }
-    if(centre.get_y()-rayon<-dim_max)
+    if(y-rayon<-dim_max)
     {
-        cr->arc(centre.get_x(), centre.get_y()+2*dim_max, rayon, 0, 2*M_PI);
-        cr->fill_preserve();
-        cr->stroke();
+        cercle_dessin(x, y+2*dim_max, rayon, cr);
         y_moins=true;
     }
     if(x_plus and y_plus)
     {
-        cr->arc(centre.get_x()-2*dim_max, centre.get_y()-2*dim_max, rayon, 0, 2*M_PI);
-        cr->fill_preserve();
-        cr->stroke();
+        cercle_dessin(x-2*dim_max, y-2*dim_max, rayon, cr);
     }
     if(x_plus and y_moins)
     {
-        cr->arc(centre.get_x()-2*dim_max, centre.get_y()+2*dim_max, rayon, 0, 2*M_PI);
-        cr->fill_preserve();
-        cr->stroke();
+        cercle_dessin(x-2*dim_max, y+2*dim_max, rayon, cr);
     }
     if(x_moins and y_moins)
     {
-        cr->arc(centre.get_x()+2*dim_max, centre.get_y()+2*dim_max, rayon, 0, 2*M_PI);
-        cr->fill_preserve();
-        cr->stroke();
+        cercle_dessin(x+2*dim_max, y+2*dim_max, rayon, cr);
     }
     if(x_moins and y_plus)
     {
-        cr->arc(centre.get_x()+2*dim_max, centre.get_y()-2*dim_max, rayon, 0, 2*M_PI);
-        cr->fill_preserve();
-        cr->stroke();
+        cercle_dessin(x+2*dim_max, y-2*dim_max, rayon, cr);
     }
 }
 
@@ -508,4 +546,40 @@ double norme_plus_petit_vecteur( const double init_x1,
 		}
 	}
 	return distance_min;
+}
+
+//================================================================================//
+
+std::array<double,2> plus_courte_direction(Point & p1, Point & p2)
+{
+    std::array<double,2> direction({0,0});
+    double distance_min(0.), distance_test(0.);
+    double delta_x(0.), delta_y(0.);
+    double init_x1(p1.get_x()), init_y1(p1.get_y());
+    double init_x2(p2.get_x()), init_y2(p2.get_y());
+    
+    delta_x=init_x2-init_x1;
+    delta_y=init_y2-init_y1;
+    direction[0]=delta_x;
+    direction[1]=delta_y;
+    distance_min=sqrt(pow(delta_x,2) + pow(delta_y,2));
+    
+    for(int kx=-1;kx<=1;++kx)
+    {
+        for(int ky=-1;ky<=1;++ky)
+        {
+            delta_x=(init_x2+kx*2*max_)-init_x1;
+            delta_y=(init_y2+ky*2*max_)-init_y1;
+            
+            distance_test=sqrt(pow(delta_x,2)+pow(delta_y,2));
+            
+            if(distance_min>distance_test)
+            {
+                direction[0]=delta_x;
+                direction[1]=delta_y;
+                distance_min=distance_test;
+            }
+        }
+    }
+    return direction;
 }
