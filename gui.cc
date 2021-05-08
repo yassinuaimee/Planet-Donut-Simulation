@@ -19,7 +19,7 @@
 
 #define GTK_COMPATIBILITY_MODE
 
-#ifndef GTK_COMPATIBILITY_MODE
+#ifdef GTK_COMPATIBILITY_MODE
 namespace Gtk
 {
   template<class T, class... T_Args>
@@ -57,7 +57,12 @@ struct SimData
 //=================================================================================//
 
 MyArea::MyArea()
-{}
+{
+	frame.xMax= dim_max;
+	frame.xMin=-dim_max;
+	frame.yMax= dim_max;
+	frame.yMin=-dim_max;
+ }
 
 //=================================================================================//
 
@@ -88,28 +93,26 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
     const int height = allocation.get_height();
 
     
-    double new_aspect_ratio(width/height);
+    double new_aspect_ratio((double) width/height);
     double size(0.0);
-    if(new_aspect_ratio>1)
+    
+    if(width>=height)
     {
         size=height;
-        frame.yMax= dim_max;
-        frame.yMin=-dim_max;
-        frame.xMax = (new_aspect_ratio)*dim_max ;
-        frame.xMin =-(new_aspect_ratio)*dim_max ;
+        allocation.set_width(800);
+        std::cout<<"vida loca\n";
+        this->set_allocation(allocation);
     }
     else
-    { // keep XMAX and XMIN. Adjust YMAX and YMIN
+    {
         size=width;
-        frame.xMax= dim_max;
-        frame.xMin=-dim_max;
-              
-
-        frame.yMax=dim_max/new_aspect_ratio ;
-        frame.yMin =-dim_max/new_aspect_ratio;
+        allocation.set_height(1000);
+        this->set_allocation(allocation);
     }
     cr->translate(size/2, size/2);
     cr->scale(size/(frame.xMax - frame.xMin), -size/(frame.yMax - frame.yMin));
+    
+    
     
     Cercle test(700, -900, 300);
     Point p1(900,0), p2(0,0);

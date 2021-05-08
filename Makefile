@@ -18,19 +18,19 @@ graphic.o: graphic.cc graphic.h
 	$(COMPILE) $(LINKING) -c graphic.cc -o graphic.o $(LINKING)
 	
 robot.o: robot.cc robot.h message.h geomod.h gisement.h
-	$(COMPILE) -c robot.cc -o robot.o
+	$(COMPILE) $(LINKING) -c robot.cc -o robot.o $(LINKING)
 	
 message.o: message.cc message.h
 	$(COMPILE) -c message.cc -o message.o
 
 gisement.o: gisement.cc gisement.h message.h geomod.h
-	$(COMPILE) -c gisement.cc -o gisement.o
+	$(COMPILE) $(LINKING) -c gisement.cc -o gisement.o $(LINKING)
 	
 simulation.o: simulation.cc simulation.h gisement.h base.h geomod.h
-	$(COMPILE) -c simulation.cc -o simulation.o
+	$(COMPILE) $(LINKING) -c simulation.cc -o simulation.o $(LINKING)
 	
 base.o: base.cc base.h robot.h message.h geomod.h gisement.h
-	$(COMPILE) -c base.cc -o base.o
+	$(COMPILE) $(LINKING) -c base.cc -o base.o $(LINKING)
 
 gui.o: gui.cc gui.h simulation.h geomod.h graphic.h
 	$(COMPILE) $(LINKING) -c gui.cc -o gui.o $(LINKING)
