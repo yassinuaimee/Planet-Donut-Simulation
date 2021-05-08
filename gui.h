@@ -48,6 +48,7 @@ class Interface : public Gtk::Window
 public:
     Interface();
     virtual ~Interface();
+    
 protected:
     MyArea m_Area;
     bool on_idle();
@@ -72,7 +73,31 @@ protected:
     Gtk::Button m_Button_toggle_range;
     
     Gtk::Frame m_Frame1, m_Frame2;
-    
+     Model_columns()
+     {
+       add(_col_id);
+       add(_col_nbP);
+       add(_col_nbF);
+       add(_col_nbT);
+       add(_col_nbC);
+       add(_col_resource);
+       add(_col_resource_percentage);
+     }
+
+     Gtk::TreeModelColumn<int> _col_id;
+     Gtk::TreeModelColumn<int> _col_nbP;
+     Gtk::TreeModelColumn<int> _col_nbF;
+     Gtk::TreeModelColumn<int> _col_nbT;
+     Gtk::TreeModelColumn<int> _col_nbC;
+     Gtk::TreeModelColumn<double> _col_resource;
+     Gtk::TreeModelColumn<int> _col_resource_percentage;
+  };
+
+  Model_columns _columns;
+
+  Gtk::ScrolledWindow _scrolled_window;
+  Gtk::TreeView _tree_view;
+
    
 private:
     unsigned int count;
