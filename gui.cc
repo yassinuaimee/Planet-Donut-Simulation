@@ -22,7 +22,7 @@
 #include "simulation.h"
 
 #define GTK_COMPATIBILITY_MODE
-#ifndef GTK_COMPATIBILITY_MODE
+#ifdef GTK_COMPATIBILITY_MODE
 namespace Gtk
 {
   template<class T, class... T_Args>
@@ -34,7 +34,6 @@ namespace Gtk
 #endif
 
 static Simulation simulation;
-static Simulation simulation_vide;
 /*
 static std::unique_ptr<Simulation> simulation;
 static std::unique_ptr<Simulation> simulation_vide;
@@ -113,17 +112,9 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
     cr->translate(size/2, size/2);
     cr->scale(size/(frame.xMax - frame.xMin), -size/(frame.yMax - frame.yMin));
     draw_frame(cr);
-    std::cout<<"Juste avant l'affichage\n";
-    //simulation.affiche_dessin();
-    std::cout<<"Juste après l'affichage\n";
     
-    /*
-    Cercle test(700, -900, 300);
-    Point p1(-700,900), p2(-600,-800);
-    p1.cercle_communication();
-    p1.ligne_reseau(p2);
-    test.affiche_dessin(0,0);
-     */
+    simulation.affiche_dessin();
+    
     
     return true;
 }
@@ -148,8 +139,6 @@ Interface::Interface(int argc, char** argv)
     count(0),
     start(false)
 {
-    std::cout<<"Juste après initialisation simulation\n";
-    
     set_title("Planet Donut - DEMO");
     set_border_width(10);
     set_default_size(400, 400);
@@ -209,7 +198,6 @@ Interface::Interface(int argc, char** argv)
     init_simulation(argc, argv);
 	tree_view_update();
     show_all_children();//J'ai pris tellement longtemps à capter cette erreur
-    std::cout<<"show_all_children\n";
 }
 
 //=================================================================================//
@@ -222,15 +210,14 @@ void init_simulation(int argc, char** argv)
         std::ifstream fichier(argv[1]);
         if(not(fichier.fail()))
         {
-            
             simulation.clear();
             simulation.lecture(fichier);
-            std::cout<<"lecture ok\n";
         }
         else
         {
             std::cout<<"On va devoir utiliser le bouton open\n";
         }
+        fichier.close();
     }
     else
     {

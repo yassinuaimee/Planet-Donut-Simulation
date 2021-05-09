@@ -14,6 +14,7 @@
 #define GUI_H
 
 #include <gtkmm.h>
+#include <fstream>
 #include "geomod.h"
 
 

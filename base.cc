@@ -155,6 +155,7 @@ void Base::affiche_texte()
 
 void Base::affiche_dessin(int index)
 {
+    centre.affiche_dessin(3, index);
     for(auto& prospection : E_P)
     {
         prospection->affiche_dessin(index);

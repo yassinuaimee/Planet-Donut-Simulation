@@ -28,7 +28,7 @@ int main(int argc, char ** argv)
     
     //lecture_main(argc, argv);
     
-    auto app = Gtk::Application::create(argc, argv, "org.gtkmm.example");
+    auto app = Gtk::Application::create(/*1, argv, "org.gtkmm.example"*/);
     Interface window(argc, argv);
     
     return app->run(window);

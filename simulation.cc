@@ -205,7 +205,7 @@ void Simulation::affiche_dessin()
     {
         gisement.affiche_dessin();
     }
-    for(int i(0);i<nbB;++i)
+    for(auto i(0);i<nbB;++i)
     {
         Eb[i].affiche_dessin(i);
     }
