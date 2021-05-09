@@ -28,6 +28,11 @@ public:
     Cercle get_centre();
     double get_x();
     double get_y();
+    int get_nbP();
+    int get_nbF();
+    int get_nbT();
+    int get_nbC();
+    double get_ressources();
     
 private:
 	std::vector<std::unique_ptr<Prospection>> E_P;

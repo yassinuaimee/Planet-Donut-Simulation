@@ -17,7 +17,29 @@
 #include <fstream>
 #include "geomod.h"
 
+//==================================================================================//
 
+struct Frame // Framing and window parameters
+{
+    double xMin;
+    double xMax;
+    double yMin;
+    double yMax;
+    
+};
+
+//==================================================================================//
+
+struct SimData
+{
+    unsigned uid;
+    unsigned nbP;
+    unsigned nbF;
+    unsigned nbT;
+    unsigned nbC;
+    double ressource;
+    double ressource_p;
+};
 
 //==================================================================================//
 

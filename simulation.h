@@ -30,6 +30,12 @@ public:
     void affiche_dessin();
     unsigned get_nbG();
     unsigned get_nbB();
+    int get_base_nbP(size_t);
+    int get_base_nbF(size_t);
+    int get_base_nbT(size_t);
+    int get_base_nbC(size_t);
+    double get_base_ressources(size_t);
+
 private:
 	unsigned nbG;
 	unsigned nbB;

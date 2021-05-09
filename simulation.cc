@@ -210,3 +210,38 @@ void Simulation::affiche_dessin()
         Eb[i].affiche_dessin(i);
     }
 }
+
+//================================================================================//
+
+int Simulation::get_base_nbP(size_t i)
+{
+    return Eb[i].get_nbP();
+}
+
+//================================================================================//
+
+int Simulation::get_base_nbF(size_t i)
+{
+    return Eb[i].get_nbF();
+}
+
+//================================================================================//
+
+int Simulation::get_base_nbT(size_t i)
+{
+    return Eb[i].get_nbT();
+}
+
+//================================================================================//
+
+int Simulation::get_base_nbC(size_t i)
+{
+    return Eb[i].get_nbC();
+}
+
+//================================================================================//
+
+double Simulation::get_base_ressources(size_t i)
+{
+    return Eb[i].get_ressources();
+}

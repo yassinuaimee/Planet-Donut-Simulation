@@ -39,26 +39,10 @@ static std::unique_ptr<Simulation> simulation;
 static std::unique_ptr<Simulation> simulation_vide;
  */
 
-struct Frame // Framing and window parameters
-{
-    double xMin;
-    double xMax;
-    double yMin;
-    double yMax;
-    
-};
+
 static Frame frame;
 
-struct SimData
-{
-	unsigned uid;
-	unsigned nbP;
-	unsigned nbF;
-	unsigned nbT;
-	unsigned nbC;
-	double ressource;
-	double ressource_p;
-};
+
 
 void init_simulation(int, char**);
 
@@ -370,36 +354,37 @@ void Interface::on_button_clicked_toggle_range()
 // ===================== the parts to adapt have a comment ==================
 void Interface::tree_view_update()
 {
-  Glib::RefPtr<Gtk::ListStore> ref_tree_model = Gtk::ListStore::create(_columns);
-  _tree_view.set_model(ref_tree_model);
- static std::vector<SimData> report(10);
-  if(true) // here there should be a test about the existence of a simulation
-  {
+    Glib::RefPtr<Gtk::ListStore> ref_tree_model = Gtk::ListStore::create(_columns);
+    _tree_view.set_model(ref_tree_model);
+    
+    static std::vector<SimData> report(simulation.get_nbB());
+    if(true) // here there should be a test about the existence of a simulation
+    {
 	// here a call to a method from your simulation class should create and 
 	// return a vector like report, except its number of lines will be
 	// determined by the simulation (not a constant like in this toy example).
-	if(count > report.size()) 
-		std::cout << 10 << " lines max are displayed" << std::endl;
 
-	//for(size_t i = 0 ; i < count and i <report.size() ; ++i){
-	report[0].uid = 1;
-	  report[0].nbP = 8;
-	  report[0].nbF = 9;
-	  report[0].nbT = 4;
-	  report[0].nbC = 4;
-	  report[0].ressource   = 1000*2;
-	  report[0].ressource_p = 10*1;
+        for(size_t i = 0 ; i <simulation.get_nbB(); ++i){
+            report[i].uid = i;
+            report[i].nbP = simulation.get_base_nbP(i);
+            report[i].nbF = simulation.get_base_nbF(i);
+            report[i].nbT = simulation.get_base_nbT(i);
+            report[i].nbC = simulation.get_base_nbC(i);
+            report[i].ressource   = simulation.get_base_ressources(i);
+            report[i].ressource_p = 10;
 		
-	  auto row = *(ref_tree_model->append());
-	  row[_columns._col_nbP] = report[0].nbP;
-	  row[_columns._col_nbF] = report[0].nbF;
-	  row[_columns._col_nbT] = report[0].nbT;
-      row[_columns._col_nbC] = report[0].nbC;
-	  row[_columns._col_resource] = report[0].ressource;
-	  row[_columns._col_resource_percentage] = report[0].ressource_p;
+            auto row = *(ref_tree_model->append());
+            row[_columns._col_uid] = report[i].uid;
+            row[_columns._col_nbP] = report[i].nbP;
+            row[_columns._col_nbF] = report[i].nbF;
+            row[_columns._col_nbT] = report[i].nbT;
+            row[_columns._col_nbC] = report[i].nbC;
+            row[_columns._col_resource] = report[i].ressource;
+            row[_columns._col_resource_percentage] = report[i].ressource_p;
 	
 	
 	// please note that you have to bring the mouse cursor to the right side 
 	// of the scroll window to see the scrolling widget
+    }
   }
 }
