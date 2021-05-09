@@ -76,28 +76,28 @@ void ligne_dessin(double x1, double y1, double x2, double y2)
 
 void color_base(int index)
 {
-    if(index%6==0)
+    switch(index%6)
     {
-        (*ptcr)->set_source_rgb(1, 0, 0);//rouge ROUGE VERT BLEU
-    }
-    if(index%6==1)
-    {
-        (*ptcr)->set_source_rgb(0, 1, 0);//vert
-    }
-    if(index%6==2)
-    {
-        (*ptcr)->set_source_rgb(0, 0, 1);//bleu
-    }
-    if(index%6==3)
-    {
-        (*ptcr)->set_source_rgb(1, 1, 0);//jaune
-    }
-    if(index%6==4)
-    {
-        (*ptcr)->set_source_rgb(1, 0, 1);//magenta
-    }
-    if(index%6==5)
-    {
-        (*ptcr)->set_source_rgb(0, 1, 1);//cyan
+        case 0:
+            (*ptcr)->set_source_rgb(1, 0, 0);//rouge ROUGE VERT BLEU
+            break;
+        case 1:
+            (*ptcr)->set_source_rgb(0, 1, 0);//vert
+            break;
+        case 2:
+            (*ptcr)->set_source_rgb(0, 0, 1);//bleu
+            break;
+        case 3:
+            (*ptcr)->set_source_rgb(1, 1, 0);//jaune
+            break;
+        case 4:
+            (*ptcr)->set_source_rgb(1, 0, 1);//magenta
+            break;
+        case 5:
+            (*ptcr)->set_source_rgb(0, 1, 1);//cyan
+            break;
+        default:
+            (*ptcr)->set_source_rgb(0.1, 0.1, 0.1);//cyan
+            break;
     }
 }

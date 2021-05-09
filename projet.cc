@@ -27,6 +27,7 @@ int main(int argc, char ** argv)
 {
     
     //lecture_main(argc, argv);
+    
     auto app = Gtk::Application::create(argc, argv, "org.gtkmm.example");
     Interface window(argc, argv);
     
@@ -45,8 +46,6 @@ void lecture_main(int argc, char** argv)
     Simulation simulation;
         
     simulation.lecture(fichier);
-    simulation.verifications();
-    //simulation.affichage();
     
     std::cout <<message::success();//Si on arrive la ça signifie que tout est bon
     fichier.close();

@@ -108,7 +108,7 @@ double Gisement::get_capacite()
 
 //===================================================================================//
 
-void Gisement::affiche()
+void Gisement::affiche_texte()
 {
     std::cout<<"\t"<<field.get_x()<<" "
 				   <<field.get_y()<<" "

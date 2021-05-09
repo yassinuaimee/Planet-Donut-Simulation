@@ -91,7 +91,7 @@ Prospection::Prospection(unsigned uid, double dp, double x, double y,
 
 //================================================================================//
 
-void Prospection::affiche()
+void Prospection::affiche_texte()
 {
     if(found)
     {
@@ -134,7 +134,7 @@ Forage::Forage(unsigned uid, double dp, double x, double y,
 
 //================================================================================//
 
-void Forage::affiche()
+void Forage::affiche_texte()
 {
     std::cout<<"\t\t"<<uid<<" "<<dp<<" "
         <<position.get_x()<<" "<<position.get_y()<<" "
@@ -163,7 +163,7 @@ Transport::Transport(unsigned uid, double dp, double x, double y,
 
 //================================================================================//
 
-void Transport::affiche()
+void Transport::affiche_texte()
 {
     std::cout<<"\t\t"<<uid<<" "<<dp<<" "
         <<position.get_x()<<" "<<position.get_y()<<" "
@@ -192,7 +192,7 @@ Communication::Communication(unsigned uid, double dp, double x, double y,
 
 //================================================================================//
 
-void Communication::affiche()
+void Communication::affiche_texte()
 {
     std::cout<<"\t\t"<<uid<<" "<<dp<<" "
         <<position.get_x()<<" "<<position.get_y()<<" "

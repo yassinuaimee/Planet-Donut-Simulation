@@ -128,12 +128,16 @@ void Simulation::lecture(std::ifstream & entree)
             }
         }
     }
+    std::cout<<"On est en train de lire le fichier\n";
+    this->verifications();
+    this->affiche_texte();
 }
 
 //================================================================================//
 
 void Simulation::verifications()
 {
+    std::cout<<"On efectue les verifications\n";
     for(auto& base : Eb)//Vérification intersection BASES et GISEMENTS
     {
         for(auto& gisement : Eg)
@@ -168,19 +172,29 @@ void Simulation::verifications()
 
 //================================================================================//
 
-void Simulation::affichage()
+void Simulation::affiche_texte()
 {
     std::cout<<nbG<<" #Nombre GISEMENTS"<<std::endl;
     for(auto& gisement : Eg)
     {
-        gisement.affiche();
+        gisement.affiche_texte();
     }
     
     std::cout<<std::endl<<nbB<<" #Nombre BASES"<<std::endl;
     for(auto& base : Eb)
     {
-        base.affiche();
+        base.affiche_texte();
     }
+}
+
+//================================================================================//
+
+void Simulation::clear()
+{
+    nbB=0;
+    nbG=0;
+    Eb.clear();
+    Eg.clear();
 }
 
 //================================================================================//

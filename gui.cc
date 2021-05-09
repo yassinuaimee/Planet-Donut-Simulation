@@ -13,6 +13,7 @@
 #include <vector>
 #include <gtkmm.h>
 #include <fstream>
+#include <memory>
 #include <cairomm/context.h>
 #include "gui.h"
 #include "geomod.h"
@@ -21,7 +22,7 @@
 #include "simulation.h"
 
 #define GTK_COMPATIBILITY_MODE
-#ifdef GTK_COMPATIBILITY_MODE
+#ifndef GTK_COMPATIBILITY_MODE
 namespace Gtk
 {
   template<class T, class... T_Args>
@@ -32,8 +33,12 @@ namespace Gtk
 }
 #endif
 
-
-static Simulation* simulation;
+static Simulation simulation;
+static Simulation simulation_vide;
+/*
+static std::unique_ptr<Simulation> simulation;
+static std::unique_ptr<Simulation> simulation_vide;
+ */
 
 struct Frame // Framing and window parameters
 {
@@ -85,7 +90,6 @@ void MyArea::draw_frame(const Cairo::RefPtr<Cairo::Context>& cr)
     cr->stroke();
 }
 
-
 //=================================================================================//
 
 bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
@@ -95,7 +99,6 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
     const int width = allocation.get_width();
     const int height = allocation.get_height();
 
-    
     double size(0.0);
     
     if(width>=height)
@@ -110,16 +113,18 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
     cr->translate(size/2, size/2);
     cr->scale(size/(frame.xMax - frame.xMin), -size/(frame.yMax - frame.yMin));
     draw_frame(cr);
+    std::cout<<"Juste avant l'affichage\n";
+    //simulation.affiche_dessin();
+    std::cout<<"Juste après l'affichage\n";
     
-    simulation->affiche_dessin();
-    
-    
+    /*
     Cercle test(700, -900, 300);
     Point p1(-700,900), p2(-600,-800);
     p1.cercle_communication();
     p1.ligne_reseau(p2);
-    
     test.affiche_dessin(0,0);
+     */
+    
     return true;
 }
 
@@ -143,7 +148,6 @@ Interface::Interface(int argc, char** argv)
     count(0),
     start(false)
 {
-    init_simulation(argc, argv);//Cette fonction ne marche pas et je sais pas pouraauoi
     std::cout<<"Juste après initialisation simulation\n";
     
     set_title("Planet Donut - DEMO");
@@ -202,28 +206,31 @@ Interface::Interface(int argc, char** argv)
 	progress_col->add_attribute(cell->property_value(),
 								_columns._col_resource_percentage);
     
+    init_simulation(argc, argv);
 	tree_view_update();
-    std::cout<<"Juste avant de montrer tous les enfants\n";
     show_all_children();//J'ai pris tellement longtemps à capter cette erreur
+    std::cout<<"show_all_children\n";
 }
 
 //=================================================================================//
 
 void init_simulation(int argc, char** argv)
 {
+    
     if(argc==2)
     {
-        std::cout<<"ON a des bons arguments pour notre fonction\n";
-        Simulation* simulation2(new Simulation);
         std::ifstream fichier(argv[1]);
-        std::cout<<"Probleme lecture du fichier\n";
-        simulation2->lecture(fichier);
-        std::cout<<"lecture ok\n";
-        simulation2->verifications();
-        std::cout<<"verif ok\n";
-        simulation=simulation2;
-        std::cout<<"on a affecte la veleur  "<<&simulation<<"\n";
-        
+        if(not(fichier.fail()))
+        {
+            
+            simulation.clear();
+            simulation.lecture(fichier);
+            std::cout<<"lecture ok\n";
+        }
+        else
+        {
+            std::cout<<"On va devoir utiliser le bouton open\n";
+        }
     }
     else
     {

@@ -414,10 +414,15 @@ void Cercle::affiche_dessin(int type, int index)//Va falloir donner en argument 
     }
     
 }
+
+//================================================================================//
+
 void Point::affiche_dessin(int type,int index)//Pratique si dans le futur on veut differencier affichage robots
 {
     affiche_cercle_robot(x, y, index);
 }
+
+//================================================================================//
 
 void affiche_cercle_gisement(double x, double y, double rayon)
 {
@@ -503,10 +508,14 @@ void affiche_cercle_communication(double x, double y)
     }
 }
 
+//================================================================================//
+
 void affiche_cercle_base(double x, double y, int index)
 {
     cercle_base_dessin(x, y, index);
 }
+
+//================================================================================//
 
 void affiche_cercle_robot(double x, double y, int index)
 {

@@ -125,28 +125,28 @@ double Base::get_y()
 
 //================================================================================//
 
-void Base::affiche()
+void Base::affiche_texte()
 {
     std::cout<<"\t"<<centre.get_x()<<" "<<centre.get_y()<<" "
              <<ressources<<" "<<nbP<<" "<<nbF<<" "<<nbT<<" "<<nbC<<std::endl;
     for(auto& prospection : E_P)
     {
-        prospection->affiche();
+        prospection->affiche_texte();
     }
     std::cout<<std::endl;
     for(auto& forage : E_F)
     {
-        forage->affiche();
+        forage->affiche_texte();
     }
     std::cout<<std::endl;
     for(auto& transport : E_T)
     {
-        transport->affiche();
+        transport->affiche_texte();
     }
     std::cout<<std::endl;
     for(auto& communication : E_C)
     {
-        communication->affiche();
+        communication->affiche_texte();
     }
     std::cout<<std::endl;
     

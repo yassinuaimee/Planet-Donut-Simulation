@@ -24,8 +24,9 @@ class Simulation
 public:
 	Simulation();
     void lecture(std::ifstream &);
+    void clear();
     void verifications();
-    void affichage();
+    void affiche_texte();
     void affiche_dessin();
     unsigned get_nbG();
     unsigned get_nbB();
