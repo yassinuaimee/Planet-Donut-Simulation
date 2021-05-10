@@ -442,6 +442,30 @@ void Point::affiche_dessin(int type,int index)//Pratique si dans le futur on veu
 
 //================================================================================//
 
+void affiche_dessin(int type, int index, double x, double y)
+{
+    affiche_cercle_robot(x, y, index);
+    switch(type)
+    {
+        case 1://cas du prospecteur
+            affiche_symbole_prospecteur(x, y, index);
+            break;
+        case 2:
+            affiche_symbole_prospection(x, y, index);
+            break;
+        case 3:
+            affiche_symbole_transport(x, y, index);
+            break;
+        case 4:
+            affiche_symbole_communication(x, y, index);
+            break;
+        default:
+            break;
+    }
+}
+
+//================================================================================//
+
 void affiche_cercle_gisement(double x, double y, double rayon)
 {
     bool x_plus(false), x_moins(false), y_plus(false), y_moins(false);

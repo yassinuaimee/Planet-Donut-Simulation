@@ -17,6 +17,7 @@
 #include "message.h"
 #include "geomod.h"
 #include "gisement.h"
+#include "constantes.h"
 
 //using namespace std;
 
@@ -121,9 +122,17 @@ void Prospection::affiche_texte()
 
 //================================================================================//
 
-void Prospection::affiche_range()
+void Prospection::affiche_dessin(int index)
 {
-    position.cercle_communication();
+    position.affiche_dessin(1,index);
+    if(position.get_x()-rayon_comm<-dim_max)
+    {
+        ::affiche_dessin(1,index,position.get_x()+2*dim_max, position.get_y());
+    }
+    if(position.get_y()+rayon_comm>dim_max)
+    {
+       ::affiche_dessin(1,index, position.get_x(), position.get_y()-2*dim_max);
+    }
 }
 
 
@@ -153,6 +162,14 @@ void Forage::affiche_texte()
 void Forage::affiche_dessin(int index)
 {
     position.affiche_dessin(2,index);
+    if(position.get_x()-rayon_comm<-dim_max)
+    {
+        ::affiche_dessin(2,index,position.get_x()+2*dim_max, position.get_y());
+    }
+    if(position.get_y()+rayon_comm>dim_max)
+    {
+       ::affiche_dessin(2,index, position.get_x(), position.get_y()-2*dim_max);
+    }
 }
 
 
@@ -182,6 +199,14 @@ void Transport::affiche_texte()
 void Transport::affiche_dessin(int index)
 {
     position.affiche_dessin(3,index);
+    if(position.get_x()-rayon_comm<-dim_max)
+    {
+        ::affiche_dessin(3,index,position.get_x()+2*dim_max, position.get_y());
+    }
+    if(position.get_y()+rayon_comm>dim_max)
+    {
+       ::affiche_dessin(3,index, position.get_x(), position.get_y()-2*dim_max);
+    }
 }
 
 
@@ -211,4 +236,12 @@ void Communication::affiche_texte()
 void Communication::affiche_dessin(int index)
 {
     position.affiche_dessin(4,index);
+    if(position.get_x()-rayon_comm<-dim_max)
+    {
+        ::affiche_dessin(4,index,position.get_x()+2*dim_max, position.get_y());
+    }
+    if(position.get_y()+rayon_comm>dim_max)
+    {
+       ::affiche_dessin(4,index, position.get_x(), position.get_y()-2*dim_max);
+    }
 }

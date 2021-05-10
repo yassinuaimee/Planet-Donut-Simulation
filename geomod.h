@@ -91,4 +91,5 @@ double norme_plus_petit_vecteur(const double,
 								const double,
 								const double,
 								const double);
+void affiche_dessin(int, int, double, double);
 #endif
