@@ -121,13 +121,6 @@ void Prospection::affiche_texte()
 
 //================================================================================//
 
-void Prospection::affiche_dessin(int index)
-{
-    position.affiche_dessin(1,index);
-}
-
-//================================================================================//
-
 void Prospection::affiche_range()
 {
     position.cercle_communication();

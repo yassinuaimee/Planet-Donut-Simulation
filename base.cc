@@ -178,7 +178,6 @@ void Base::affiche_dessin(int index)
 
 void Base::affiche_range()
 {
-    std::cout<<"base\n";
     for(auto& prospection : E_P)
     {
         prospection->affiche_range();

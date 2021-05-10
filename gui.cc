@@ -22,7 +22,7 @@
 #include "simulation.h"
 
 #define GTK_COMPATIBILITY_MODE
-#ifdef GTK_COMPATIBILITY_MODE
+#ifndef GTK_COMPATIBILITY_MODE
 namespace Gtk
 {
   template<class T, class... T_Args>
@@ -34,10 +34,7 @@ namespace Gtk
 #endif
 
 static Simulation simulation;
-/*
-static std::unique_ptr<Simulation> simulation;
-static std::unique_ptr<Simulation> simulation_vide;
- */
+
 
 static bool toggle_link(false);
 static bool toggle_range(false);
@@ -103,6 +100,20 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
     
     
     return true;
+}
+
+//=================================================================================//
+
+void MyArea::refresh()
+{
+    auto win = get_window();
+    if(win)
+    {
+        Gdk::Rectangle r(0,0, get_allocation().get_width(),
+                              get_allocation().get_height());
+                                
+        win->invalidate_rect(r,false);
+    }
 }
 
 //=================================================================================//
@@ -348,15 +359,15 @@ void Interface::on_button_clicked_toggle_link()
 
 void Interface::on_button_clicked_toggle_range()
 {
-    if(toggle_range=true)
-    {
-        toggle_range=false;
-    }
-    else
+    if(not toggle_range)
     {
         toggle_range=true;
     }
-    
+    else
+    {
+        toggle_range=false;
+    }
+    m_Area.refresh();
 }
 
 // ===================== the parts to adapt have a comment ==================

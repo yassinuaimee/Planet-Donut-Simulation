@@ -46,7 +46,6 @@ public:
     Prospection(unsigned, double, double, double, double, double, bool, bool, bool);
     void affiche_texte();
     void affiche_dessin(int);
-    void affiche_range();
     
 private:
     bool retour;
