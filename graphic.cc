@@ -47,7 +47,7 @@ void cercle_base_dessin(double x, double y, int indice)
 {
     color_base(indice);
     (*ptcr)->set_line_width(2.0);
-    (*ptcr)->arc(x, y, 30, 0, 2*M_PI);
+    (*ptcr)->arc(x, y, 40, 0, 2*M_PI);
     (*ptcr)->stroke();
     (*ptcr)->set_line_width(1.0);
     (*ptcr)->arc(x, y, 10, 0, 2*M_PI);
@@ -75,6 +75,21 @@ void affiche_symbole_prospecteur(double x, double y, int index)
     (*ptcr)->stroke();
 }
 
+void affiche_symbole_prospection(double x, double y, int index)
+{
+    color_base(index);
+    (*ptcr)->set_line_width(5.0);
+    (*ptcr)->move_to(x,y+15);
+    (*ptcr)->line_to(x,y-15);
+    (*ptcr)->move_to(x-15,y);
+    (*ptcr)->line_to(x+15,y);
+    (*ptcr)->move_to(x-10,y-10);
+    (*ptcr)->line_to(x+10,y+10);
+    (*ptcr)->move_to(x-10,y+10);
+    (*ptcr)->line_to(x+10,y-10);
+    (*ptcr)->stroke();
+}
+
 void affiche_symbole_transport(double x, double y, int index)
 {
     color_base(index);
@@ -96,23 +111,6 @@ void affiche_symbole_communication(double x, double y, int index)
     (*ptcr)->stroke();
     
 }
-
-void affiche_symbole_prospection(double x, double y, int index)
-{
-    color_base(index);
-    (*ptcr)->set_line_width(5.0);
-    (*ptcr)->move_to(x,y+15);
-    (*ptcr)->line_to(x,y-15);
-    (*ptcr)->move_to(x-15,y);
-    (*ptcr)->line_to(x+15,y);
-    (*ptcr)->move_to(x-10,y-10);
-    (*ptcr)->line_to(x+10,y+10);
-    (*ptcr)->move_to(x-10,y+10);
-    (*ptcr)->line_to(x+10,y-10);
-    (*ptcr)->stroke();
-}
-
-
 
 void ligne_dessin(double x1, double y1, double x2, double y2)
 {

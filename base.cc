@@ -174,6 +174,28 @@ void Base::affiche_dessin(int index)
     }
 }
 
+//================================================================================//
+
+void Base::affiche_range()
+{
+    std::cout<<"base\n";
+    for(auto& prospection : E_P)
+    {
+        prospection->affiche_range();
+    }
+    for(auto& forage : E_F)
+    {
+        forage->affiche_range();
+    }
+    for(auto& transport : E_T)
+    {
+        transport->affiche_range();
+    }
+    for(auto& communication : E_C)
+    {
+        communication->affiche_range();
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /*

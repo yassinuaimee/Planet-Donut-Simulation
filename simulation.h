@@ -35,6 +35,7 @@ public:
     int get_base_nbT(size_t);
     int get_base_nbC(size_t);
     double get_base_ressources(size_t);
+    void affiche_range(bool);
 
 private:
 	unsigned nbG;

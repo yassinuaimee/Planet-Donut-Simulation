@@ -39,7 +39,8 @@ static std::unique_ptr<Simulation> simulation;
 static std::unique_ptr<Simulation> simulation_vide;
  */
 
-
+static bool toggle_link(false);
+static bool toggle_range(false);
 static Frame frame;
 
 
@@ -98,6 +99,7 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
     draw_frame(cr);
     
     simulation.affiche_dessin();
+    simulation.affiche_range(toggle_range);
     
     
     return true;
@@ -218,7 +220,6 @@ bool Interface::on_idle()
   {
       std::cout << "Mise à jour de la simulation numéro : " << ++count << std::endl;
   }
-  
   return true;  // return false when done
 }
 //=================================================================================//
@@ -342,14 +343,21 @@ void Interface::on_button_clicked_toggle_link()
 {
     std::cout<<"Toggle Link\n";
 }
+
 //=================================================================================//
 
 void Interface::on_button_clicked_toggle_range()
 {
-    std::cout<<"Toggle Range\n";
+    if(toggle_range=true)
+    {
+        toggle_range=false;
+    }
+    else
+    {
+        toggle_range=true;
+    }
+    
 }
-
-
 
 // ===================== the parts to adapt have a comment ==================
 void Interface::tree_view_update()

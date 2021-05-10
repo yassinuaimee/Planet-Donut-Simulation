@@ -213,6 +213,25 @@ void Simulation::affiche_dessin()
 
 //================================================================================//
 
+void Simulation::affiche_range(bool toggle_range)
+{
+    std::cout<<"On affiche le range\n";
+    if(toggle_range)
+    {
+        std::cout<<"toggle_range = true\n";
+        for(int i(0);i<nbB;++i)
+        {
+            Eb[i].affiche_range();
+        }
+    }
+    else
+    {
+        std::cout<<"toggle_range = false\n";
+    }
+}
+
+//================================================================================//
+
 int Simulation::get_base_nbP(size_t i)
 {
     return Eb[i].get_nbP();

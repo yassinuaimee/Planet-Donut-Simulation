@@ -25,6 +25,7 @@ public:
     Point get_position();
     double get_xb();
     double get_yb();
+    void affiche_range();
     
 protected:
 	unsigned uid;
@@ -45,6 +46,7 @@ public:
     Prospection(unsigned, double, double, double, double, double, bool, bool, bool);
     void affiche_texte();
     void affiche_dessin(int);
+    void affiche_range();
     
 private:
     bool retour;
@@ -60,6 +62,7 @@ public:
     Forage(unsigned, double, double, double, double, double, bool);
     void affiche_texte();
     void affiche_dessin(int);
+
     
 private:
     
@@ -73,6 +76,7 @@ public:
     Transport(unsigned, double, double, double, double, double, bool, bool);
     void affiche_texte();
     void affiche_dessin(int);
+
     
 private:
 	bool retour;
@@ -87,6 +91,7 @@ public:
     Communication(unsigned, double, double, double, double, double, bool);
     void affiche_texte();
     void affiche_dessin(int);
+
 
 private:
 
