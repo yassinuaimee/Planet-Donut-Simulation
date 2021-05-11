@@ -12,6 +12,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <fstream>
 #include <vector>
 #include "gisement.h"
 #include "message.h"
@@ -114,6 +115,16 @@ void Gisement::affiche_texte()
 				   <<field.get_y()<<" "
 				   <<field.get_rayon()<<" "
 				   <<capacite<<std::endl;
+}
+
+//===================================================================================//
+
+void Gisement::affiche_texte(std::ofstream& sortie)
+{
+    sortie<<"\t"<<field.get_x()<<" "
+                   <<field.get_y()<<" "
+                   <<field.get_rayon()<<" "
+                   <<capacite<<std::endl;
 }
 //===================================================================================//
 

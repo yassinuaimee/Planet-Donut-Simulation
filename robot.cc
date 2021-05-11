@@ -122,6 +122,30 @@ void Prospection::affiche_texte()
 
 //================================================================================//
 
+void Prospection::affiche_texte(std::ofstream& sortie)
+{
+    if(found)
+    {
+        sortie<<"\t\t"<<uid<<" "
+                    <<dp<<" "
+                    <<position.get_x()<<" "<<position.get_y()<<" "
+                    <<but.get_x()<<" "<<but.get_y()<<" "
+                    <<atteint<<" "<<retour<<" "<<found<<" "
+                    <<gisement.get_x()<<" "<<gisement.get_y()<<" "
+                    <<gisement.get_rayon()<<" "
+                    <<gisement.get_capacite()<<std::endl;
+    }
+    else
+    {
+        sortie<<"\t\t"<<uid<<" "<<dp<<" "
+            <<position.get_x()<<" "<<position.get_y()<<" "
+            <<but.get_x()<<" "<<but.get_y()<<" "
+            <<atteint<<" "<<retour<<" "<<found<<std::endl;
+    }
+}
+
+//================================================================================//
+
 void Prospection::affiche_dessin(int index)
 {
     position.affiche_dessin(1,index);
@@ -152,6 +176,16 @@ Forage::Forage(unsigned uid, double dp, double x, double y,
 void Forage::affiche_texte()
 {
     std::cout<<"\t\t"<<uid<<" "<<dp<<" "
+        <<position.get_x()<<" "<<position.get_y()<<" "
+        <<but.get_x()<<" "<<but.get_y()<<" "
+        <<atteint<<std::endl;
+}
+
+//================================================================================//
+
+void Forage::affiche_texte(std::ofstream& sortie)
+{
+    sortie<<"\t\t"<<uid<<" "<<dp<<" "
         <<position.get_x()<<" "<<position.get_y()<<" "
         <<but.get_x()<<" "<<but.get_y()<<" "
         <<atteint<<std::endl;
@@ -196,6 +230,16 @@ void Transport::affiche_texte()
 
 //================================================================================//
 
+void Transport::affiche_texte(std::ofstream& sortie)
+{
+    sortie<<"\t\t"<<uid<<" "<<dp<<" "
+        <<position.get_x()<<" "<<position.get_y()<<" "
+        <<but.get_x()<<" "<<but.get_y()<<" "
+        <<atteint<<" "<<retour<<std::endl;
+}
+
+//================================================================================//
+
 void Transport::affiche_dessin(int index)
 {
     position.affiche_dessin(3,index);
@@ -226,6 +270,16 @@ Communication::Communication(unsigned uid, double dp, double x, double y,
 void Communication::affiche_texte()
 {
     std::cout<<"\t\t"<<uid<<" "<<dp<<" "
+        <<position.get_x()<<" "<<position.get_y()<<" "
+        <<but.get_x()<<" "<<but.get_y()<<" "
+        <<atteint<<std::endl;
+}
+
+//================================================================================//
+
+void Communication::affiche_texte(std::ofstream& sortie)
+{
+    sortie<<"\t\t"<<uid<<" "<<dp<<" "
         <<position.get_x()<<" "<<position.get_y()<<" "
         <<but.get_x()<<" "<<but.get_y()<<" "
         <<atteint<<std::endl;

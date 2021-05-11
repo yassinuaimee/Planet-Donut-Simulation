@@ -189,6 +189,23 @@ void Simulation::affiche_texte()
 
 //================================================================================//
 
+void Simulation::affiche_texte(std::ofstream& sortie)
+{
+    sortie<<nbG<<" #Nombre GISEMENTS"<<std::endl;
+    for(auto& gisement : Eg)
+    {
+        gisement.affiche_texte(sortie);
+    }
+    
+    sortie<<std::endl<<nbB<<" #Nombre BASES"<<std::endl;
+    for(auto& base : Eb)
+    {
+        base.affiche_texte(sortie);
+    }
+}
+
+//================================================================================//
+
 void Simulation::clear()
 {
     nbB=0;

@@ -151,6 +151,36 @@ void Base::affiche_texte()
     std::cout<<std::endl;
     
 }
+
+//================================================================================//
+
+void Base::affiche_texte(std::ofstream& sortie)
+{
+    sortie<<"\t"<<centre.get_x()<<" "<<centre.get_y()<<" "
+             <<ressources<<" "<<nbP<<" "<<nbF<<" "<<nbT<<" "<<nbC<<std::endl;
+    for(auto& prospection : E_P)
+    {
+        prospection->affiche_texte(sortie);
+    }
+    sortie<<std::endl;
+    for(auto& forage : E_F)//Mettre aussi les sortie sur tous les robots et normalement c'est bon!!!!!!!
+    {
+        forage->affiche_texte(sortie);
+    }
+    sortie<<std::endl;
+    for(auto& transport : E_T)
+    {
+        transport->affiche_texte(sortie);
+    }
+    sortie<<std::endl;
+    for(auto& communication : E_C)
+    {
+        communication->affiche_texte(sortie);
+    }
+    sortie<<std::endl;
+    
+}
+
 //================================================================================//
 
 void Base::affiche_dessin(int index)

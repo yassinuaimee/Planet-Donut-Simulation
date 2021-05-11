@@ -27,6 +27,7 @@ public:
     void clear();
     void verifications();
     void affiche_texte();
+    void affiche_texte(std::ofstream&);
     void affiche_dessin();
     unsigned get_nbG();
     unsigned get_nbB();

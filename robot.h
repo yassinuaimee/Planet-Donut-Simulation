@@ -45,6 +45,7 @@ public:
 				double, double, double, double);
     Prospection(unsigned, double, double, double, double, double, bool, bool, bool);
     void affiche_texte();
+    void affiche_texte(std::ofstream&);
     void affiche_dessin(int);
     
 private:
@@ -60,6 +61,7 @@ class Forage : public Robot
 public:
     Forage(unsigned, double, double, double, double, double, bool);
     void affiche_texte();
+    void affiche_texte(std::ofstream&);
     void affiche_dessin(int);
 
     
@@ -74,6 +76,7 @@ class Transport : public Robot
 public:
     Transport(unsigned, double, double, double, double, double, bool, bool);
     void affiche_texte();
+    void affiche_texte(std::ofstream&);
     void affiche_dessin(int);
 
     
@@ -89,6 +92,7 @@ class Communication : public Robot
 public:
     Communication(unsigned, double, double, double, double, double, bool);
     void affiche_texte();
+    void affiche_texte(std::ofstream&);
     void affiche_dessin(int);
 
 

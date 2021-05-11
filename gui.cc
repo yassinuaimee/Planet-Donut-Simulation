@@ -11,6 +11,7 @@
  */
 #include <iostream>
 #include <vector>
+#include <string>
 #include <gtkmm.h>
 #include <fstream>
 #include <memory>
@@ -291,13 +292,27 @@ void Interface::on_button_clicked_open()
     //Handle the response:
     switch(result)
     {
-      case(Gtk::RESPONSE_OK):
-      {
-        std::cout << "Open clicked." << std::endl;
+        case(Gtk::RESPONSE_OK):
+        {
+            std::cout << "Open clicked." << std::endl;
 
-        //Notice that this is a std::string, not a Glib::ustring.
-        std::string filename = dialog.get_filename();
-        std::cout << "File selected: " <<  filename << std::endl;
+            //Notice that this is a std::string, not a Glib::ustring.
+            std::string filename = dialog.get_filename();
+            std::ifstream fichier(filename);
+            if(not(fichier.fail()))
+            {
+                simulation.clear();
+                simulation.lecture(fichier);
+                m_Area.refresh();
+                this->tree_view_update();
+                
+            }
+            fichier.close();
+          
+          
+          
+          
+          
         break;
       }
       case(Gtk::RESPONSE_CANCEL):
@@ -316,7 +331,14 @@ void Interface::on_button_clicked_open()
 
 void Interface::on_button_clicked_save()
 {
-    std::cout<<"Save\n";
+    std::cout<<"Save\n Entrer le nom du fichier de sortie : ";
+    std::string filename;
+    std::cin>>filename;
+    std::ofstream fichier(filename);
+    simulation.affiche_texte(fichier);
+    fichier.close();
+    
+    
 }
 //=================================================================================//
 
@@ -376,7 +398,7 @@ void Interface::tree_view_update()
     Glib::RefPtr<Gtk::ListStore> ref_tree_model = Gtk::ListStore::create(_columns);
     _tree_view.set_model(ref_tree_model);
     
-    static std::vector<SimData> report(simulation.get_nbB());
+    /*static*/ std::vector<SimData> report(simulation.get_nbB());
     if(true) // here there should be a test about the existence of a simulation
     {
 	// here a call to a method from your simulation class should create and 

@@ -24,6 +24,7 @@ class Base
 public:
     Base(double, double, double, int, int, int, int, std::ifstream & );
     void affiche_texte();
+    void affiche_texte(std::ofstream&);
     void affiche_dessin(int);
     void affiche_range();
     Cercle get_centre();

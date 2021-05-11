@@ -23,6 +23,7 @@ public:
 	Gisement(double, double, double, double);
 	Gisement();
     void affiche_texte();
+    void affiche_texte(std::ofstream&);
     void affiche_dessin();
     void verification(std::vector<Gisement>&);
     Cercle get_field();
