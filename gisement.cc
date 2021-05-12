@@ -19,7 +19,6 @@
 #include "geomod.h"
 #include "constantes.h"
 
-//using namespace std;
 
 //===================================================================================//
 
@@ -30,15 +29,15 @@ Gisement::Gisement()
 //===================================================================================//
 
 Gisement::Gisement(double x, double y, double rayon, double capacite)
-: field(x, y, rayon), capacite(capacite)
+: field(x, y, rayon), capacite(capacite), error_gisement(false)
 {
     if(capacite<0)
     {
-        exit(0);
+        error_gisement=true;
     }
     if (rayon<rayon_min or rayon>rayon_max)
     {
-        exit(0);
+        error_gisement=true;
         
     }
 }
@@ -57,8 +56,9 @@ Gisement creation_gisement(std::string line)
 
 //===================================================================================//
 
-void Gisement::verification(std::vector<Gisement>& Eg)
+bool Gisement::verification(std::vector<Gisement>& Eg)
 {
+    bool error(false);
     for(auto& gisement : Eg)
     {
         if(field.intersection_cercle(gisement.get_field()))
@@ -67,9 +67,10 @@ void Gisement::verification(std::vector<Gisement>& Eg)
                                                field.get_y(),
                                                gisement.get_x(),
                                                gisement.get_y());
-            exit(0);
+            error=true;
         }
     }
+    return error;
 }
 
 //===================================================================================//
@@ -109,6 +110,13 @@ double Gisement::get_capacite()
 
 //===================================================================================//
 
+bool Gisement::get_error_gisement()
+{
+    return error_gisement;
+}
+
+//===================================================================================//
+
 void Gisement::affiche_texte()
 {
     std::cout<<"\t"<<field.get_x()<<" "
@@ -130,5 +138,5 @@ void Gisement::affiche_texte(std::ofstream& sortie)
 
 void Gisement::affiche_dessin()
 {
-    field.affiche_dessin(1,0);//true si c'est un cercle plein et false sinon
+    field.affiche_dessin(1,0);
 }

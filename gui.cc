@@ -23,7 +23,7 @@
 #include "simulation.h"
 
 #define GTK_COMPATIBILITY_MODE
-#ifdef GTK_COMPATIBILITY_MODE
+#ifndef GTK_COMPATIBILITY_MODE
 namespace Gtk
 {
   template<class T, class... T_Args>
@@ -34,14 +34,13 @@ namespace Gtk
 }
 #endif
 
-static Simulation simulation;
-
-
-static bool toggle_link(false);
-static bool toggle_range(false);
-static Frame frame;
-
-
+namespace
+{
+    Simulation simulation;
+    bool toggle_link(false);
+    bool toggle_range(false);
+    Frame frame;
+}
 
 void init_simulation(int, char**);
 
@@ -60,16 +59,6 @@ MyArea::MyArea()
 
 MyArea::~MyArea()
 {
-}
-
-//=================================================================================//
-
-void MyArea::draw_frame(const Cairo::RefPtr<Cairo::Context>& cr)
-{
-    cr->set_line_width(10.0);
-    cr->set_source_rgb(0.7, 0.7, 0.7);
-    cr->rectangle(-dim_max,-dim_max,2*dim_max,2*dim_max);
-    cr->stroke();
 }
 
 //=================================================================================//
@@ -99,8 +88,17 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
     simulation.affiche_dessin();
     simulation.affiche_range(toggle_range);
     
-    
     return true;
+}
+
+//=================================================================================//
+
+void MyArea::draw_frame(const Cairo::RefPtr<Cairo::Context>& cr)
+{
+    cr->set_line_width(10.0);
+    cr->set_source_rgb(0.7, 0.7, 0.7);
+    cr->rectangle(-dim_max,-dim_max,2*dim_max,2*dim_max);
+    cr->stroke();
 }
 
 //=================================================================================//
@@ -112,7 +110,6 @@ void MyArea::refresh()
     {
         Gdk::Rectangle r(0,0, get_allocation().get_width(),
                               get_allocation().get_height());
-                                
         win->invalidate_rect(r,false);
     }
 }
@@ -125,7 +122,6 @@ Interface::Interface(int argc, char** argv)
     m_Box_Left(Gtk::ORIENTATION_VERTICAL, 20),
     m_Box_General(Gtk::ORIENTATION_VERTICAL, 20),
     m_Box_Toggle_Display(Gtk::ORIENTATION_VERTICAL, 20),
-
     m_Button_exit("exit"),
     m_Button_open("open"),
     m_Button_save("save"),
@@ -133,7 +129,6 @@ Interface::Interface(int argc, char** argv)
     m_Button_step("step"),
     m_Button_toggle_link("toggle link"),
     m_Button_toggle_range("toggle range"),
-
     count(0),
     start(false)
 {
@@ -192,17 +187,15 @@ Interface::Interface(int argc, char** argv)
 	if(progress_col)
 	progress_col->add_attribute(cell->property_value(),
 								_columns._col_resource_percentage);
-    
     init_simulation(argc, argv);
 	tree_view_update();
-    show_all_children();//J'ai pris tellement longtemps à capter cette erreur
+    show_all_children();
 }
 
 //=================================================================================//
 
 void init_simulation(int argc, char** argv)
 {
-    
     if(argc==2)
     {
         std::ifstream fichier(argv[1]);
@@ -210,18 +203,13 @@ void init_simulation(int argc, char** argv)
         {
             simulation.clear();
             simulation.lecture(fichier);
-        }
-        else
-        {
-            std::cout<<"On va devoir utiliser le bouton open\n";
+            if(simulation.get_error_file())
+            {
+                simulation.clear();
+            }
         }
         fichier.close();
     }
-    else
-    {
-        std::cout<<"On va devoir utiliser le bouton open\n";
-    }
-    
 }
 
 //=================================================================================//
@@ -254,7 +242,6 @@ bool Interface::on_key_press_event(GdkEventKey * key_event)
                 break;
         }
     }
-    
     return Gtk::Window::on_key_press_event(key_event);
 }
 //=================================================================================//
@@ -269,6 +256,7 @@ void Interface::on_button_clicked_exit()
     std::cout<<"exit\n";
     exit(0);
 }
+
 //=================================================================================//
 
 void Interface::on_button_clicked_open()
@@ -277,56 +265,46 @@ void Interface::on_button_clicked_open()
     Gtk::FileChooserDialog dialog("Please choose a file",
             Gtk::FILE_CHOOSER_ACTION_OPEN);
     dialog.set_transient_for(*this);
-
-    //Add response buttons the the dialog:
     dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
     dialog.add_button("_Open", Gtk::RESPONSE_OK);
-
     m_Button_open.set_label("choosing a file");
-
-    //Show the dialog and wait for a user response:
     int result = dialog.run();
-
     m_Button_open.set_label("Open");
-
-    //Handle the response:
     switch(result)
     {
         case(Gtk::RESPONSE_OK):
         {
             std::cout << "Open clicked." << std::endl;
-
-            //Notice that this is a std::string, not a Glib::ustring.
             std::string filename = dialog.get_filename();
             std::ifstream fichier(filename);
             if(not(fichier.fail()))
             {
                 simulation.clear();
                 simulation.lecture(fichier);
+                if(simulation.get_error_file())
+                {
+                    simulation.clear();
+                }
+                count=0;
                 m_Area.refresh();
                 this->tree_view_update();
-                
             }
             fichier.close();
-          
-          
-          
-          
-          
-        break;
-      }
-      case(Gtk::RESPONSE_CANCEL):
-      {
-        std::cout << "Cancel clicked." << std::endl;
-        break;
-      }
-      default:
-      {
-        std::cout << "Unexpected button clicked." << std::endl;
-        break;
-      }
+            break;
+        }
+        case(Gtk::RESPONSE_CANCEL):
+        {
+            std::cout << "Cancel clicked." << std::endl;
+            break;
+        }
+        default:
+        {
+            std::cout << "Unexpected button clicked." << std::endl;
+            break;
+        }
     }
 }
+
 //=================================================================================//
 
 void Interface::on_button_clicked_save()
@@ -337,9 +315,8 @@ void Interface::on_button_clicked_save()
     std::ofstream fichier(filename);
     simulation.affiche_texte(fichier);
     fichier.close();
-    
-    
 }
+
 //=================================================================================//
 
 void Interface::on_button_clicked_start()
@@ -370,6 +347,7 @@ void Interface::on_button_clicked_step()
         std::cout << "Mise à jour de la simulation numéro : " << ++count << std::endl;
     }
 }
+
 //=================================================================================//
 
 void Interface::on_button_clicked_toggle_link()
@@ -393,6 +371,7 @@ void Interface::on_button_clicked_toggle_range()
 }
 
 // ===================== the parts to adapt have a comment ==================
+
 void Interface::tree_view_update()
 {
     Glib::RefPtr<Gtk::ListStore> ref_tree_model = Gtk::ListStore::create(_columns);

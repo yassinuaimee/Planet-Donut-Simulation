@@ -31,7 +31,7 @@ namespace
     std::vector<unsigned> E_uid;
 }
 
-void verif_uid(const unsigned);
+bool verif_uid(const unsigned);
 bool lecture_bool(std::stringstream&);
 
 std::unique_ptr<Prospection> creation_robot_prospection(unsigned, std::stringstream&);
@@ -40,16 +40,16 @@ std::unique_ptr<Transport> creation_robot_transport(unsigned, std::stringstream&
 std::unique_ptr<Communication> creation_robot_communication(unsigned, 
 															std::stringstream&);
 
-void init_liste_propecteur(int, std::ifstream&, 
+bool init_liste_propecteur(int, std::ifstream&,
 						   std::vector<std::unique_ptr<Prospection>>&);
-void init_liste_forage(int, std::ifstream&, 
+bool init_liste_forage(int, std::ifstream&,
 					   std::vector<std::unique_ptr<Forage>>&);
-void init_liste_transport(int, std::ifstream&, 
+bool init_liste_transport(int, std::ifstream&,
 						  std::vector<std::unique_ptr<Transport>>&);
-void init_liste_communication(int, std::ifstream&, Cercle&,
+bool init_liste_communication(int, std::ifstream&, Cercle&,
 							  std::vector<std::unique_ptr<Communication>>&);
 
-void communication_centre(std::vector<std::unique_ptr<Communication>>&, Cercle&);
+bool communication_centre(std::vector<std::unique_ptr<Communication>>&, Cercle&);
 
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -72,32 +72,41 @@ Base creation_base(std::string line, std::ifstream & entree)
 
 Base::Base(double x, double y, double ressources,
            int nbP, int nbF, int nbT, int nbC, std::ifstream & entree )
-:centre(x, y, rayon_base), ressources(ressources),
+:centre(x, y, rayon_base), ressources(ressources), error_base(false),
  nbP(nbP), nbF(nbF), nbT(nbT), nbC(nbC)
 {
     if(nbP!=0)
     {
-        init_liste_propecteur(nbP, entree, this->E_P);
+        if(init_liste_propecteur(nbP, entree, this->E_P))
+        {
+            error_base=true;
+        }
     }
     if(nbF!=0)
     {
-        init_liste_forage(nbF, entree, this->E_F);
-        
+        if(init_liste_forage(nbF, entree, this->E_F))
+        {
+            error_base=true;
+        }
     }
     if(nbT!=0)
     {
-        init_liste_transport(nbT, entree, this->E_T);
-        
+        if(init_liste_transport(nbT, entree, this->E_T))
+        {
+            error_base=true;
+        }
     }
     if(nbC!=0)
     {
-        init_liste_communication(nbC, entree, this->centre, this->E_C);
+        if(init_liste_communication(nbC, entree, this->centre, this->E_C))
+        {
+            error_base=true;
+        }
     }
     else
     {
         std::cout<<message::missing_robot_communication(x, y);
-        exit(0);
-        
+        error_base=true;
     }
     E_uid.clear();//Permet de vider le vecteur E_uid pour la prochaine Base
 }
@@ -121,6 +130,13 @@ double Base::get_x()
 double Base::get_y()
 {
     return centre.get_y();
+}
+
+//================================================================================//
+
+bool Base::get_error_base()
+{
+    return error_base;
 }
 
 //================================================================================//
@@ -149,7 +165,6 @@ void Base::affiche_texte()
         communication->affiche_texte();
     }
     std::cout<<std::endl;
-    
 }
 
 //================================================================================//
@@ -163,7 +178,7 @@ void Base::affiche_texte(std::ofstream& sortie)
         prospection->affiche_texte(sortie);
     }
     sortie<<std::endl;
-    for(auto& forage : E_F)//Mettre aussi les sortie sur tous les robots et normalement c'est bon!!!!!!!
+    for(auto& forage : E_F)
     {
         forage->affiche_texte(sortie);
     }
@@ -232,9 +247,10 @@ PROSPECTION
 */
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void init_liste_propecteur(int nbP, std::ifstream& entree, 
+bool init_liste_propecteur(int nbP, std::ifstream& entree,
 						   std::vector<std::unique_ptr<Prospection>>& E_P)
 {
+    bool error(false);
     std::string line;
     int test_nbP(0);
     
@@ -250,11 +266,14 @@ void init_liste_propecteur(int nbP, std::ifstream& entree,
             continue;
             
         }
-        
-        verif_uid(uid);
+        if(verif_uid(uid))//Si le booléen de retour est à vrai on peut direct dire que ça marche pas
+        {
+            error=true;
+        }
         E_P.push_back(creation_robot_prospection(uid, data));
         ++test_nbP;
     }
+    return error;
 }
 
 //================================================================================//
@@ -287,7 +306,6 @@ std::unique_ptr<Prospection> creation_robot_prospection(unsigned uid,
                                                        atteint, retour, found));
         return p;
     }
-    
 }
 
 
@@ -297,9 +315,10 @@ FORAGE
 */
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void init_liste_forage(int nbF, std::ifstream& entree,
+bool init_liste_forage(int nbF, std::ifstream& entree,
                        std::vector<std::unique_ptr<Forage>>& E_F)
 {
+    bool error(false);
     std::string line;
     int test_nbF(0);
     
@@ -312,11 +331,15 @@ void init_liste_forage(int nbF, std::ifstream& entree,
         {
             continue;
         }
-        verif_uid(uid);
+        if(verif_uid(uid))
+        {
+            error=true;
+        }
         E_F.push_back(creation_robot_forage(uid, data));
         
         ++test_nbF;
     }
+    return error;
 }
 
 //================================================================================//
@@ -337,9 +360,10 @@ TRANSPORT
 */
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void init_liste_transport(int nbT, std::ifstream& entree,
+bool init_liste_transport(int nbT, std::ifstream& entree,
                           std::vector<std::unique_ptr<Transport>>& E_T)
 {
+    bool error(false);
     std::string line;
     int test_nbT(0);
     
@@ -353,11 +377,15 @@ void init_liste_transport(int nbT, std::ifstream& entree,
             continue;
         }
         
-        verif_uid(uid);
+        if(verif_uid(uid))
+        {
+            error=true;
+        }
         E_T.push_back(creation_robot_transport(uid, data));
         
         ++test_nbT;
     }
+    return error;
 }
 
 //================================================================================//
@@ -382,10 +410,10 @@ COMMUNICATION
 */
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void init_liste_communication(int nbC, std::ifstream& entree, Cercle& centre,
+bool init_liste_communication(int nbC, std::ifstream& entree, Cercle& centre,
                               std::vector<std::unique_ptr<Communication>>& E_C)
 {
-
+    bool error(false);
     std::string line;
     int test_nbC(0);
     
@@ -398,12 +426,19 @@ void init_liste_communication(int nbC, std::ifstream& entree, Cercle& centre,
         {
             continue;
         }
-        verif_uid(uid);
+        if(verif_uid(uid))
+        {
+            error=true;
+        }
         E_C.push_back(creation_robot_communication(uid, data));
         ++test_nbC;
         
     }
-    communication_centre(E_C, centre);
+    if(communication_centre(E_C, centre))
+    {
+        error=true;
+    }
+    return error;
 }
 
 //================================================================================//
@@ -424,10 +459,10 @@ std::unique_ptr<Communication> creation_robot_communication(unsigned uid,
 
 //================================================================================//
 
-void communication_centre(std::vector<std::unique_ptr<Communication>>& E_C,
+bool communication_centre(std::vector<std::unique_ptr<Communication>>& E_C,
                           Cercle& centre)
 {
-    bool centre_ok(false);
+    bool centre_ok(false), error(false);
     for(auto& robot : E_C)
     {
         if((robot->get_position()).same_position(centre.get_centre()))
@@ -439,8 +474,9 @@ void communication_centre(std::vector<std::unique_ptr<Communication>>& E_C,
     {
         std::cout<<message::missing_robot_communication(centre.get_x(),
                                                         centre.get_y());
-        exit(0);
+        error=true;
     }
+    return error;
 }
 
 
@@ -450,17 +486,19 @@ FONCTIONS SUPPLEMENTAIRES
 */
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void verif_uid(const unsigned uid)
+bool verif_uid(const unsigned uid)
 {
+    bool error(false);
 	for(auto& element : E_uid)
 	{
 		if(element==uid)
 		{
 			std::cout<<message::identical_robot_uid(uid);
-			exit(0);
+			error=true;
 		}
 	}
     E_uid.push_back(uid);
+    return error;
 }
 
 //================================================================================//

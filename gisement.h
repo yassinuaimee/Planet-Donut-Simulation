@@ -25,16 +25,18 @@ public:
     void affiche_texte();
     void affiche_texte(std::ofstream&);
     void affiche_dessin();
-    void verification(std::vector<Gisement>&);
+    bool verification(std::vector<Gisement>&);
     Cercle get_field();
 	double get_x();
 	double get_y();
 	double get_rayon();
     double get_capacite();
+    bool get_error_gisement();
 	
 private:
 	Cercle field;
-	double capacite; 
+    double capacite;
+    bool error_gisement;
 };
 
 //================================================================================//

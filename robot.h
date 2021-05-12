@@ -63,10 +63,6 @@ public:
     void affiche_texte();
     void affiche_texte(std::ofstream&);
     void affiche_dessin(int);
-
-    
-private:
-    
 };
 
 //================================================================================//
@@ -79,10 +75,8 @@ public:
     void affiche_texte(std::ofstream&);
     void affiche_dessin(int);
 
-    
 private:
 	bool retour;
-
 };
 
 //================================================================================//
@@ -94,9 +88,5 @@ public:
     void affiche_texte();
     void affiche_texte(std::ofstream&);
     void affiche_dessin(int);
-
-
-private:
-
 };
 #endif

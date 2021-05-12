@@ -5,7 +5,7 @@
  * Yassin Al-Nuaimee
  * Adrien Maillet Gonzalez
  *
- * Version: 12
+ * Version: 14
  *
  *
  */
@@ -21,12 +21,12 @@
 #include "message.h"
 #include "constantes.h"
 
-//using namespace std;
+
 
 //================================================================================//
 
 Simulation::Simulation()
-: nbG(0), nbB(0)
+: nbG(0), nbB(0), error_file(false)
 {}
 
 //================================================================================//
@@ -47,6 +47,7 @@ unsigned Simulation::get_nbB()
 
 void Simulation::lecture(std::ifstream & entree)
 {
+    error_file=false;
     std::string line;
     double valeur;
     
@@ -66,7 +67,6 @@ void Simulation::lecture(std::ifstream & entree)
             break;
         }
     }
-    
     if(nbG!=0)
     {
         while(getline(entree>>std::ws, line))
@@ -79,7 +79,12 @@ void Simulation::lecture(std::ifstream & entree)
             }
             
             Gisement gisement=creation_gisement(line);
-            gisement.verification(Eg);
+            
+            //On fait à la fois la vérification que le gisement est ok et on utilise le bool de sortie
+            if(gisement.verification(Eg) or gisement.get_error_gisement())
+            {
+                error_file=true;
+            }
             Eg.push_back(creation_gisement(line));
             
             ++test_nbG;
@@ -107,7 +112,6 @@ void Simulation::lecture(std::ifstream & entree)
             break;
         }
     }
-    
     if(nbB!=0)
     {
         while(getline(entree>>std::ws, line))
@@ -118,8 +122,8 @@ void Simulation::lecture(std::ifstream & entree)
             {
                 continue;
             }
+            Eb.push_back(creation_base(line, entree));
             
-            Eb.push_back( creation_base(line, entree));
             ++test_nbB;
             
             if(test_nbB==nbB)
@@ -128,7 +132,6 @@ void Simulation::lecture(std::ifstream & entree)
             }
         }
     }
-    std::cout<<"On est en train de lire le fichier\n";
     this->verifications();
     this->affiche_texte();
 }
@@ -137,7 +140,6 @@ void Simulation::lecture(std::ifstream & entree)
 
 void Simulation::verifications()
 {
-    std::cout<<"On efectue les verifications\n";
     for(auto& base : Eb)//Vérification intersection BASES et GISEMENTS
     {
         for(auto& gisement : Eg)
@@ -148,12 +150,14 @@ void Simulation::verifications()
                                                         base.get_y(),
                                                         gisement.get_x(),
                                                         gisement.get_y());
-                exit(0);
+                error_file=true;
             }
         }
+        if(base.get_error_base())
+        {
+            error_file=true;
+        }
     }
-    
-    
     for(size_t i(0); i<nbB; ++i)//Verification intersection BASES
     {
         for(size_t j(i+1); j<nbB; ++j)
@@ -164,7 +168,7 @@ void Simulation::verifications()
                                                   (Eb[i]).get_y(),
                                                   (Eb[j]).get_x(),
                                                   (Eb[j]).get_y() );
-                exit(0);
+                error_file=true;
             }
         }
     }
@@ -179,7 +183,6 @@ void Simulation::affiche_texte()
     {
         gisement.affiche_texte();
     }
-    
     std::cout<<std::endl<<nbB<<" #Nombre BASES"<<std::endl;
     for(auto& base : Eb)
     {
@@ -196,7 +199,6 @@ void Simulation::affiche_texte(std::ofstream& sortie)
     {
         gisement.affiche_texte(sortie);
     }
-    
     sortie<<std::endl<<nbB<<" #Nombre BASES"<<std::endl;
     for(auto& base : Eb)
     {
@@ -210,6 +212,7 @@ void Simulation::clear()
 {
     nbB=0;
     nbG=0;
+    error_file=false;
     Eb.clear();
     Eg.clear();
 }
@@ -274,4 +277,11 @@ int Simulation::get_base_nbC(size_t i)
 double Simulation::get_base_ressources(size_t i)
 {
     return Eb[i].get_ressources();
+}
+
+//================================================================================//
+
+bool Simulation::get_error_file()
+{
+    return error_file;
 }

@@ -35,6 +35,7 @@ public:
     int get_nbT();
     int get_nbC();
     double get_ressources();
+    bool get_error_base();
     
 private:
 	std::vector<std::unique_ptr<Prospection>> E_P;
@@ -43,6 +44,7 @@ private:
 	std::vector<std::unique_ptr<Communication>> E_C;
 	Cercle centre;
     double ressources;
+    bool error_base;
 	int nbP, nbF, nbT, nbC;
 };
 

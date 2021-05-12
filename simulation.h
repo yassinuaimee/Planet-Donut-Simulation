@@ -35,6 +35,7 @@ public:
     int get_base_nbF(size_t);
     int get_base_nbT(size_t);
     int get_base_nbC(size_t);
+    bool get_error_file();
     double get_base_ressources(size_t);
     void affiche_range(bool);
 
@@ -43,6 +44,7 @@ private:
 	unsigned nbB;
 	std::vector<Base> Eb;
 	std::vector<Gisement> Eg;
+    bool error_file;
 };
 
 #endif
