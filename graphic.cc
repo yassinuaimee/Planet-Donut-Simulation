@@ -75,7 +75,7 @@ void affiche_symbole_prospecteur(double x, double y, int index)
     (*ptcr)->stroke();
 }
 
-void affiche_symbole_prospection(double x, double y, int index)
+void affiche_symbole_forage(double x, double y, int index)
 {
     color_base(index);
     (*ptcr)->set_line_width(5.0);

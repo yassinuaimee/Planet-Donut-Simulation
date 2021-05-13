@@ -451,7 +451,7 @@ void affiche_dessin(int type, int index, double x, double y)
             affiche_symbole_prospecteur(x, y, index);
             break;
         case 2:
-            affiche_symbole_prospection(x, y, index);
+            affiche_symbole_forage(x, y, index);
             break;
         case 3:
             affiche_symbole_transport(x, y, index);
