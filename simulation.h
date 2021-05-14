@@ -26,6 +26,7 @@ public:
     void lecture(std::ifstream &);
     void clear();
     void verifications();
+    void update();
     void affiche_texte();
     void affiche_texte(std::ofstream&);
     void affiche_dessin();

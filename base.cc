@@ -34,23 +34,25 @@ namespace
 bool verif_uid(const unsigned);
 bool lecture_bool(std::stringstream&);
 
-std::unique_ptr<Prospection> creation_robot_prospection(unsigned, std::stringstream&);
-std::unique_ptr<Forage> creation_robot_forage(unsigned, std::stringstream&);
-std::unique_ptr<Transport> creation_robot_transport(unsigned, std::stringstream&);
-std::unique_ptr<Communication> creation_robot_communication(unsigned, 
+std::shared_ptr<Prospection> creation_robot_prospection(unsigned, std::stringstream&);
+std::shared_ptr<Forage> creation_robot_forage(unsigned, std::stringstream&);
+std::shared_ptr<Transport> creation_robot_transport(unsigned, std::stringstream&);
+std::shared_ptr<Communication> creation_robot_communication(unsigned,
 															std::stringstream&);
 
 bool init_liste_propecteur(int, std::ifstream&,
-						   std::vector<std::unique_ptr<Prospection>>&);
+						   std::vector<std::shared_ptr<Prospection>>&);
 bool init_liste_forage(int, std::ifstream&,
-					   std::vector<std::unique_ptr<Forage>>&);
+					   std::vector<std::shared_ptr<Forage>>&);
 bool init_liste_transport(int, std::ifstream&,
-						  std::vector<std::unique_ptr<Transport>>&);
+						  std::vector<std::shared_ptr<Transport>>&);
 bool init_liste_communication(int, std::ifstream&, Cercle&,
-							  std::vector<std::unique_ptr<Communication>>&);
+							  std::vector<std::shared_ptr<Communication>>&);
 
-bool communication_centre(std::vector<std::unique_ptr<Communication>>&, Cercle&);
+bool communication_centre(std::vector<std::shared_ptr<Communication>>&, Cercle&);
 
+void test_adjacence(std::vector<std::shared_ptr<Robot>>&, std::shared_ptr<Robot>&,
+                    std::shared_ptr<Robot>&);
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /*
@@ -81,12 +83,21 @@ Base::Base(double x, double y, double ressources,
         {
             error_base=true;
         }
+        
+        for(int i(0); i<nbP; ++i)
+        {
+            (this->E_R).push_back(this->E_P[i]);
+        }
     }
     if(nbF!=0)
     {
         if(init_liste_forage(nbF, entree, this->E_F))
         {
             error_base=true;
+        }
+        for(int i(0); i<nbF; ++i)
+        {
+            (this->E_R).push_back(this->E_F[i]);
         }
     }
     if(nbT!=0)
@@ -95,6 +106,10 @@ Base::Base(double x, double y, double ressources,
         {
             error_base=true;
         }
+        for(int i(0); i<nbT; ++i)
+        {
+            (this->E_R).push_back(this->E_T[i]);
+        }
     }
     if(nbC!=0)
     {
@@ -102,15 +117,71 @@ Base::Base(double x, double y, double ressources,
         {
             error_base=true;
         }
+        for(int i(0); i<nbC; ++i)
+        {
+            (this->E_R).push_back(this->E_C[i]);
+        }
     }
     else
     {
         std::cout<<message::missing_robot_communication(x, y);
         error_base=true;
     }
-    E_uid.clear();//Permet de vider le vecteur E_uid pour la prochaine Base
+    E_uid.clear();
 }
 
+//================================================================================//
+
+void Base::update_voisin(Base& base_2)
+{
+    for(int i(0); i<nbP+nbF+nbT+nbC; ++i)
+    {
+        base_2.test_voisin(E_R[i]);
+    }
+}
+
+//================================================================================//
+
+void Base::test_voisin(std::shared_ptr<Robot>& robot_depart)
+{
+    robot_depart->set_visited(false);//Inutile, on va le mettre à vrai juste après normalement
+    for(auto robot : E_R)
+    {
+        robot->set_visited(false);
+    }
+    test_adjacence(E_R, robot_depart, robot_depart);
+    
+}
+
+//================================================================================//
+
+void test_adjacence(std::vector<std::shared_ptr<Robot>>& E_R,
+                    std::shared_ptr<Robot>& robot_test,
+                    std::shared_ptr<Robot>& robot_depart)
+{
+    robot_test->set_visited(true);
+    for(auto robot : E_R)
+    {
+        if(robot->get_visited()==false and robot->communication(robot_test))
+        {
+            if(robot_depart->in_L_adj(robot)==false)
+            {
+                robot_depart->ajoute_liste_adjacence(robot);
+                test_adjacence(E_R, robot, robot_depart);
+            }
+        }
+    }
+    
+}
+//================================================================================//
+//================================================================================//
+//================================================================================//
+//================================================================================//
+//================================================================================//
+//================================================================================//
+//================================================================================//
+//================================================================================//
+//================================================================================//
 //================================================================================//
 
 Cercle Base::get_centre()
@@ -248,7 +319,7 @@ PROSPECTION
 ///////////////////////////////////////////////////////////////////////////////////////
 
 bool init_liste_propecteur(int nbP, std::ifstream& entree,
-						   std::vector<std::unique_ptr<Prospection>>& E_P)
+						   std::vector<std::shared_ptr<Prospection>>& E_P)
 {
     bool error(false);
     std::string line;
@@ -278,7 +349,7 @@ bool init_liste_propecteur(int nbP, std::ifstream& entree,
 
 //================================================================================//
 
-std::unique_ptr<Prospection> creation_robot_prospection(unsigned uid,
+std::shared_ptr<Prospection> creation_robot_prospection(unsigned uid,
                                                         std::stringstream& data)
 {
     std::string booleen;
@@ -294,7 +365,7 @@ std::unique_ptr<Prospection> creation_robot_prospection(unsigned uid,
     {
         double xg(0.0), yg(0.0), rayong(0.0), capaciteg(0.0);
         data>>xg>>yg>>rayong>>capaciteg;
-        std::unique_ptr<Prospection> p(new Prospection(uid, dp, x, y, xb, yb,
+        std::shared_ptr<Prospection> p(new Prospection(uid, dp, x, y, xb, yb,
                                                        atteint, retour, found,
                                                        xg, yg,
                                                        rayong, capaciteg));
@@ -302,7 +373,7 @@ std::unique_ptr<Prospection> creation_robot_prospection(unsigned uid,
     }
     else
     {
-        std::unique_ptr<Prospection> p(new Prospection(uid, dp, x, y, xb, yb,
+        std::shared_ptr<Prospection> p(new Prospection(uid, dp, x, y, xb, yb,
                                                        atteint, retour, found));
         return p;
     }
@@ -316,7 +387,7 @@ FORAGE
 ///////////////////////////////////////////////////////////////////////////////////////
 
 bool init_liste_forage(int nbF, std::ifstream& entree,
-                       std::vector<std::unique_ptr<Forage>>& E_F)
+                       std::vector<std::shared_ptr<Forage>>& E_F)
 {
     bool error(false);
     std::string line;
@@ -344,13 +415,13 @@ bool init_liste_forage(int nbF, std::ifstream& entree,
 
 //================================================================================//
 
-std::unique_ptr<Forage> creation_robot_forage(unsigned uid, std::stringstream& data)
+std::shared_ptr<Forage> creation_robot_forage(unsigned uid, std::stringstream& data)
 {
     double dp(0.0), x(0.0), y(0.0), xb(0.0), yb(0.0);
     bool atteint(false);
     data>>dp>>x>>y>>xb>>yb;
     atteint=lecture_bool(data);
-    std::unique_ptr<Forage> forage(new Forage(uid, dp, x, y, xb, yb, atteint));
+    std::shared_ptr<Forage> forage(new Forage(uid, dp, x, y, xb, yb, atteint));
     return forage;
 }
 
@@ -361,7 +432,7 @@ TRANSPORT
 ///////////////////////////////////////////////////////////////////////////////////////
 
 bool init_liste_transport(int nbT, std::ifstream& entree,
-                          std::vector<std::unique_ptr<Transport>>& E_T)
+                          std::vector<std::shared_ptr<Transport>>& E_T)
 {
     bool error(false);
     std::string line;
@@ -390,7 +461,7 @@ bool init_liste_transport(int nbT, std::ifstream& entree,
 
 //================================================================================//
 
-std::unique_ptr<Transport> creation_robot_transport(unsigned uid,
+std::shared_ptr<Transport> creation_robot_transport(unsigned uid,
                                                     std::stringstream& data)
 {
     double dp(0.0), x(0.0), y(0.0), xb(0.0), yb(0.0);
@@ -398,7 +469,7 @@ std::unique_ptr<Transport> creation_robot_transport(unsigned uid,
     data>>dp>>x>>y>>xb>>yb;
     atteint=lecture_bool(data);
     retour=lecture_bool(data);
-    std::unique_ptr<Transport> transport(new Transport(uid, dp, x, y, xb, yb,
+    std::shared_ptr<Transport> transport(new Transport(uid, dp, x, y, xb, yb,
                                                        atteint, retour));
     return transport;
 }
@@ -411,7 +482,7 @@ COMMUNICATION
 ///////////////////////////////////////////////////////////////////////////////////////
 
 bool init_liste_communication(int nbC, std::ifstream& entree, Cercle& centre,
-                              std::vector<std::unique_ptr<Communication>>& E_C)
+                              std::vector<std::shared_ptr<Communication>>& E_C)
 {
     bool error(false);
     std::string line;
@@ -443,7 +514,7 @@ bool init_liste_communication(int nbC, std::ifstream& entree, Cercle& centre,
 
 //================================================================================//
 
-std::unique_ptr<Communication> creation_robot_communication(unsigned uid,
+std::shared_ptr<Communication> creation_robot_communication(unsigned uid,
                                                             std::stringstream& data)
 {
     double dp(0.0), x(0.0), y(0.0), xb(0.0), yb(0.0);
@@ -451,7 +522,7 @@ std::unique_ptr<Communication> creation_robot_communication(unsigned uid,
     data>>dp>>x>>y>>xb>>yb;
     atteint=lecture_bool(data);
     
-    std::unique_ptr<Communication> communication(new Communication(uid, dp, x, y,
+    std::shared_ptr<Communication> communication(new Communication(uid, dp, x, y,
                                                                    xb, yb,
                                                                    atteint));
     return communication;
@@ -459,7 +530,7 @@ std::unique_ptr<Communication> creation_robot_communication(unsigned uid,
 
 //================================================================================//
 
-bool communication_centre(std::vector<std::unique_ptr<Communication>>& E_C,
+bool communication_centre(std::vector<std::shared_ptr<Communication>>& E_C,
                           Cercle& centre)
 {
     bool centre_ok(false), error(false);

@@ -21,7 +21,7 @@
 #include "message.h"
 #include "constantes.h"
 
-
+void update_voisin(Base&, Base&);
 
 //================================================================================//
 
@@ -173,6 +173,36 @@ void Simulation::verifications()
         }
     }
 }
+
+//================================================================================//
+
+void Simulation::update()
+{
+    for(unsigned i(0); i<nbB; ++i)
+    {
+        for(unsigned j(0); j<nbB; ++j)
+        {
+            update_voisin(Eb[i], Eb[j]);
+        }
+    }
+}
+
+
+
+
+
+
+void update_voisin(Base& base_1, Base& base_2)
+{
+    base_1.update_voisin(base_2);
+}
+
+
+
+
+
+
+
 
 //================================================================================//
 

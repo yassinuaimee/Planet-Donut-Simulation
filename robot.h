@@ -14,6 +14,8 @@
 #define ROBOT_H_INCLUDED
 
 #include <fstream>
+#include <vector>
+#include <memory>
 #include "gisement.h"
 
 class Robot
@@ -25,7 +27,12 @@ public:
     Point get_position();
     double get_xb();
     double get_yb();
+    bool get_visited();
+    void set_visited(bool);
     void affiche_range();
+    bool communication(std::shared_ptr<Robot>&);
+    void ajoute_liste_adjacence(std::shared_ptr<Robot>&);
+    bool in_L_adj(std::shared_ptr<Robot>&);
     
 protected:
 	unsigned uid;
@@ -33,6 +40,8 @@ protected:
 	Point position;
 	Point but;
 	bool atteint;
+    bool visited;
+    std::vector<std::shared_ptr<Robot>> L_adjacence;
 };
 
 //================================================================================//

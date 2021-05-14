@@ -13,13 +13,12 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <cmath>
 #include "robot.h"
 #include "message.h"
 #include "geomod.h"
 #include "gisement.h"
 #include "constantes.h"
-
-//using namespace std;
 
 
 /*
@@ -32,6 +31,43 @@ Robot::Robot(unsigned uid, double dp, double x, double y,
              double xb, double yb, bool atteint)
 : uid(uid), dp(dp), position(x, y), but(xb, yb) , atteint(atteint)
 {}
+
+//================================================================================//
+
+bool Robot::communication(std::shared_ptr<Robot> & robot)
+{
+    Point point_robot(robot->get_position());
+    double x(position.get_x()-point_robot.get_x());
+    double y(position.get_y()-point_robot.get_y());
+             
+    if(equal_zero(sqrt(pow(x,2)+pow(y,2))-rayon_comm))
+    {
+        return true;
+    }
+    return false;
+}
+
+//================================================================================//
+
+void Robot::ajoute_liste_adjacence(std::shared_ptr<Robot>& robot)
+{
+    L_adjacence.push_back(robot);
+}
+
+//================================================================================//
+
+bool Robot::in_L_adj(std::shared_ptr<Robot>& robot)
+{
+    bool appartient(false);
+    for(auto robot_adj : L_adjacence)
+    {
+        if(robot_adj==robot)
+        {
+            appartient=true;
+        }
+    }
+    return appartient;
+}
 
 //================================================================================//
 
@@ -75,6 +111,19 @@ void Robot::affiche_range()
     position.cercle_communication();
 }
 
+//================================================================================//
+
+bool Robot::get_visited()
+{
+    return visited;
+}
+
+//================================================================================//
+
+void Robot::set_visited(bool valeur)
+{
+    visited=valeur;
+}
 
 /*
 //================================================================================//
