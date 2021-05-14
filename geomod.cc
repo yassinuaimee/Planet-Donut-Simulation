@@ -17,7 +17,6 @@
 #include "constantes.h"
 #include "graphic.h"
 
-//using namespace std;
 
 namespace
 {
@@ -426,7 +425,7 @@ void Point::affiche_dessin(int type,int index)//Pratique si dans le futur on veu
             affiche_symbole_prospecteur(x, y, index);
             break;
         case 2:
-            affiche_symbole_prospection(x, y, index);
+            affiche_symbole_forage(x, y, index);
             break;
         case 3:
             affiche_symbole_transport(x, y, index);
