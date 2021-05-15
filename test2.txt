@@ -7,7 +7,7 @@
 # Bases
 1 # nbB
 
-100 0 0.5 1 1 1 13
+100 0 0.5 1 1 1 13 #Base 2
    1 0 25 500 0 690 false false false
    
    2 0 760 0 760 0 true
@@ -28,4 +28,9 @@
    15 0 -100 -450 -100 -450 true
    16 0  300 -450  300 -450 true
 
-   
+#Si on indique le nombre de base à 1 celle si on y touche pas
+-100 -100 2000 0 0 0 2 #Base 2
+    1 5 -100 -100 -100 -100 true
+    2 5 200 200 0 0 true
+    
+    

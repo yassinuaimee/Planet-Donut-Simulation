@@ -24,13 +24,18 @@ class Simulation
 public:
 	Simulation();
     void lecture(std::ifstream &);
-    void clear();
     void verifications();
+    void clear();
+    
     void update();
     void adjacence();
+    
     void affiche_texte();
     void affiche_texte(std::ofstream&);
     void affiche_dessin();
+    void affiche_range(bool);
+    void affiche_link(bool);
+    
     unsigned get_nbG();
     unsigned get_nbB();
     int get_base_nbP(size_t);
@@ -39,8 +44,6 @@ public:
     int get_base_nbC(size_t);
     bool get_error_file();
     double get_base_ressources(size_t);
-    void affiche_range(bool);
-    void affiche_link(bool);
 
 private:
 	unsigned nbG;

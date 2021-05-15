@@ -56,7 +56,9 @@ void test_adjacence(std::vector<std::shared_ptr<Robot>>&, std::shared_ptr<Robot>
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /*
-BASE
+//================================================================================//
+ //BASE//
+//================================================================================//
 */
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -74,63 +76,74 @@ Base creation_base(std::string line, std::ifstream & entree)
 
 Base::Base(double x, double y, double ressources,
            int nbP, int nbF, int nbT, int nbC, std::ifstream & entree )
-:centre(x, y, rayon_base), ressources(ressources), error_base(false),
+:centre(x, y, rayon_base), ressources(ressources), error_base(false), active(true),
  nbP(nbP), nbF(nbF), nbT(nbT), nbC(nbC)
 {
-    if(nbP!=0)
+    if(ressources<=0)
     {
-        if(init_liste_propecteur(nbP, entree, this->E_P))
+        active=false;
+    }
+    if(active)
+    {
+        if(nbP!=0)
         {
+            if(init_liste_propecteur(nbP, entree, this->E_P))
+            {
+                error_base=true;
+            }
+            
+            for(int i(0); i<nbP; ++i)
+            {
+                (this->E_R).push_back(this->E_P[i]);
+            }
+        }
+        if(nbF!=0)
+        {
+            if(init_liste_forage(nbF, entree, this->E_F))
+            {
+                error_base=true;
+            }
+            for(int i(0); i<nbF; ++i)
+            {
+                (this->E_R).push_back(this->E_F[i]);
+            }
+        }
+        if(nbT!=0)
+        {
+            if(init_liste_transport(nbT, entree, this->E_T))
+            {
+                error_base=true;
+            }
+            for(int i(0); i<nbT; ++i)
+            {
+                (this->E_R).push_back(this->E_T[i]);
+            }
+        }
+        if(nbC!=0)
+        {
+            if(init_liste_communication(nbC, entree, this->centre, this->E_C))
+            {
+                error_base=true;
+            }
+            for(int i(0); i<nbC; ++i)
+            {
+                (this->E_R).push_back(this->E_C[i]);
+            }
+        }
+        else
+        {
+            std::cout<<message::missing_robot_communication(x, y);
             error_base=true;
         }
-        
-        for(int i(0); i<nbP; ++i)
-        {
-            (this->E_R).push_back(this->E_P[i]);
-        }
-    }
-    if(nbF!=0)
-    {
-        if(init_liste_forage(nbF, entree, this->E_F))
-        {
-            error_base=true;
-        }
-        for(int i(0); i<nbF; ++i)
-        {
-            (this->E_R).push_back(this->E_F[i]);
-        }
-    }
-    if(nbT!=0)
-    {
-        if(init_liste_transport(nbT, entree, this->E_T))
-        {
-            error_base=true;
-        }
-        for(int i(0); i<nbT; ++i)
-        {
-            (this->E_R).push_back(this->E_T[i]);
-        }
-    }
-    if(nbC!=0)
-    {
-        if(init_liste_communication(nbC, entree, this->centre, this->E_C))
-        {
-            error_base=true;
-        }
-        for(int i(0); i<nbC; ++i)
-        {
-            (this->E_R).push_back(this->E_C[i]);
-        }
-    }
-    else
-    {
-        std::cout<<message::missing_robot_communication(x, y);
-        error_base=true;
     }
     E_uid.clear();
 }
 
+/*
 //================================================================================//
+ //MÉTHODES EVOLUTION DE LA SIMULATION//
+//================================================================================//
+*/
 
 void Base::update_voisin(Base& base_2)
 {
@@ -148,8 +161,7 @@ void Base::test_voisin(std::shared_ptr<Robot>& robot_depart)
     {
         robot->set_visited(false);
     }
-    test_adjacence(E_R, robot_depart, robot_depart);
-    robot_depart->affiche_adjacence();//Fonction qui fait office de stub pour le moment elle est inutile de fou en vrai
+    test_adjacence(E_R, robot_depart, robot_depart);//Fonction récursive
 }
 
 //================================================================================//
@@ -171,44 +183,47 @@ void test_adjacence(std::vector<std::shared_ptr<Robot>>& E_R,
         }
     }
 }
-//================================================================================//
-//================================================================================//
-//================================================================================//
-//================================================================================//
-//================================================================================//
-//================================================================================//
-//================================================================================//
-//================================================================================//
-//================================================================================//
+
 //================================================================================//
 
-Cercle Base::get_centre()
+void Base::destruction()
 {
-    return centre;
+    E_R.clear();
+    E_P.clear();
+    E_F.clear();
+    E_T.clear();
+    E_C.clear();
+    nbP=0;
+    nbF=0;
+    nbT=0;
+    nbC=0;
+    active=false;
 }
 
 //================================================================================//
 
-double Base::get_x()
+void Base::connexion()
 {
-    return centre.get_x();
+    int robot_index(0);
+    
+    for(unsigned i(0); i<nbC; ++i)//Permet de trouver le robot de communication au centre de la base
+    {
+        if(E_C[i]->get_position().same_position(centre.get_centre()))
+        {
+            robot_index=i;
+            break;
+        }
+    }
+    
+    E_C[robot_index]->creation_remote_autonomous(E_remote, E_autonomous, E_R);
+    
 }
 
+/*
 //================================================================================//
-
-double Base::get_y()
-{
-    return centre.get_y();
-}
-
+ //MÉTHODES D'AFFICHAGE//
 //================================================================================//
-
-bool Base::get_error_base()
-{
-    return error_base;
-}
-
-//================================================================================//
+*/
 
 void Base::affiche_texte()
 {
@@ -269,22 +284,25 @@ void Base::affiche_texte(std::ofstream& sortie)
 
 void Base::affiche_dessin(int index)
 {
-    centre.affiche_dessin(3, index);
-    for(auto& prospection : E_P)
+    if(active)
     {
-        prospection->affiche_dessin(index);
-    }
-    for(auto& forage : E_F)
-    {
-        forage->affiche_dessin(index);
-    }
-    for(auto& transport : E_T)
-    {
-        transport->affiche_dessin(index);
-    }
-    for(auto& communication : E_C)
-    {
-        communication->affiche_dessin(index);
+        centre.affiche_dessin(3, index);
+        for(auto& prospection : E_P)
+        {
+            prospection->affiche_dessin(index);
+        }
+        for(auto& forage : E_F)
+        {
+            forage->affiche_dessin(index);
+        }
+        for(auto& transport : E_T)
+        {
+            transport->affiche_dessin(index);
+        }
+        for(auto& communication : E_C)
+        {
+            communication->affiche_dessin(index);
+        }
     }
 }
 
@@ -292,21 +310,9 @@ void Base::affiche_dessin(int index)
 
 void Base::affiche_range()
 {
-    for(auto& prospection : E_P)
+    for(auto& robot : E_R)
     {
-        prospection->affiche_range();
-    }
-    for(auto& forage : E_F)
-    {
-        forage->affiche_range();
-    }
-    for(auto& transport : E_T)
-    {
-        transport->affiche_range();
-    }
-    for(auto& communication : E_C)
-    {
-        communication->affiche_range();
+        robot->affiche_range();
     }
 }
 
@@ -320,9 +326,52 @@ void Base::affiche_link()
     }
 }
 
+
+/*
+//================================================================================//
+ //GETTERS//
+//================================================================================//
+*/
+
+Cercle Base::get_centre()
+{
+    return centre;
+}
+
+//================================================================================//
+
+double Base::get_x()
+{
+    return centre.get_x();
+}
+
+//================================================================================//
+
+double Base::get_y()
+{
+    return centre.get_y();
+}
+
+//================================================================================//
+
+bool Base::get_error_base()
+{
+    return error_base;
+}
+
+//================================================================================//
+
+bool Base::get_active()
+{
+    return active;
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////////////
 /*
-PROSPECTION
+//================================================================================//
+ //PROSPECTION//
+//================================================================================//
 */
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -390,7 +439,9 @@ std::shared_ptr<Prospection> creation_robot_prospection(unsigned uid,
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /*
-FORAGE
+//================================================================================//
+ //FORAGE//
+//================================================================================//
 */
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -435,7 +486,9 @@ std::shared_ptr<Forage> creation_robot_forage(unsigned uid, std::stringstream& d
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /*
-TRANSPORT
+//================================================================================//
+ //TRANSPORT//
+//================================================================================//
 */
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -485,7 +538,9 @@ std::shared_ptr<Transport> creation_robot_transport(unsigned uid,
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /*
-COMMUNICATION
+//================================================================================//
+ //COMMUNICATION//
+//================================================================================//
 */
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -561,7 +616,9 @@ bool communication_centre(std::vector<std::shared_ptr<Communication>>& E_C,
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /*
-FONCTIONS SUPPLEMENTAIRES
+//================================================================================//
+ //FONCTIONS SUPPLEMENTAIRES//
+//================================================================================//
 */
 ///////////////////////////////////////////////////////////////////////////////////////
 

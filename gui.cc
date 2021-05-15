@@ -85,9 +85,10 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
     cr->scale(size/(frame.xMax - frame.xMin), -size/(frame.yMax - frame.yMin));
     draw_frame(cr);
     
-    simulation.affiche_dessin();
+    
     simulation.affiche_range(toggle_range);
     simulation.affiche_link(toggle_link);
+    simulation.affiche_dessin();
 
     
     return true;
@@ -359,7 +360,6 @@ void Interface::on_button_clicked_step()
 
 void Interface::on_button_clicked_toggle_link()
 {
-    std::cout<<"Toggle Link\n";
     if(not toggle_link)
     {
         toggle_link=true;

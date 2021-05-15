@@ -22,25 +22,15 @@
 #include "constantes.h"
 
 
+/*
 //================================================================================//
+ //MÉTHODES DE MAINTENANCE/CREATION DE LA SIMULATION//
+//================================================================================//
+*/
 
 Simulation::Simulation()
 : nbG(0), nbB(0), error_file(false)
 {}
-
-//================================================================================//
-
-unsigned Simulation::get_nbG()
-{
-    return nbG;
-}
-
-//================================================================================//
-
-unsigned Simulation::get_nbB()
-{
-    return nbB;
-}
 
 //================================================================================//
 
@@ -175,6 +165,23 @@ void Simulation::verifications()
 
 //================================================================================//
 
+
+void Simulation::clear()
+{
+    nbB=0;
+    nbG=0;
+    error_file=false;
+    Eb.clear();
+    Eg.clear();
+}
+
+
+/*
+//================================================================================//
+ //MÉTHODES EVOLUTION DE LA SIMULATION//
+//================================================================================//
+*/
+
 void Simulation::update()
 {
     for(unsigned i(0); i<nbB; ++i)
@@ -183,12 +190,26 @@ void Simulation::update()
         {
             Eb[i].update_voisin(Eb[j]);
         }
+        
+        Eb[i].connexion();
+        /*
+        Eb[i].maintenance();
+        Eb[i].creation();
+        Eb[i].update_remote();
+        Eb[i].update_autonomous();
+         */
     }
-    
-    /*
-     Ajouter encore tout le reste du pseudo code 1 vraiment c'est important mon pote
-     */
+    for(unsigned i(0); i<nbB; ++i)
+    {
+        if(Eb[i].get_ressources()<=0)
+        {
+            Eb[i].destruction();
+        }
+    }
+
 }
+
+//================================================================================//
 
 void Simulation::adjacence()//Pratique dans le cas où on souhaite affiche direct les link
                                 //alors même que la simulation n'a même pas commencé
@@ -204,16 +225,11 @@ void Simulation::adjacence()//Pratique dans le cas où on souhaite affiche direc
 
 
 
-
-
-
-
-
-
-
-
-
+/*
 //================================================================================//
+ //MÉTHODES D'AFFICHAGE//
+//================================================================================//
+*/
 
 void Simulation::affiche_texte()
 {
@@ -243,17 +259,6 @@ void Simulation::affiche_texte(std::ofstream& sortie)
     {
         base.affiche_texte(sortie);
     }
-}
-
-//================================================================================//
-
-void Simulation::clear()
-{
-    nbB=0;
-    nbG=0;
-    error_file=false;
-    Eb.clear();
-    Eg.clear();
 }
 
 //================================================================================//
@@ -294,6 +299,24 @@ void Simulation::affiche_link(bool toggle_link)
             Eb[i].affiche_link();
         }
     }
+}
+
+/*
+//================================================================================//
+ //GETTERS//
+//================================================================================//
+*/
+
+unsigned Simulation::get_nbG()
+{
+    return nbG;
+}
+
+//================================================================================//
+
+unsigned Simulation::get_nbB()
+{
+    return nbB;
 }
 
 //================================================================================//

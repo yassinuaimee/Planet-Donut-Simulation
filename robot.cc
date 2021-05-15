@@ -21,11 +21,13 @@
 #include "constantes.h"
 
 
+///////////////////////////////////////////////////////////////////////////////////////
 /*
 //================================================================================//
  //ROBOT//
 //================================================================================//
 */
+///////////////////////////////////////////////////////////////////////////////////////
 
 Robot::Robot(unsigned uid, double dp, double x, double y,
              double xb, double yb, bool atteint)
@@ -47,7 +49,12 @@ bool Robot::communication(std::shared_ptr<Robot> & robot)
     return false;
 }
 
+
+/*
 //================================================================================//
+ //LISTE D'ADJACENCE//
+//================================================================================//
+*/
 
 void Robot::ajoute_liste_adjacence(std::shared_ptr<Robot>& robot)
 {
@@ -69,17 +76,51 @@ bool Robot::in_L_adj(std::shared_ptr<Robot>& robot)
     return appartient;
 }
 
-//================================================================================//
 
-void Robot::affiche_adjacence()//Fonction de stub pour afficher les robots dans la liste d'adjacence
+/*
+//================================================================================//
+ //MÉTHODES D'AFFICHAGE//
+//================================================================================//
+*/
+
+void Robot::affiche_adjacence()//Stub utilisé à cause d'une erreur lors creation L_adj
 {
     for(int i(0); i<L_adjacence.size(); ++i)
     {
-        std::cout<<"\tRobot : "<<i<<", x = "<<L_adjacence[i]->get_x()<<", y = "<<L_adjacence[i]->get_y()<<"\n";
+        std::cout<<"\tRobot : "<<i<<", x = "<<L_adjacence[i]->get_x()
+                                  <<", y = "<<L_adjacence[i]->get_y()<<"\n";
     }
 }
 
 //================================================================================//
+
+void Robot::affiche_range()
+{
+    position.cercle_communication();
+}
+
+//================================================================================//
+
+void Robot::affiche_link()
+{
+    double x1(position.get_x()), y1(position.get_y());
+    for(auto& robot_adjacent : L_adjacence)
+    {
+        double x2(robot_adjacent->get_x()), y2(robot_adjacent->get_y());
+        
+        if(sqrt(pow(x1-x2,2)+pow(y1-y2,2))-rayon_comm<=0)
+        {
+            position.ligne_reseau(robot_adjacent->get_position());
+        }
+    }
+}
+
+
+/*
+//================================================================================//
+ //GETTERS//
+//================================================================================//
+*/
 
 double Robot::get_x()
 {
@@ -114,30 +155,12 @@ Point Robot::get_position()
     return position;
 }
 
+
+/*
 //================================================================================//
-
-void Robot::affiche_range()
-{
-    position.cercle_communication();
-}
-
+ //VISITED GETTER/SETTER//
 //================================================================================//
-
-void Robot::affiche_link()
-{
-    double x1(position.get_x()), y1(position.get_y());
-    for(auto& robot_adjacent : L_adjacence)
-    {
-        double x2(robot_adjacent->get_x()), y2(robot_adjacent->get_y());
-        
-        if(sqrt(pow(x1-x2,2)+pow(y1-y2,2))-rayon_comm<=0)
-        {
-            position.ligne_reseau(robot_adjacent->get_position());
-        }
-    }
-}
-
-//================================================================================//
+*/
 
 bool Robot::get_visited()
 {
@@ -151,11 +174,14 @@ void Robot::set_visited(bool valeur)
     visited=valeur;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////
 /*
 //================================================================================//
- //ROBOT-PROSPECTION//
+ //PROSPECTION//
 //================================================================================//
 */
+///////////////////////////////////////////////////////////////////////////////////////
 
 Prospection::Prospection(unsigned uid, double dp, double x, double y,
                          double xb, double yb, bool atteint, bool retour,
@@ -236,11 +262,13 @@ void Prospection::affiche_dessin(int index)
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////
 /*
 //================================================================================//
- //ROBOT-FORAGE//
+ //FORAGE//
 //================================================================================//
 */
+///////////////////////////////////////////////////////////////////////////////////////
 
 Forage::Forage(unsigned uid, double dp, double x, double y,
                double xb, double yb, bool atteint)
@@ -283,11 +311,13 @@ void Forage::affiche_dessin(int index)
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////
 /*
 //================================================================================//
- //ROBOT-TRANSPORT//
+ //TRANSPORT//
 //================================================================================//
 */
+///////////////////////////////////////////////////////////////////////////////////////
 
 Transport::Transport(unsigned uid, double dp, double x, double y,
                      double xb, double yb, bool atteint, bool retour)
@@ -330,11 +360,13 @@ void Transport::affiche_dessin(int index)
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////
 /*
 //================================================================================//
- //ROBOT-COMMUNICATION//
+ //COMMUNICATION//
 //================================================================================//
 */
+///////////////////////////////////////////////////////////////////////////////////////
 
 Communication::Communication(unsigned uid, double dp, double x, double y,
                              double xb, double yb, bool atteint)
@@ -373,5 +405,34 @@ void Communication::affiche_dessin(int index)
     if(position.get_y()+rayon_comm>dim_max)
     {
        ::affiche_dessin(4, index, position.get_x(), position.get_y()-2*dim_max);
+    }
+}
+
+//================================================================================//
+
+void Communication::creation_remote_autonomous(
+                                    std::vector<std::shared_ptr<Robot>>& E_remote,
+                                    std::vector<std::shared_ptr<Robot>>& E_autonomous,
+                                    std::vector<std::shared_ptr<Robot>>& E_R)
+{
+    for(auto& robot_base : E_R)
+    {
+        bool in_adjacence(false);
+        
+        for(auto& robot_adj : L_adjacence)
+        {
+            if(robot_base==robot_adj)
+            {
+                in_adjacence=true;
+            }
+        }
+        if(in_adjacence)
+        {
+            E_remote.push_back(robot_base);
+        }
+        else
+        {
+            E_autonomous.push_back(robot_base);
+        }
     }
 }

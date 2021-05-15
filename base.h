@@ -23,13 +23,18 @@ class Base
 {
 public:
     Base(double, double, double, int, int, int, int, std::ifstream & );
+    
     void update_voisin(Base&);
     void test_voisin(std::shared_ptr<Robot>&);
+    void connexion();
+    void destruction();
+    
     void affiche_texte();
     void affiche_texte(std::ofstream&);
     void affiche_dessin(int);
     void affiche_range();
     void affiche_link();
+    
     Cercle get_centre();
     double get_x();
     double get_y();
@@ -39,6 +44,7 @@ public:
     int get_nbC();
     double get_ressources();
     bool get_error_base();
+    bool get_active();//Permet de verifier qu'une base est bien active
     
 private:
     std::vector<std::shared_ptr<Robot>> E_R;
@@ -46,9 +52,11 @@ private:
 	std::vector<std::shared_ptr<Forage>> E_F;
 	std::vector<std::shared_ptr<Transport>> E_T;
 	std::vector<std::shared_ptr<Communication>> E_C;
+    std::vector<std::shared_ptr<Robot>> E_remote;
+    std::vector<std::shared_ptr<Robot>> E_autonomous;
 	Cercle centre;
     double ressources;
-    bool error_base;
+    bool error_base, active;
 	int nbP, nbF, nbT, nbC;
 };
 

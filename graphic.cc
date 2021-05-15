@@ -24,6 +24,12 @@ void activate_graphic(const Cairo::RefPtr<Cairo::Context>& cr)
     ptcr=&cr;
 }
 
+/*
+//================================================================================//
+ //CERLCES//
+//================================================================================//
+*/
+
 void cercle_noir_dessin(double x, double y, double rayon)
 {
     (*ptcr)->set_line_width(1.0);
@@ -63,6 +69,12 @@ void cercle_robot_dessin(double x, double y,int indice)
     (*ptcr)->fill_preserve();
     (*ptcr)->stroke();
 }
+
+/*
+//================================================================================//
+ //SYMBOLES ROBOTS//
+//================================================================================//
+*/
 
 void affiche_symbole_prospecteur(double x, double y, int index)
 {
@@ -111,14 +123,26 @@ void affiche_symbole_communication(double x, double y, int index)
     
 }
 
+/*
+//================================================================================//
+ //LIGNES DROITES//
+//================================================================================//
+*/
+
 void ligne_dessin(double x1, double y1, double x2, double y2)
 {
-    (*ptcr)->set_line_width(10.0);
+    (*ptcr)->set_line_width(5.0);
     (*ptcr)->set_source_rgb(0.6,0,1);
     (*ptcr)->move_to(x1,y1);
     (*ptcr)->line_to(x1+x2,y1+y2);
     (*ptcr)->stroke();
 }
+
+/*
+//================================================================================//
+ //COULEURS DE LA BASE//
+//================================================================================//
+*/
 
 void color_base(int index)
 {

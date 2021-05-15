@@ -99,5 +99,8 @@ public:
     void affiche_texte();
     void affiche_texte(std::ofstream&);
     void affiche_dessin(int);
+    void creation_remote_autonomous(std::vector<std::shared_ptr<Robot>>&,
+                                    std::vector<std::shared_ptr<Robot>>&,
+                                    std::vector<std::shared_ptr<Robot>>&);
 };
 #endif
