@@ -40,7 +40,7 @@ bool Robot::communication(std::shared_ptr<Robot> & robot)
     double x(position.get_x()-point_robot.get_x());
     double y(position.get_y()-point_robot.get_y());
              
-    if(equal_zero(sqrt(pow(x,2)+pow(y,2))-rayon_comm))
+    if((sqrt(pow(x,2)+pow(y,2))-rayon_comm)<=0)
     {
         return true;
     }
@@ -67,6 +67,16 @@ bool Robot::in_L_adj(std::shared_ptr<Robot>& robot)
         }
     }
     return appartient;
+}
+
+//================================================================================//
+
+void Robot::affiche_adjacence()//Fonction de stub pour afficher les robots dans la liste d'adjacence
+{
+    for(int i(0); i<L_adjacence.size(); ++i)
+    {
+        std::cout<<"\tRobot : "<<i<<", x = "<<L_adjacence[i]->get_x()<<", y = "<<L_adjacence[i]->get_y()<<"\n";
+    }
 }
 
 //================================================================================//
@@ -109,6 +119,22 @@ Point Robot::get_position()
 void Robot::affiche_range()
 {
     position.cercle_communication();
+}
+
+//================================================================================//
+
+void Robot::affiche_link()
+{
+    double x1(position.get_x()), y1(position.get_y());
+    for(auto& robot_adjacent : L_adjacence)
+    {
+        double x2(robot_adjacent->get_x()), y2(robot_adjacent->get_y());
+        
+        if(sqrt(pow(x1-x2,2)+pow(y1-y2,2))-rayon_comm<=0)
+        {
+            position.ligne_reseau(robot_adjacent->get_position());
+        }
+    }
 }
 
 //================================================================================//

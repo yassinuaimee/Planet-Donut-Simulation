@@ -30,6 +30,8 @@ public:
     bool get_visited();
     void set_visited(bool);
     void affiche_range();
+    void affiche_link();
+    void affiche_adjacence();//Fonction qui fait office de stub, ça marche pas du tout pour le moment mskn
     bool communication(std::shared_ptr<Robot>&);
     void ajoute_liste_adjacence(std::shared_ptr<Robot>&);
     bool in_L_adj(std::shared_ptr<Robot>&);

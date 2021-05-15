@@ -121,10 +121,10 @@ bool Point::same_position(Point autre)
 void Point::ligne_reseau(Point p)
 {
     std::array<double,2> direction(plus_courte_direction(*this, p));
+    //Allé retour nécessaire pour que le rebouclement fonctionne correctement
     ligne_dessin(x, y, direction[0], direction[1]);
     ligne_dessin(p.get_x(), p.get_y(), -direction[0], -direction[1]);
-    //On fait une sorte d'allé retour c'est inutile
-        //dans des situation mais c'est cool quand même
+    
     
 }
 

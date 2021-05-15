@@ -23,7 +23,7 @@
 #include "simulation.h"
 
 #define GTK_COMPATIBILITY_MODE
-#ifndef GTK_COMPATIBILITY_MODE
+#ifdef GTK_COMPATIBILITY_MODE
 namespace Gtk
 {
   template<class T, class... T_Args>
@@ -87,6 +87,8 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
     
     simulation.affiche_dessin();
     simulation.affiche_range(toggle_range);
+    simulation.affiche_link(toggle_link);
+
     
     return true;
 }
@@ -207,6 +209,7 @@ void init_simulation(int argc, char** argv)
             {
                 simulation.clear();
             }
+            simulation.adjacence();
         }
         fichier.close();
     }
@@ -223,6 +226,7 @@ bool Interface::on_idle()
   }
   return true;
 }
+
 //=================================================================================//
 
 bool Interface::on_key_press_event(GdkEventKey * key_event)
@@ -286,6 +290,7 @@ void Interface::on_button_clicked_open()
                 {
                     simulation.clear();
                 }
+                simulation.adjacence();
                 count=0;
                 m_Area.refresh();
                 this->tree_view_update();
@@ -355,6 +360,15 @@ void Interface::on_button_clicked_step()
 void Interface::on_button_clicked_toggle_link()
 {
     std::cout<<"Toggle Link\n";
+    if(not toggle_link)
+    {
+        toggle_link=true;
+    }
+    else
+    {
+        toggle_link=false;
+    }
+    m_Area.refresh();
 }
 
 //=================================================================================//

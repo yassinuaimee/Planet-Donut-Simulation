@@ -1,0 +1,15 @@
+# fichier de test rendu3_image.txt
+# gisements
+2
+900 0   150  1000
+0   700  50  1000
+
+# Bases
+1 # nbB
+
+100 0 0.5 0 0 0 2
+   
+   4 0 100 0 100 0 true 
+   5 0 350 0 350 0 true
+
+   

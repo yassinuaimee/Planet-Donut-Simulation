@@ -21,7 +21,6 @@
 #include "message.h"
 #include "constantes.h"
 
-void update_voisin(Base&, Base&);
 
 //================================================================================//
 
@@ -182,7 +181,23 @@ void Simulation::update()
     {
         for(unsigned j(0); j<nbB; ++j)
         {
-            update_voisin(Eb[i], Eb[j]);
+            Eb[i].update_voisin(Eb[j]);
+        }
+    }
+    
+    /*
+     Ajouter encore tout le reste du pseudo code 1 vraiment c'est important mon pote
+     */
+}
+
+void Simulation::adjacence()//Pratique dans le cas où on souhaite affiche direct les link
+                                //alors même que la simulation n'a même pas commencé
+{
+    for(unsigned i(0); i<nbB; ++i)
+    {
+        for(unsigned j(0); j<nbB; ++j)
+        {
+            Eb[i].update_voisin(Eb[j]);
         }
     }
 }
@@ -190,12 +205,6 @@ void Simulation::update()
 
 
 
-
-
-void update_voisin(Base& base_1, Base& base_2)
-{
-    base_1.update_voisin(base_2);
-}
 
 
 
@@ -270,6 +279,19 @@ void Simulation::affiche_range(bool toggle_range)
         for(int i(0);i<nbB;++i)
         {
             Eb[i].affiche_range();
+        }
+    }
+}
+
+//================================================================================//
+
+void Simulation::affiche_link(bool toggle_link)
+{
+    if(toggle_link)
+    {
+        for(int i(0);i<nbB;++i)
+        {
+            Eb[i].affiche_link();
         }
     }
 }

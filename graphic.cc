@@ -107,7 +107,6 @@ void affiche_symbole_communication(double x, double y, int index)
     (*ptcr)->arc(x, y+15, 15, M_PI/4, 3*M_PI/4);
     (*ptcr)->stroke();
     (*ptcr)->arc(x, y+10, 20, M_PI/4, 3*M_PI/4);
-    //(*ptcr)->arc(x, y+25, 10, -M_PI, 0);
     (*ptcr)->stroke();
     
 }

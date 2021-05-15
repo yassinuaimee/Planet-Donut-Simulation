@@ -27,6 +27,7 @@ public:
     void clear();
     void verifications();
     void update();
+    void adjacence();
     void affiche_texte();
     void affiche_texte(std::ofstream&);
     void affiche_dessin();
@@ -39,6 +40,7 @@ public:
     bool get_error_file();
     double get_base_ressources(size_t);
     void affiche_range(bool);
+    void affiche_link(bool);
 
 private:
 	unsigned nbG;

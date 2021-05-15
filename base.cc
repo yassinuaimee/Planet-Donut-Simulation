@@ -144,13 +144,12 @@ void Base::update_voisin(Base& base_2)
 
 void Base::test_voisin(std::shared_ptr<Robot>& robot_depart)
 {
-    robot_depart->set_visited(false);//Inutile, on va le mettre à vrai juste après normalement
     for(auto robot : E_R)
     {
         robot->set_visited(false);
     }
     test_adjacence(E_R, robot_depart, robot_depart);
-    
+    robot_depart->affiche_adjacence();//Fonction qui fait office de stub pour le moment elle est inutile de fou en vrai
 }
 
 //================================================================================//
@@ -162,7 +161,7 @@ void test_adjacence(std::vector<std::shared_ptr<Robot>>& E_R,
     robot_test->set_visited(true);
     for(auto robot : E_R)
     {
-        if(robot->get_visited()==false and robot->communication(robot_test))
+        if(robot->get_visited()==false and robot->communication(robot_test))//J'ai trouvé mon erreur, j'avais mal fait ma fonction de test communication
         {
             if(robot_depart->in_L_adj(robot)==false)
             {
@@ -171,7 +170,6 @@ void test_adjacence(std::vector<std::shared_ptr<Robot>>& E_R,
             }
         }
     }
-    
 }
 //================================================================================//
 //================================================================================//
@@ -309,6 +307,16 @@ void Base::affiche_range()
     for(auto& communication : E_C)
     {
         communication->affiche_range();
+    }
+}
+
+//================================================================================//
+
+void Base::affiche_link()
+{
+    for(auto& robot : E_R)
+    {
+        robot->affiche_link();
     }
 }
 

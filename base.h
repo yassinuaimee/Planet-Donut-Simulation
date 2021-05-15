@@ -24,11 +24,12 @@ class Base
 public:
     Base(double, double, double, int, int, int, int, std::ifstream & );
     void update_voisin(Base&);
-    void test_voisin(std::shared_ptr<Robot>&););
+    void test_voisin(std::shared_ptr<Robot>&);
     void affiche_texte();
     void affiche_texte(std::ofstream&);
     void affiche_dessin(int);
     void affiche_range();
+    void affiche_link();
     Cercle get_centre();
     double get_x();
     double get_y();
