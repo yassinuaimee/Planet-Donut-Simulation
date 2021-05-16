@@ -20,11 +20,11 @@
 #include "base.h"
 #include "robot.h"
 #include "message.h"
+#include "constantes.h"
 #include "geomod.h"
 #include "gisement.h"
 #include "constantes.h"
 
-//using namespace std;
 
 namespace
 {
@@ -53,6 +53,7 @@ bool communication_centre(std::vector<std::shared_ptr<Communication>>&, Cercle&)
 
 void test_adjacence(std::vector<std::shared_ptr<Robot>>&, std::shared_ptr<Robot>&,
                     std::shared_ptr<Robot>&);
+
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /*
@@ -186,6 +187,54 @@ void test_adjacence(std::vector<std::shared_ptr<Robot>>& E_R,
 
 //================================================================================//
 
+void Base::connexion()
+{
+    int robot_index(0);
+    
+    for(unsigned i(0); i<nbC; ++i)//Permet de trouver le robot de communication au centre de la base
+    {
+        if(E_C[i]->get_position().same_position(centre.get_centre()))
+        {
+            robot_index=i;
+            break;
+        }
+    }
+    E_remote.clear();
+    E_autonomous.clear();
+    
+    E_C[robot_index]->creation_remote_autonomous(E_remote, E_autonomous, E_R);
+    
+}
+
+//================================================================================//
+
+void Base::maintenance()
+{
+    for(auto& robot : E_R)
+    {
+        if(centre.point_appartient(robot->get_position()))
+        {
+            ressources=ressources-cost_repair*robot->get_dp();
+            robot->init_dp();
+        }
+    }
+}
+
+//================================================================================//
+
+void Base::update_autonomous()
+{
+    std::cout<<E_autonomous.size()<<"\n";
+    for(auto& robot : E_autonomous)
+    {
+        if(not(robot->reach_max_dp()))
+        {
+            robot->deplacement();
+        }
+    }
+}
+//================================================================================//
+
 void Base::destruction()
 {
     E_R.clear();
@@ -200,24 +249,6 @@ void Base::destruction()
     active=false;
 }
 
-//================================================================================//
-
-void Base::connexion()
-{
-    int robot_index(0);
-    
-    for(unsigned i(0); i<nbC; ++i)//Permet de trouver le robot de communication au centre de la base
-    {
-        if(E_C[i]->get_position().same_position(centre.get_centre()))
-        {
-            robot_index=i;
-            break;
-        }
-    }
-    
-    E_C[robot_index]->creation_remote_autonomous(E_remote, E_autonomous, E_R);
-    
-}
 
 /*
 //================================================================================//

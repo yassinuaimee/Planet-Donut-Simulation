@@ -224,6 +224,7 @@ bool Interface::on_idle()
   {
       std::cout << "Mise à jour de la simulation numéro : " << ++count << std::endl;
       simulation.update();
+      m_Area.refresh();
   }
   return true;
 }
@@ -293,6 +294,8 @@ void Interface::on_button_clicked_open()
                 }
                 simulation.adjacence();
                 count=0;
+                toggle_link=false;//New file = new life = new beginning
+                toggle_range=false;
                 m_Area.refresh();
                 this->tree_view_update();
             }

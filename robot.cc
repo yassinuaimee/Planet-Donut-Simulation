@@ -36,6 +36,11 @@ Robot::Robot(unsigned uid, double dp, double x, double y,
 
 //================================================================================//
 
+Robot::~Robot()
+{}
+
+//================================================================================//
+
 bool Robot::communication(std::shared_ptr<Robot> & robot)
 {
     Point point_robot(robot->get_position());
@@ -49,7 +54,22 @@ bool Robot::communication(std::shared_ptr<Robot> & robot)
     return false;
 }
 
+//================================================================================//
 
+void Robot::deplacement()
+{
+    double x(position.get_x()), y(position.get_y());
+    double xb(but.get_x()), yb(but.get_y());
+    double delta_x(xb-x), delta_y(yb-y);
+    double norme(sqrt(pow(delta_x,2)+pow(delta_y,2)));
+    
+    if(not(equal_zero(norme)) and norme>=5)
+    {
+        position.set_x(x+5*delta_x/norme);
+        position.set_y(y+5*delta_y/norme);
+        dp=dp+5;
+    }
+}
 /*
 //================================================================================//
  //LISTE D'ADJACENCE//
@@ -155,6 +175,20 @@ Point Robot::get_position()
     return position;
 }
 
+//================================================================================//
+
+double Robot::get_dp()
+{
+    return dp;
+}
+
+//================================================================================//
+
+void Robot::init_dp()
+{
+    dp=0;
+}
+
 
 /*
 //================================================================================//
@@ -197,6 +231,18 @@ Prospection::Prospection(unsigned uid, double dp, double x, double y,
                          double xb, double yb, bool atteint, bool retour, bool found)
 : Robot(uid, dp, x, y, xb, yb, atteint), retour(retour), found(found), gisement()
 {}
+
+//================================================================================//
+
+bool Prospection::reach_max_dp()
+{
+    bool max(false);
+    if(dp>10*dim_max-5)
+    {
+        max=true;
+    }
+    return max;
+}
 
 //================================================================================//
 
@@ -277,6 +323,18 @@ Forage::Forage(unsigned uid, double dp, double x, double y,
 
 //================================================================================//
 
+bool Forage::reach_max_dp()
+{
+    bool max(false);
+    if(dp>1.42*dim_max-5)
+    {
+        max=true;
+    }
+    return max;
+}
+
+//================================================================================//
+
 void Forage::affiche_texte()
 {
     std::cout<<"\t\t"<<uid<<" "<<dp<<" "
@@ -326,6 +384,18 @@ Transport::Transport(unsigned uid, double dp, double x, double y,
 
 //================================================================================//
 
+bool Transport::reach_max_dp()
+{
+    bool max(false);
+    if(dp>5*dim_max-5)
+    {
+        max=true;
+    }
+    return max;
+}
+
+//================================================================================//
+
 void Transport::affiche_texte()
 {
     std::cout<<"\t\t"<<uid<<" "<<dp<<" "
@@ -372,6 +442,18 @@ Communication::Communication(unsigned uid, double dp, double x, double y,
                              double xb, double yb, bool atteint)
 : Robot(uid, dp, x, y, xb, yb, atteint)
 {}
+
+//================================================================================//
+
+bool Communication::reach_max_dp()
+{
+    bool max(false);
+    if(dp>1.42*dim_max-5)
+    {
+        max=true;
+    }
+    return max;
+}
 
 //================================================================================//
 

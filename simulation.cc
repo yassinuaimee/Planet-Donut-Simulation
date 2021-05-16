@@ -192,12 +192,12 @@ void Simulation::update()
         }
         
         Eb[i].connexion();
-        /*
         Eb[i].maintenance();
+        /*
         Eb[i].creation();
         Eb[i].update_remote();
-        Eb[i].update_autonomous();
          */
+        Eb[i].update_autonomous();
     }
     for(unsigned i(0); i<nbB; ++i)
     {

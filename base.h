@@ -27,6 +27,8 @@ public:
     void update_voisin(Base&);
     void test_voisin(std::shared_ptr<Robot>&);
     void connexion();
+    void maintenance();
+    void update_autonomous();
     void destruction();
     
     void affiche_texte();

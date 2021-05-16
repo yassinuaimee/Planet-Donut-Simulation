@@ -660,12 +660,10 @@ bool equal_zero(double parametre)//Permet de faire le test d'égalité pour les 
     if(abs(parametre)<epsilon_zero)
     {
         return true;
-        
     }
     else
     {
         return false;
-        
     }
 }
 
