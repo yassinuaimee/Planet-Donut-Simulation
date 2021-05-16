@@ -36,6 +36,13 @@ Robot::Robot(unsigned uid, double dp, double x, double y,
 
 //================================================================================//
 
+void Robot::vide_adj()
+{
+    L_adjacence.clear();
+}
+
+//================================================================================//
+
 Robot::~Robot()
 {}
 
@@ -495,7 +502,8 @@ void Communication::affiche_dessin(int index)
 void Communication::creation_remote_autonomous(
                                     std::vector<std::shared_ptr<Robot>>& E_remote,
                                     std::vector<std::shared_ptr<Robot>>& E_autonomous,
-                                    std::vector<std::shared_ptr<Robot>>& E_R)
+                                    std::vector<std::shared_ptr<Robot>>& E_R,
+                                    std::shared_ptr<Communication>& robot_centre)
 {
     for(auto& robot_base : E_R)
     {
@@ -507,6 +515,10 @@ void Communication::creation_remote_autonomous(
             {
                 in_adjacence=true;
             }
+        }
+        if(robot_base==robot_centre)
+        {
+            in_adjacence=true;
         }
         if(in_adjacence)
         {

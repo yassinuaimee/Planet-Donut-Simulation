@@ -162,6 +162,8 @@ void Base::test_voisin(std::shared_ptr<Robot>& robot_depart)
     {
         robot->set_visited(false);
     }
+    robot_depart->vide_adj();
+    //robot_depart->ajoute_liste_adjacence(robot_depart);
     test_adjacence(E_R, robot_depart, robot_depart);//Fonction récursive
 }
 
@@ -202,7 +204,8 @@ void Base::connexion()
     E_remote.clear();
     E_autonomous.clear();
     
-    E_C[robot_index]->creation_remote_autonomous(E_remote, E_autonomous, E_R);
+    E_C[robot_index]->creation_remote_autonomous(E_remote, E_autonomous, E_R,
+                                                 E_C[robot_index]);
     
 }
 
@@ -227,6 +230,7 @@ void Base::update_autonomous()
     std::cout<<E_autonomous.size()<<"\n";
     for(auto& robot : E_autonomous)
     {
+        std::cout<<"x = "<<robot->get_x()<<", y = "<<robot->get_y();
         if(not(robot->reach_max_dp()))
         {
             robot->deplacement();

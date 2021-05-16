@@ -25,6 +25,7 @@ public:
     virtual ~Robot();
     virtual bool reach_max_dp() = 0;
     void deplacement();
+    void vide_adj();
     double get_x();
     double get_y();
     Point get_position();
@@ -110,6 +111,7 @@ public:
     void affiche_dessin(int);
     void creation_remote_autonomous(std::vector<std::shared_ptr<Robot>>&,
                                     std::vector<std::shared_ptr<Robot>>&,
-                                    std::vector<std::shared_ptr<Robot>>&);
+                                    std::vector<std::shared_ptr<Robot>>&,
+                                    std::shared_ptr<Communication>&);
 };
 #endif
