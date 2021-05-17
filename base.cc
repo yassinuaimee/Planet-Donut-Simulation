@@ -244,8 +244,8 @@ void Base::creation_robots()//Chaque scénario va créer au max 3 robots
 		std::shared_ptr<Communication> c1(new Communication(E_R.size()+1, 0, 
 		                                                    centre.get_x(), 
 		                                                    centre.get_y(),
-                                                            centre.get_x()+5, 
-		                                                    centre.get_y()+(10*sqrt(2))/3, false));
+                                                            centre.get_x()+1000*5,
+		                                                    centre.get_y()+10*(10*sqrt(2))/3, false));
        ressources-=cost_com;
        std::cout<<ressources<<"\n";
        E_C.push_back(c1);
@@ -253,8 +253,8 @@ void Base::creation_robots()//Chaque scénario va créer au max 3 robots
        std::cout<<E_R.size()<<"\n";
        std::shared_ptr<Communication> c2(new Communication(E_R.size()+1, 0, centre.get_x(), 
 		                                                    centre.get_y(),
-                                                                   centre.get_x()-5, 
-		                                                    centre.get_y()+(10*sqrt(2))/3,
+                                                                   centre.get_x()-5*1000,
+		                                                    centre.get_y()+10*(10*sqrt(2))/3,
                                                                    false));
        ressources-=cost_com;
        E_C.push_back(c2);
@@ -262,8 +262,8 @@ void Base::creation_robots()//Chaque scénario va créer au max 3 robots
        std::cout<<E_R.size()<<"\n";
        std::cout<<ressources<<"\n";
        std::shared_ptr<Prospection> p(new Prospection(E_R.size()+1, 0, centre.get_x(),
-                                                      centre.get_y(), centre.get_x(),
-                                                      centre.get_y()-10,
+                                                      centre.get_y(), centre.get_x()+350,
+                                                      centre.get_y()-350,
                                                        false, false, false));
        ressources-=cost_prosp;
        E_P.push_back(p);
