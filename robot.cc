@@ -65,7 +65,7 @@ bool Robot::communication(std::shared_ptr<Robot> & robot)
 
 void Robot::deplacement(double x_base, double y_base)
 {
-	if(not(atteint))
+	if(not(atteint) and not(this->reach_max_dp()))
 	{
 		test_return_base(x_base, y_base);
 	    double x(position.get_x()), y(position.get_y());
@@ -206,6 +206,13 @@ void Robot::init_dp()
     dp=0;
 }
 
+//================================================================================//
+
+bool Robot::get_atteint()
+{
+    return atteint;
+}
+
 
 /*
 //================================================================================//
@@ -265,7 +272,7 @@ bool Prospection::reach_max_dp()
 
 void Prospection::test_return_base(double& x_base, double& y_base)
 {
-	if(10*dim_max-dp<norme_plus_petit_vecteur(position.get_x(), 
+	if(10*dim_max-dp-10<norme_plus_petit_vecteur(position.get_x(), 
 											  position.get_y(), 
 											  x_base, 
 											  y_base))
@@ -273,6 +280,17 @@ void Prospection::test_return_base(double& x_base, double& y_base)
 		but.set_x(x_base);
 		but.set_y(y_base);
 	}
+}
+
+//================================================================================//
+
+void Prospection::add_gisement(Gisement& gisement_found)
+{
+    if(gisement_found.get_capacite()>=240)
+    {
+        found=true;
+        gisement=gisement_found;
+    }
 }
 
 //================================================================================//
@@ -338,6 +356,13 @@ void Prospection::affiche_dessin(int index)
     }
 }
 
+//================================================================================//
+
+bool Prospection::get_found()
+{
+    return found;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /*
@@ -368,10 +393,10 @@ bool Forage::reach_max_dp()
 
 void Forage::test_return_base(double& x_base, double& y_base)
 {
-	if(1.42*dim_max-dp<norme_plus_petit_vecteur(position.get_x(), 
-											  position.get_y(), 
-											  x_base, 
-											  y_base))
+	if(1.42*dim_max-dp-10<norme_plus_petit_vecteur(position.get_x(),
+                                                   position.get_y(),
+                                                   x_base,
+                                                   y_base))
 	{
 		but.set_x(x_base);
 		but.set_y(y_base);
@@ -443,10 +468,10 @@ bool Transport::reach_max_dp()
 
 void Transport::test_return_base(double& x_base, double& y_base)
 {
-	if(5*dim_max-dp<norme_plus_petit_vecteur(position.get_x(), 
-											  position.get_y(), 
-											  x_base, 
-											  y_base))
+	if(5*dim_max-dp-10<norme_plus_petit_vecteur(position.get_x(),
+                                                position.get_y(),
+                                                x_base,
+                                                y_base))
 	{
 		but.set_x(x_base);
 		but.set_y(y_base);
@@ -518,10 +543,10 @@ bool Communication::reach_max_dp()
 
 void Communication::test_return_base(double& x_base, double& y_base)
 {
-	if(1.42*dim_max-dp<norme_plus_petit_vecteur(position.get_x(), 
-											  position.get_y(), 
-											  x_base, 
-											  y_base))
+	if(1.42*dim_max-dp-10<norme_plus_petit_vecteur(position.get_x(),
+                                                   position.get_y(),
+                                                   x_base,
+                                                   y_base))
 	{
 		but.set_x(x_base);
 		but.set_y(y_base);

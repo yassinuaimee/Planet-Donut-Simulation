@@ -29,6 +29,8 @@ public:
     void connexion();
     void maintenance();
     void update_autonomous();
+    void update_remote();
+    void decouverte_gisement(std::vector<Gisement>&);
     void creation();
     void destruction();
     

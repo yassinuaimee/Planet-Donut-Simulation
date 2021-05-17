@@ -33,6 +33,7 @@ public:
     double get_xb();
     double get_yb();
     double get_dp();
+    bool get_atteint();
     void init_dp();
     bool get_visited();
     void set_visited(bool);
@@ -64,9 +65,11 @@ public:
     Prospection(unsigned, double, double, double, double, double, bool, bool, bool);
     bool reach_max_dp() override;
     void test_return_base(double&, double&) override;
+    void add_gisement(Gisement&);
     void affiche_texte();
     void affiche_texte(std::ofstream&);
     void affiche_dessin(int);
+    bool get_found();
     
 private:
     bool retour;

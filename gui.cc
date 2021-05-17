@@ -23,7 +23,7 @@
 #include "simulation.h"
 
 #define GTK_COMPATIBILITY_MODE
-#ifdef GTK_COMPATIBILITY_MODE
+#ifndef GTK_COMPATIBILITY_MODE
 namespace Gtk
 {
   template<class T, class... T_Args>
@@ -210,7 +210,10 @@ void init_simulation(int argc, char** argv)
             {
                 simulation.clear();
             }
-            simulation.adjacence();
+            else
+            {
+                simulation.adjacence();
+            }
         }
         fichier.close();
     }
@@ -225,6 +228,7 @@ bool Interface::on_idle()
       std::cout << "Mise à jour de la simulation numéro : " << ++count << std::endl;
       simulation.update();
       m_Area.refresh();
+      this->tree_view_update();
   }
   return true;
 }
@@ -238,19 +242,19 @@ bool Interface::on_key_press_event(GdkEventKey * key_event)
         switch(gdk_keyval_to_unicode(key_event->keyval))
         {
             case '1':
-                std::cout << "Touche 1" << std::endl;
+                this->on_button_clicked_step();
                 break;
             case 's':
-                std::cout << "Start" << std::endl;
+                this->on_button_clicked_start();
                 break;
             case 'q':
-                std::cout<<"Quit\n";
-                exit(0);
+                this->on_button_clicked_exit();
                 break;
         }
     }
     return Gtk::Window::on_key_press_event(key_event);
 }
+
 //=================================================================================//
 
 Interface::~Interface()
@@ -356,6 +360,8 @@ void Interface::on_button_clicked_step()
         std::cout<<"Step OK\n";
         std::cout << "Mise à jour de la simulation numéro : " << ++count << std::endl;
         simulation.update();
+        m_Area.refresh();
+        this->tree_view_update();
     }
 }
 

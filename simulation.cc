@@ -193,11 +193,9 @@ void Simulation::update()
         
         Eb[i].connexion();
         Eb[i].maintenance();
-        
+        Eb[i].decouverte_gisement(Eg);
         Eb[i].creation();
-        /*
         Eb[i].update_remote();
-         */
         Eb[i].update_autonomous();
     }
     for(unsigned i(0); i<nbB; ++i)

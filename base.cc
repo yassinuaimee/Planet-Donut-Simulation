@@ -276,16 +276,41 @@ void Base::creation_robots()//Chaque scénario va créer au max 3 robots
 
 void Base::update_autonomous()
 {
-    std::cout<<E_autonomous.size()<<"\n";
     for(auto& robot : E_autonomous)
     {
-        std::cout<<"x = "<<robot->get_x()<<", y = "<<robot->get_y();
-        if(not(robot->reach_max_dp()))
+        robot->deplacement(centre.get_x(), centre.get_y());
+    }
+}
+
+//================================================================================//
+
+void Base::update_remote()
+{
+    for(auto& robot : E_remote)
+    {
+        robot->deplacement(centre.get_x(), centre.get_y());
+    }
+}
+
+//================================================================================//
+
+void Base::decouverte_gisement(std::vector<Gisement>& Eg)
+{
+    for(auto& robot : E_P)
+    {
+        if(not(robot->get_found()) and not(robot->get_atteint()))
         {
-            robot->deplacement(centre.get_x(), centre.get_y());
+            for(auto& gisement : Eg)
+            {
+                if(gisement.get_field().point_appartient(robot->get_position()))
+                {
+                    robot->add_gisement(gisement);
+                }
+            }
         }
     }
 }
+
 //================================================================================//
 
 void Base::destruction()
