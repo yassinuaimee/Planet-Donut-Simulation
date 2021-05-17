@@ -24,7 +24,8 @@ public:
     Robot(unsigned, double, double, double, double, double, bool);
     virtual ~Robot();
     virtual bool reach_max_dp() = 0;
-    void deplacement();
+    void deplacement(double, double);
+    virtual void test_return_base(double&, double&) = 0;
     void vide_adj();
     double get_x();
     double get_y();
@@ -62,6 +63,7 @@ public:
 				double, double, double, double);
     Prospection(unsigned, double, double, double, double, double, bool, bool, bool);
     bool reach_max_dp() override;
+    void test_return_base(double&, double&) override;
     void affiche_texte();
     void affiche_texte(std::ofstream&);
     void affiche_dessin(int);
@@ -79,6 +81,7 @@ class Forage : public Robot
 public:
     Forage(unsigned, double, double, double, double, double, bool);
     bool reach_max_dp() override;
+    void test_return_base(double&, double&) override;
     void affiche_texte();
     void affiche_texte(std::ofstream&);
     void affiche_dessin(int);
@@ -91,6 +94,7 @@ class Transport : public Robot
 public:
     Transport(unsigned, double, double, double, double, double, bool, bool);
     bool reach_max_dp() override;
+    void test_return_base(double&, double&) override;
     void affiche_texte();
     void affiche_texte(std::ofstream&);
     void affiche_dessin(int);
@@ -106,6 +110,7 @@ class Communication : public Robot
 public:
     Communication(unsigned, double, double, double, double, double, bool);
     bool reach_max_dp() override;
+    void test_return_base(double&, double&) override;
     void affiche_texte();
     void affiche_texte(std::ofstream&);
     void affiche_dessin(int);

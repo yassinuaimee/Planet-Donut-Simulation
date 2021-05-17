@@ -193,8 +193,9 @@ void Simulation::update()
         
         Eb[i].connexion();
         Eb[i].maintenance();
-        /*
+        
         Eb[i].creation();
+        /*
         Eb[i].update_remote();
          */
         Eb[i].update_autonomous();
@@ -269,7 +270,7 @@ void Simulation::affiche_dessin()
     {
         gisement.affiche_dessin();
     }
-    for(auto i(0);i<nbB;++i)
+    for(unsigned i(0);i<nbB;++i)
     {
         Eb[i].affiche_dessin(i);
     }
@@ -281,7 +282,7 @@ void Simulation::affiche_range(bool toggle_range)
 {
     if(toggle_range)
     {
-        for(int i(0);i<nbB;++i)
+        for(unsigned i(0);i<nbB;++i)
         {
             Eb[i].affiche_range();
         }
@@ -294,7 +295,7 @@ void Simulation::affiche_link(bool toggle_link)
 {
     if(toggle_link)
     {
-        for(int i(0);i<nbB;++i)
+        for(unsigned i(0);i<nbB;++i)
         {
             Eb[i].affiche_link();
         }

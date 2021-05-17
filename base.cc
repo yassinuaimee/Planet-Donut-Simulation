@@ -193,7 +193,7 @@ void Base::connexion()
 {
     int robot_index(0);
     
-    for(unsigned i(0); i<nbC; ++i)//Permet de trouver le robot de communication au centre de la base
+    for(int i(0); i<nbC; ++i)
     {
         if(E_C[i]->get_position().same_position(centre.get_centre()))
         {
@@ -225,6 +225,55 @@ void Base::maintenance()
 
 //================================================================================//
 
+void Base::creation()
+{
+	//int i(window.get_count);
+	if(ressources>250)
+	{
+		creation_robots();
+		                                               
+	}
+}
+
+//================================================================================//
+
+void Base::creation_robots()//Chaque scénario va créer au max 3 robots
+{
+	std::cout<<E_R.size()<<"\n";
+		std::cout<<ressources<<"\n";
+		std::shared_ptr<Communication> c1(new Communication(E_R.size()+1, 0, 
+		                                                    centre.get_x(), 
+		                                                    centre.get_y(),
+                                                            centre.get_x()+5, 
+		                                                    centre.get_y()+(10*sqrt(2))/3, false));
+       ressources-=cost_com;
+       std::cout<<ressources<<"\n";
+       E_C.push_back(c1);
+       E_R.push_back(c1);
+       std::cout<<E_R.size()<<"\n";
+       std::shared_ptr<Communication> c2(new Communication(E_R.size()+1, 0, centre.get_x(), 
+		                                                    centre.get_y(),
+                                                                   centre.get_x()-5, 
+		                                                    centre.get_y()+(10*sqrt(2))/3,
+                                                                   false));
+       ressources-=cost_com;
+       E_C.push_back(c2);
+       E_R.push_back(c2);
+       std::cout<<E_R.size()<<"\n";
+       std::cout<<ressources<<"\n";
+       std::shared_ptr<Prospection> p(new Prospection(E_R.size()+1, 0, centre.get_x(),
+                                                      centre.get_y(), centre.get_x(),
+                                                      centre.get_y()-10,
+                                                       false, false, false));
+       ressources-=cost_prosp;
+       E_P.push_back(p);
+       E_R.push_back(p);                                                
+      std::cout<<E_R.size()<<"\n";
+      std::cout<<ressources<<"\n";    
+}
+
+//================================================================================//
+
 void Base::update_autonomous()
 {
     std::cout<<E_autonomous.size()<<"\n";
@@ -233,7 +282,7 @@ void Base::update_autonomous()
         std::cout<<"x = "<<robot->get_x()<<", y = "<<robot->get_y();
         if(not(robot->reach_max_dp()))
         {
-            robot->deplacement();
+            robot->deplacement(centre.get_x(), centre.get_y());
         }
     }
 }

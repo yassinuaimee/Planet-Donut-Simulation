@@ -29,7 +29,14 @@ public:
     void connexion();
     void maintenance();
     void update_autonomous();
+    void creation();
     void destruction();
+    
+    void algo_prosp();
+    void algo_decision_forage();
+    void algo_decision_transport();
+    void algo_placement_robot_com();
+    void creation_robots();
     
     void affiche_texte();
     void affiche_texte(std::ofstream&);

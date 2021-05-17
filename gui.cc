@@ -389,6 +389,13 @@ void Interface::on_button_clicked_toggle_range()
     m_Area.refresh();
 }
 
+//=================================================================================//
+
+unsigned int Interface::get_count()
+{
+	return count;
+}
+
 // ===================== the parts to adapt have a comment ==================
 
 void Interface::tree_view_update()

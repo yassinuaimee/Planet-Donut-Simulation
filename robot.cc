@@ -63,20 +63,30 @@ bool Robot::communication(std::shared_ptr<Robot> & robot)
 
 //================================================================================//
 
-void Robot::deplacement()
+void Robot::deplacement(double x_base, double y_base)
 {
-    double x(position.get_x()), y(position.get_y());
-    double xb(but.get_x()), yb(but.get_y());
-    double delta_x(xb-x), delta_y(yb-y);
-    double norme(sqrt(pow(delta_x,2)+pow(delta_y,2)));
-    
-    if(not(equal_zero(norme)) and norme>=5)
-    {
-        position.set_x(x+5*delta_x/norme);
-        position.set_y(y+5*delta_y/norme);
-        dp=dp+5;
-    }
+	if(not(atteint))
+	{
+		test_return_base(x_base, y_base);
+	    double x(position.get_x()), y(position.get_y());
+	    double xb(but.get_x()), yb(but.get_y());
+	    double delta_x(xb-x), delta_y(yb-y);
+	    double norme(sqrt(pow(delta_x,2)+pow(delta_y,2)));
+	    
+	    if(norme>=5)
+	    {
+	        position.set_x(x+5*delta_x/norme);
+	        position.set_y(y+5*delta_y/norme);
+	        dp=dp+5;
+	    }
+	    else
+	    {
+			atteint=true;
+		}
+	}
 }
+
+
 /*
 //================================================================================//
  //LISTE D'ADJACENCE//
@@ -112,7 +122,7 @@ bool Robot::in_L_adj(std::shared_ptr<Robot>& robot)
 
 void Robot::affiche_adjacence()//Stub utilisé à cause d'une erreur lors creation L_adj
 {
-    for(int i(0); i<L_adjacence.size(); ++i)
+    for(size_t i(0); i<L_adjacence.size(); ++i)
     {
         std::cout<<"\tRobot : "<<i<<", x = "<<L_adjacence[i]->get_x()
                                   <<", y = "<<L_adjacence[i]->get_y()<<"\n";
@@ -253,6 +263,20 @@ bool Prospection::reach_max_dp()
 
 //================================================================================//
 
+void Prospection::test_return_base(double& x_base, double& y_base)
+{
+	if(10*dim_max-dp<norme_plus_petit_vecteur(position.get_x(), 
+											  position.get_y(), 
+											  x_base, 
+											  y_base))
+	{
+		but.set_x(x_base);
+		but.set_y(y_base);
+	}
+}
+
+//================================================================================//
+
 void Prospection::affiche_texte()
 {
     if(found)
@@ -342,6 +366,20 @@ bool Forage::reach_max_dp()
 
 //================================================================================//
 
+void Forage::test_return_base(double& x_base, double& y_base)
+{
+	if(1.42*dim_max-dp<norme_plus_petit_vecteur(position.get_x(), 
+											  position.get_y(), 
+											  x_base, 
+											  y_base))
+	{
+		but.set_x(x_base);
+		but.set_y(y_base);
+	}
+}
+
+//================================================================================//
+
 void Forage::affiche_texte()
 {
     std::cout<<"\t\t"<<uid<<" "<<dp<<" "
@@ -403,6 +441,20 @@ bool Transport::reach_max_dp()
 
 //================================================================================//
 
+void Transport::test_return_base(double& x_base, double& y_base)
+{
+	if(5*dim_max-dp<norme_plus_petit_vecteur(position.get_x(), 
+											  position.get_y(), 
+											  x_base, 
+											  y_base))
+	{
+		but.set_x(x_base);
+		but.set_y(y_base);
+	}
+}
+
+//================================================================================//
+
 void Transport::affiche_texte()
 {
     std::cout<<"\t\t"<<uid<<" "<<dp<<" "
@@ -460,6 +512,20 @@ bool Communication::reach_max_dp()
         max=true;
     }
     return max;
+}
+
+//================================================================================//
+
+void Communication::test_return_base(double& x_base, double& y_base)
+{
+	if(1.42*dim_max-dp<norme_plus_petit_vecteur(position.get_x(), 
+											  position.get_y(), 
+											  x_base, 
+											  y_base))
+	{
+		but.set_x(x_base);
+		but.set_y(y_base);
+	}
 }
 
 //================================================================================//

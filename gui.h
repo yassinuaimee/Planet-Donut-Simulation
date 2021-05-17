@@ -64,6 +64,7 @@ public:
     Interface(int, char**);
     virtual ~Interface();
     void tree_view_update();
+    unsigned int get_count();
 protected:
     MyArea m_Area;
     bool on_idle();
