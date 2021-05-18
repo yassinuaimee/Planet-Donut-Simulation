@@ -29,6 +29,8 @@
 namespace
 {
     std::vector<unsigned> E_uid;
+    int compteur(0);
+    bool autre_triangulation(false);
 }
 
 bool verif_uid(const unsigned);
@@ -227,49 +229,268 @@ void Base::maintenance()
 
 void Base::creation()
 {
-	//int i(window.get_count);
-	if(ressources>250)
+	
+	compteur+=1;
+	
+	std::cout<<"le comteur vaut: "<<compteur<<std::endl;
+	if(ressources>250 and E_C.size()<=100)
 	{
-		creation_robots();
+		switch(compteur%3)
+		{
+			case 0: if (autre_triangulation)
+					{
+						creation_robots4(compteur);
+					} else {
+						creation_robots1(compteur);
+					}
+			        break;
+			case 1: if (autre_triangulation)
+					{
+						creation_robots5(compteur);
+					} else {
+						creation_robots2(compteur);
+					}
+			        break;
+			case 2: if (autre_triangulation)
+					{
+						creation_robots6(compteur);
+					} else {
+						creation_robots3(compteur);
+					}
+			        break;
+			
+		}
 		                                               
+	}
+	if(compteur==6)
+	{
+		compteur=0;
+		autre_triangulation=(!autre_triangulation);
+		std::cout<<"le bool vaut: "<<autre_triangulation<<"\n";
 	}
 }
 
 //================================================================================//
 
-void Base::creation_robots()//Chaque scénario va créer au max 3 robots
+void Base::creation_robots1(int i)//Chaque scénario va créer au max 3 robots
 {
 	std::cout<<E_R.size()<<"\n";
-		std::cout<<ressources<<"\n";
-		std::shared_ptr<Communication> c1(new Communication(E_R.size()+1, 0, 
+	std::cout<<ressources<<"\n";
+	std::shared_ptr<Communication> c1(new Communication(E_R.size()+1, 0, 
 		                                                    centre.get_x(), 
 		                                                    centre.get_y(),
-                                                            centre.get_x()+1000*5,
-		                                                    centre.get_y()+10*(10*sqrt(2))/3, false));
-       ressources-=cost_com;
-       std::cout<<ressources<<"\n";
-       E_C.push_back(c1);
-       E_R.push_back(c1);
-       std::cout<<E_R.size()<<"\n";
-       std::shared_ptr<Communication> c2(new Communication(E_R.size()+1, 0, centre.get_x(), 
-		                                                    centre.get_y(),
-                                                                   centre.get_x()-5*1000,
-		                                                    centre.get_y()+10*(10*sqrt(2))/3,
-                                                                   false));
-       ressources-=cost_com;
-       E_C.push_back(c2);
-       E_R.push_back(c2);
-       std::cout<<E_R.size()<<"\n";
-       std::cout<<ressources<<"\n";
-       std::shared_ptr<Prospection> p(new Prospection(E_R.size()+1, 0, centre.get_x(),
-                                                      centre.get_y(), centre.get_x()+350,
-                                                      centre.get_y()-350,
-                                                       false, false, false));
-       ressources-=cost_prosp;
-       E_P.push_back(p);
-       E_R.push_back(p);                                                
-      std::cout<<E_R.size()<<"\n";
-      std::cout<<ressources<<"\n";    
+                                                            centre.get_x()+295/2*i,
+		                                                    centre.get_y()+295*i*(sqrt(3)/2),
+		                                                     false));
+	ressources-=cost_com;
+	std::cout<<ressources<<"\n";
+	E_C.push_back(c1);
+	E_R.push_back(c1);
+	std::cout<<E_R.size()<<"\n";
+	std::shared_ptr<Communication> c2(new Communication(E_R.size()+1, 0, centre.get_x(), 
+	                                                    centre.get_y(),
+															   centre.get_x()-295/2*i,
+	                                                    centre.get_y()+295*i*(sqrt(3)/2),
+															   false));
+	ressources-=cost_com;
+	E_C.push_back(c2);
+	E_R.push_back(c2);
+	std::cout<<E_R.size()<<"\n";
+	std::cout<<ressources<<"\n";
+	std::shared_ptr<Prospection> p(new Prospection(E_R.size()+1, 0, centre.get_x(),
+												  centre.get_y(), centre.get_x(),
+												  centre.get_y()-295*i,
+												   false, false, false));
+	ressources-=cost_prosp;
+	E_P.push_back(p);
+	E_R.push_back(p);                                                
+	std::cout<<E_R.size()<<"\n";
+	std::cout<<ressources<<"\n";    
+}
+
+//================================================================================//
+
+void Base::creation_robots2(int i)//Chaque scénario va créer au max 3 robots
+{
+	std::cout<<E_R.size()<<"\n";
+	std::cout<<ressources<<"\n";
+	std::shared_ptr<Communication> c1(new Communication(E_R.size()+1, 0, 
+												centre.get_x(), 
+												centre.get_y(),
+												 centre.get_x()-295/2*i,
+	                                             centre.get_y()+295*i*(sqrt(3)/2), false));
+	ressources-=cost_com;
+	std::cout<<ressources<<"\n";
+	E_C.push_back(c1);
+	E_R.push_back(c1);
+	std::cout<<E_R.size()<<"\n";
+	std::shared_ptr<Communication> c2(new Communication(E_R.size()+1, 0, centre.get_x(), 
+												centre.get_y(),
+											    centre.get_x(),
+												centre.get_y()-295*i,
+													   false));
+	ressources-=cost_com;
+	E_C.push_back(c2);
+	E_R.push_back(c2);
+	std::cout<<E_R.size()<<"\n";
+	std::cout<<ressources<<"\n";
+	std::shared_ptr<Prospection> p(new Prospection(E_R.size()+1, 0, centre.get_x(),
+										  centre.get_y(), centre.get_x()+295/2*i,
+		                                  centre.get_y()+295*i*(sqrt(3)/2),
+										   false, false, false));
+	ressources-=cost_prosp;
+	E_P.push_back(p);
+	E_R.push_back(p);                                                
+	std::cout<<E_R.size()<<"\n";
+	std::cout<<ressources<<"\n";    
+}
+
+//================================================================================//
+
+void Base::creation_robots3(int i)//Chaque scénario va créer au max 3 robots
+{
+	std::cout<<E_R.size()<<"\n";
+	std::cout<<ressources<<"\n";
+	std::shared_ptr<Communication> c1(new Communication(E_R.size()+1, 0, 
+												centre.get_x(), 
+												centre.get_y(),
+												centre.get_x(),
+												centre.get_y()-295*i, false));
+	ressources-=cost_com;
+	std::cout<<ressources<<"\n";
+	E_C.push_back(c1);
+	E_R.push_back(c1);
+	std::cout<<E_R.size()<<"\n";
+	std::shared_ptr<Communication> c2(new Communication(E_R.size()+1, 0, centre.get_x(), 
+												centre.get_y(),
+													   centre.get_x()+295/2*i,
+		                                  centre.get_y()+295*i*(sqrt(3)/2),
+													   false));
+	ressources-=cost_com;
+	E_C.push_back(c2);
+	E_R.push_back(c2);
+	std::cout<<E_R.size()<<"\n";
+	std::cout<<ressources<<"\n";
+	std::shared_ptr<Prospection> p(new Prospection(E_R.size()+1, 0, centre.get_x(),
+										  centre.get_y(), centre.get_x()-295/2*i,
+	                                             centre.get_y()+295*i*(sqrt(3)/2),
+										   false, false, false));
+	ressources-=cost_prosp;
+	E_P.push_back(p);
+	E_R.push_back(p);                                                
+	std::cout<<E_R.size()<<"\n";
+	std::cout<<ressources<<"\n";    
+}
+
+//================================================================================//
+
+void Base::creation_robots4(int i)//Chaque scénario va créer au max 3 robots
+{
+	std::cout<<E_R.size()<<"\n";
+	std::cout<<ressources<<"\n";
+	std::shared_ptr<Communication> c1(new Communication(E_R.size()+1, 0, 
+												centre.get_x(), 
+												centre.get_y(),
+												centre.get_x()+295*i,
+												centre.get_y(), false));
+	ressources-=cost_com;
+	std::cout<<ressources<<"\n";
+	E_C.push_back(c1);
+	E_R.push_back(c1);
+	std::cout<<E_R.size()<<"\n";
+	std::shared_ptr<Communication> c2(new Communication(E_R.size()+1, 0, centre.get_x(), 
+												centre.get_y(),
+												centre.get_x()+295*(sqrt(2)/2)*i,
+	                                            centre.get_y()+295*(sqrt(2)/2)*i,
+													   false));
+	ressources-=cost_com;
+	E_C.push_back(c2);
+	E_R.push_back(c2);
+	std::cout<<E_R.size()<<"\n";
+	std::cout<<ressources<<"\n";
+	std::shared_ptr<Prospection> p(new Prospection(E_R.size()+1, 0, centre.get_x(),
+										  centre.get_y(), centre.get_x()+295*(sqrt(2)/2)*i,
+	                                            centre.get_y()-295*(sqrt(2)/2)*i,
+										   false, false, false));
+	ressources-=cost_prosp;
+	E_P.push_back(p);
+	E_R.push_back(p);                                                
+	std::cout<<E_R.size()<<"\n";
+	std::cout<<ressources<<"\n";    
+}
+
+//================================================================================//
+
+void Base::creation_robots5(int i)//Chaque scénario va créer au max 3 robots
+{
+	std::cout<<E_R.size()<<"\n";
+	std::cout<<ressources<<"\n";
+	std::shared_ptr<Communication> c1(new Communication(E_R.size()+1, 0, 
+												centre.get_x(), 
+												centre.get_y(),
+												centre.get_x()+295*(sqrt(2)/2)*i,
+	                                            centre.get_y()-295*(sqrt(2)/2)*i, false));
+	ressources-=cost_com;
+	std::cout<<ressources<<"\n";
+	E_C.push_back(c1);
+	E_R.push_back(c1);
+	std::cout<<E_R.size()<<"\n";
+	std::shared_ptr<Communication> c2(new Communication(E_R.size()+1, 0, centre.get_x(), 
+												centre.get_y(),
+												centre.get_y(),
+												centre.get_x()+295*i,
+													   false));
+	ressources-=cost_com;
+	E_C.push_back(c2);
+	E_R.push_back(c2);
+	std::cout<<E_R.size()<<"\n";
+	std::cout<<ressources<<"\n";
+	std::shared_ptr<Prospection> p(new Prospection(E_R.size()+1, 0, centre.get_x(),
+										  centre.get_y(), centre.get_x()+295*(sqrt(2)/2)*i,
+	                                            centre.get_y()+295*(sqrt(2)/2)*i,
+										   false, false, false));
+	ressources-=cost_prosp;
+	E_P.push_back(p);
+	E_R.push_back(p);                                                
+	std::cout<<E_R.size()<<"\n";
+	std::cout<<ressources<<"\n";    
+}
+
+//================================================================================//
+
+void Base::creation_robots6(int i)//Chaque scénario va créer au max 3 robots
+{
+	std::cout<<E_R.size()<<"\n";
+	std::cout<<ressources<<"\n";
+	std::shared_ptr<Communication> c1(new Communication(E_R.size()+1, 0, 
+												centre.get_x(), 
+												centre.get_y(),
+												centre.get_x()+295*(sqrt(2)/2)*i,
+	                                            centre.get_y()+295*(sqrt(2)/2)*i, false));
+	ressources-=cost_com;
+	std::cout<<ressources<<"\n";
+	E_C.push_back(c1);
+	E_R.push_back(c1);
+	std::cout<<E_R.size()<<"\n";
+	std::shared_ptr<Communication> c2(new Communication(E_R.size()+1, 0, centre.get_x(), 
+												centre.get_y(),
+											    centre.get_x()+295*(sqrt(2)/2)*i,
+	                                            centre.get_y()-295*(sqrt(2)/2)*i,
+													   false));
+	ressources-=cost_com;
+	E_C.push_back(c2);
+	E_R.push_back(c2);
+	std::cout<<E_R.size()<<"\n";
+	std::cout<<ressources<<"\n";
+	std::shared_ptr<Prospection> p(new Prospection(E_R.size()+1, 0, centre.get_x(),
+										  centre.get_y(), centre.get_y(),
+												centre.get_x()+295*i,
+										   false, false, false));
+	ressources-=cost_prosp;
+	E_P.push_back(p);
+	E_R.push_back(p);                                                
+	std::cout<<E_R.size()<<"\n";
+	std::cout<<ressources<<"\n";    
 }
 
 //================================================================================//

@@ -38,7 +38,12 @@ public:
     void algo_decision_forage();
     void algo_decision_transport();
     void algo_placement_robot_com();
-    void creation_robots();
+    void creation_robots1(int);
+    void creation_robots2(int);
+    void creation_robots3(int); //nous avons cree deux maniere de propager les robots et chaque maniere se diferencie en 3 methodes differentes
+    void creation_robots4(int);
+    void creation_robots5(int);
+    void creation_robots6(int);
     
     void affiche_texte();
     void affiche_texte(std::ofstream&);
