@@ -69,17 +69,30 @@ private:
     void algo_decision_forage();
     void algo_decision_transport();
     void algo_placement_robot_com();
-    void creation_robots1(int);
-    void creation_robots2(int);
-    void creation_robots3(int); //nous avons cree deux maniere de propager les robots et chaque maniere se diferencie en 3 methodes differentes
-    void creation_robots4(int);
-    void creation_robots5(int);
-    void creation_robots6(int);
+   
     void creation_communication();
     void creation_forage();
     void creation_transport();
     void reinitialise(std::shared_ptr<Transport>);
     void reinitialise(std::shared_ptr<Prospection>);
+    
+    
+    void creation_robCom1();
+    void creation_robCom2();
+    void creation_robCom3();
+    void creation_robCom4();
+    void creation_robCom5();
+    void creation_robCom6();
+    void creation_robCom7();
+    void creation_robCom8();
+    void creation_robCom9();
+    void creation_robCom10();
+    void creation_robCom11();
+    void creation_robCom12();
+    void creation_robCom13();
+    void creation_robCom14();
+    void creation_robCom15();
+    void creation_robCom16();
     
     
     std::vector<std::shared_ptr<Robot>> E_R;
@@ -91,6 +104,7 @@ private:
 	Cercle centre;
     double ressources;
     bool error_base, active;
+    int compteur;
 	int nbP, nbF, nbT, nbC;
 };
 

@@ -845,6 +845,7 @@ void Communication::creation_connexion(std::vector<std::shared_ptr<Robot>>& E_R,
             if(robot==robot_adj)
             {
                 in_adjacence=true;
+                break;
             }
         }
         if(robot==robot_centre)

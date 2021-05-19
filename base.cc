@@ -29,8 +29,7 @@
 namespace
 {
     std::vector<unsigned> E_uid;
-    int compteur(0);
-    bool autre_triangulation(false);
+    //int compteur(-1);
     std::shared_ptr<Communication> robot_centre;
     std::vector<std::shared_ptr<Robot>> L_remote;
 }
@@ -82,7 +81,7 @@ Base creation_base(std::string line, std::ifstream & entree)
 Base::Base(double x, double y, double ressources,
            int nbP, int nbF, int nbT, int nbC, std::ifstream & entree )
 :centre(x, y, rayon_base), ressources(ressources), error_base(false), active(true),
- nbP(nbP), nbF(nbF), nbT(nbT), nbC(nbC)
+compteur(-1), nbP(nbP), nbF(nbF), nbT(nbT), nbC(nbC)
 {
     if(nbP!=0)
     {
@@ -215,7 +214,8 @@ void Base::maintenance()
 {
     for(auto& robot : E_R)
     {
-        if(centre.point_appartient(robot->get_position()) and robot->get_dp()>=10)
+        if(centre.get_centre().same_position(robot->get_position()) and
+           robot->get_dp()>=10)
         {
             ressources=ressources-cost_repair*robot->get_dp();
             robot->init_dp();
@@ -232,240 +232,19 @@ void Base::maintenance()
 
 void Base::creation()
 {
+    
     creation_forage();
     creation_transport();
-	compteur+=1;
+    creation_communication();
 	
-	//std::cout<<"le comteur vaut: "<<compteur<<std::endl;
-	if(ressources>250 and nbC<=30)//Ne correspond que aux robots de communication
-	{
-        //creation_communication();
-        
-		switch(compteur%3)
-		{
-			case 0: if (autre_triangulation)
-					{
-						creation_robots4(compteur);
-					} else {
-						creation_robots1(compteur);
-					}
-			        break;
-			case 1: if (autre_triangulation)
-					{
-						creation_robots5(compteur);
-					} else {
-						creation_robots2(compteur);
-					}
-			        break;
-			case 2: if (autre_triangulation)
-					{
-						creation_robots6(compteur);
-					} else {
-						creation_robots3(compteur);
-					}
-			        break;
-			
-		}
-		                                               
-	}
-	if(compteur==6)
-	{
-		compteur=0;
-		autre_triangulation=(!autre_triangulation);
-		//std::cout<<"le bool vaut: "<<autre_triangulation<<"\n";
-	}
+                                                       
     nbP=(int) E_P.size();
     nbF=(int) E_F.size();
     nbT=(int) E_T.size();
     nbC=(int) E_C.size();
 }
 
-//================================================================================//
 
-void Base::creation_robots1(int i)//Chaque scénario va créer au max 3 robots
-{
-	std::shared_ptr<Communication> c1(new Communication((unsigned)E_R.size()+1, 0,
-		                                                    centre.get_x(), 
-		                                                    centre.get_y(),
-                                                            centre.get_x()+295/2*i,
-		                                                    centre.get_y()+295*i*(sqrt(3)/2),
-		                                                     false));
-	ressources-=cost_com;
-	E_C.push_back(c1);
-	E_R.push_back(c1);
-	std::shared_ptr<Communication> c2(new Communication((unsigned)E_R.size()+1, 0, centre.get_x(),
-	                                                    centre.get_y(),
-															   centre.get_x()-295/2*i,
-	                                                    centre.get_y()+295*i*(sqrt(3)/2),
-															   false));
-	ressources-=cost_com;
-	E_C.push_back(c2);
-	E_R.push_back(c2);
-	std::shared_ptr<Prospection> p(new Prospection((unsigned)E_R.size()+1, 0, centre.get_x(),
-												  centre.get_y(), centre.get_x(),
-												  centre.get_y()-295*i,
-												   false, false, false));
-	ressources-=cost_prosp;
-	E_P.push_back(p);
-	E_R.push_back(p);
-    nbP+=1;
-    nbC+=2;
-}
-
-//================================================================================//
-
-void Base::creation_robots2(int i)//Chaque scénario va créer au max 3 robots
-{
-	std::shared_ptr<Communication> c1(new Communication((unsigned)E_R.size()+1, 0,
-												centre.get_x(), 
-												centre.get_y(),
-												 centre.get_x()-295/2*i,
-	                                             centre.get_y()+295*i*(sqrt(3)/2), false));
-	ressources-=cost_com;
-	E_C.push_back(c1);
-	E_R.push_back(c1);
-	std::shared_ptr<Communication> c2(new Communication((unsigned)E_R.size()+1, 0, centre.get_x(),
-												centre.get_y(),
-											    centre.get_x(),
-												centre.get_y()-295*i,
-													   false));
-	ressources-=cost_com;
-	E_C.push_back(c2);
-	E_R.push_back(c2);
-	std::shared_ptr<Prospection> p(new Prospection((unsigned)E_R.size()+1, 0, centre.get_x(),
-										  centre.get_y(), centre.get_x()+295/2*i,
-		                                  centre.get_y()+295*i*(sqrt(3)/2),
-										   false, false, false));
-	ressources-=cost_prosp;
-	E_P.push_back(p);
-	E_R.push_back(p);
-    nbP+=1;
-    nbC+=2;
-}
-
-//================================================================================//
-
-void Base::creation_robots3(int i)//Chaque scénario va créer au max 3 robots
-{
-	std::shared_ptr<Communication> c1(new Communication((unsigned)E_R.size()+1, 0,
-												centre.get_x(), 
-												centre.get_y(),
-												centre.get_x(),
-												centre.get_y()-295*i, false));
-	ressources-=cost_com;
-	E_C.push_back(c1);
-	E_R.push_back(c1);
-	std::shared_ptr<Communication> c2(new Communication((unsigned)E_R.size()+1, 0, centre.get_x(),
-												centre.get_y(),
-													   centre.get_x()+295/2*i,
-		                                  centre.get_y()+295*i*(sqrt(3)/2),
-													   false));
-	ressources-=cost_com;
-	E_C.push_back(c2);
-	E_R.push_back(c2);
-	std::shared_ptr<Prospection> p(new Prospection((unsigned)E_R.size()+1, 0, centre.get_x(),
-										  centre.get_y(), centre.get_x()-295/2*i,
-	                                             centre.get_y()+295*i*(sqrt(3)/2),
-										   false, false, false));
-	ressources-=cost_prosp;
-	E_P.push_back(p);
-	E_R.push_back(p);
-    nbP+=1;
-    nbC+=2;
-}
-
-//================================================================================//
-
-void Base::creation_robots4(int i)//Chaque scénario va créer au max 3 robots
-{
-	std::shared_ptr<Communication> c1(new Communication((unsigned)E_R.size()+1, 0,
-												centre.get_x(), 
-												centre.get_y(),
-												centre.get_x()+295*i,
-												centre.get_y(), false));
-	ressources-=cost_com;
-	E_C.push_back(c1);
-	E_R.push_back(c1);
-	std::shared_ptr<Communication> c2(new Communication((unsigned)E_R.size()+1, 0, centre.get_x(),
-												centre.get_y(),
-												centre.get_x()+295*(sqrt(2)/2)*i,
-	                                            centre.get_y()+295*(sqrt(2)/2)*i,
-													   false));
-	ressources-=cost_com;
-	E_C.push_back(c2);
-	E_R.push_back(c2);
-	std::shared_ptr<Prospection> p(new Prospection((unsigned)E_R.size()+1, 0, centre.get_x(),
-										  centre.get_y(), centre.get_x()+295*(sqrt(2)/2)*i,
-	                                            centre.get_y()-295*(sqrt(2)/2)*i,
-										   false, false, false));
-	ressources-=cost_prosp;
-	E_P.push_back(p);
-	E_R.push_back(p);
-    nbP+=1;
-    nbC+=2;
-}
-
-//================================================================================//
-
-void Base::creation_robots5(int i)//Chaque scénario va créer au max 3 robots
-{
-	std::shared_ptr<Communication> c1(new Communication(E_R.size()+1, 0, 
-												centre.get_x(), 
-												centre.get_y(),
-												centre.get_x()+295*(sqrt(2)/2)*i,
-	                                            centre.get_y()-295*(sqrt(2)/2)*i, false));
-	ressources-=cost_com;
-	E_C.push_back(c1);
-	E_R.push_back(c1);
-	std::shared_ptr<Communication> c2(new Communication(E_R.size()+1, 0, centre.get_x(), 
-												centre.get_y(),
-												centre.get_y(),
-												centre.get_x()+295*i,
-													   false));
-	ressources-=cost_com;
-	E_C.push_back(c2);
-	E_R.push_back(c2);
-	std::shared_ptr<Prospection> p(new Prospection(E_R.size()+1, 0, centre.get_x(),
-										  centre.get_y(), 0,
-	                                            700,
-										   false, false, false));
-	ressources-=cost_prosp;
-	E_P.push_back(p);
-	E_R.push_back(p);
-    nbP+=1;
-    nbC+=2;
-}
-
-//================================================================================//
-
-void Base::creation_robots6(int i)//Chaque scénario va créer au max 3 robots
-{
-	std::shared_ptr<Communication> c1(new Communication(E_R.size()+1, 0, 
-												centre.get_x(), 
-												centre.get_y(),
-												centre.get_x()+295*(sqrt(2)/2)*i,
-	                                            centre.get_y()+295*(sqrt(2)/2)*i, false));
-	ressources-=cost_com;
-	E_C.push_back(c1);
-	E_R.push_back(c1);
-	std::shared_ptr<Communication> c2(new Communication(E_R.size()+1, 0, centre.get_x(), 
-												centre.get_y(),
-											    centre.get_x()+295*(sqrt(2)/2)*i,
-	                                            centre.get_y()-295*(sqrt(2)/2)*i,
-													   false));
-	ressources-=cost_com;
-	E_C.push_back(c2);
-	E_R.push_back(c2);
-	std::shared_ptr<Prospection> p(new Prospection(E_R.size()+1, 0, centre.get_x(),
-										  centre.get_y(), centre.get_y(),
-												centre.get_x()+295*i,
-										   false, false, false));
-	ressources-=cost_prosp;
-	E_P.push_back(p);
-	E_R.push_back(p);
-    nbP+=1;
-    nbC+=2;
-}
 
 //================================================================================//
 
@@ -537,6 +316,53 @@ void Base::creation_transport()
         
     }
 }
+
+//================================================================================//
+
+void Base::creation_communication()
+{
+    compteur+=1;
+    std::cout<<"le comteur vaut: "<<compteur<<std::endl;
+    if(ressources>250 and E_C.size()<47 and compteur<16)
+    {
+        switch(compteur%16)
+        {
+            case 0: creation_robCom1();
+                   break;
+            case 1: creation_robCom2();
+                   break;
+            case 2: creation_robCom3();
+                   break;
+            case 3: creation_robCom4();
+                   break;
+            case 4: creation_robCom5();
+                   break;
+            case 5: creation_robCom6();
+                   break;
+            case 6 : creation_robCom7();
+                   break;
+            case 7: creation_robCom8();
+                   break;
+            case 8: creation_robCom9();
+                   break;
+            case 9: creation_robCom10();
+                   break;
+            case 10: creation_robCom11();
+                   break;
+            case 11: creation_robCom12();
+                   break;
+            case 12: creation_robCom13();
+                   break;
+            case 13: creation_robCom14();
+                   break;
+            case 14: creation_robCom15();
+                   break;
+            case 15: creation_robCom16();
+                   break;
+        }
+    }
+}
+
 
 
 /*
@@ -639,7 +465,6 @@ void Base::liste_gisements(std::vector<Gisement>& Eg)//Creation de la liste avec
                 if(not(robot->get_gisement().in_E_G(E_G)))
                 {
                     E_G.push_back(robot->get_gisement());
-                    
                 }
             }
         }
@@ -667,7 +492,7 @@ void Base::liste_gisements(std::vector<Gisement>& Eg)//Creation de la liste avec
 
 void Base::evolution_prospecteur(std::vector<Gisement>& Eg)
 {
-    for(size_t i(0); i<E_P.size();++i /*auto& robot : E_P*/)
+    for(size_t i(0); i<E_P.size();++i)
     {
         if(not(E_P[i]->get_found()) and not(E_P[i]->get_atteint()))
         {
@@ -703,16 +528,20 @@ void Base::evolution_prospecteur(std::vector<Gisement>& Eg)
                         E_P[i]->set_but(E_P[E_P.size()-2]->get_but().get_x()-300,
                                         E_P[E_P.size()-2]->get_but().get_y()+300);
                     }
-                    else
+                    else if(E_P.size()<=3)
                     {
                         E_P[i]->set_but(E_P[E_P.size()-1]->get_but().get_x()+300,
                                         E_P[E_P.size()-1]->get_but().get_y()-300);
+                    }
+                    else
+                    {
+                        E_P[i]->set_but(300,300);
                     }
                 }
             }
         }
     }
-    for(size_t i(0); i<E_P.size();++i)
+    for(size_t i(0); i<E_P.size(); ++i)
     {
         if(E_P[i]->get_atteint()==true and E_P[i]->get_found()==false)
         {
@@ -723,13 +552,17 @@ void Base::evolution_prospecteur(std::vector<Gisement>& Eg)
             }
             else if(E_P.size()>3)
             {
-                E_P[i]->set_but(E_P[E_P.size()-2]->get_but().get_x()-300,
-                                E_P[E_P.size()-2]->get_but().get_y()+300);
+                E_P[i]->set_but(E_P[E_P.size()-2]->get_but().get_x()+300,
+                                E_P[E_P.size()-2]->get_but().get_y()-300);
+            }
+            else if(E_P.size()<=3)
+            {
+                E_P[i]->set_but(E_P[E_P.size()-1]->get_but().get_x()-300,
+                                E_P[E_P.size()-1]->get_but().get_y()+300);
             }
             else
             {
-                E_P[i]->set_but(E_P[E_P.size()-1]->get_but().get_x()+300,
-                                E_P[E_P.size()-1]->get_but().get_y()-300);
+                E_P[i]->set_but(300,300);
             }
         }
     }
@@ -1273,4 +1106,563 @@ bool lecture_bool(std::stringstream& data)
     }
 }
 
+
+//================================================================================//
+void Base::creation_robCom1()
+{
+    std::shared_ptr<Communication> c1(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()+295,
+                                                            centre.get_y(),
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c1);
+    E_R.push_back(c1);
+    std::shared_ptr<Communication> c2(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x(),
+                                                        centre.get_y()+295,
+                                                               false));
+    ressources-=cost_com;
+    E_C.push_back(c2);
+    E_R.push_back(c2);
+    std::shared_ptr<Communication> c3(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()-295,
+                                                            centre.get_y(),
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c3);
+    E_R.push_back(c3);
+    
+    
+}
+
+//================================================================================//
+void Base::creation_robCom2()
+{
+    std::shared_ptr<Communication> c1(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x(),
+                                                            centre.get_y()-295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c1);
+    E_R.push_back(c1);
+    std::shared_ptr<Communication> c2(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()+295,
+                                                        centre.get_y()+295,
+                                                               false));
+    ressources-=cost_com;
+    E_C.push_back(c2);
+    E_R.push_back(c2);
+    std::shared_ptr<Communication> c3(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()+295,
+                                                            centre.get_y()-295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c3);
+    E_R.push_back(c3);
+    
+    
+}
+
+//================================================================================//
+
+void Base::creation_robCom3()
+{
+    std::shared_ptr<Communication> c1(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()-295,
+                                                            centre.get_y()-295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c1);
+    E_R.push_back(c1);
+    std::shared_ptr<Communication> c2(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()-295,
+                                                        centre.get_y()+295,
+                                                               false));
+    ressources-=cost_com;
+    E_C.push_back(c2);
+    E_R.push_back(c2);
+    std::shared_ptr<Communication> c3(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()+2*295,
+                                                            centre.get_y(),
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c3);
+    E_R.push_back(c3);
+    
+    
+}
+
+//================================================================================//
+
+void Base::creation_robCom4()
+{
+    std::shared_ptr<Communication> c1(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()-2*295,
+                                                            centre.get_y(),
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c1);
+    E_R.push_back(c1);
+    std::shared_ptr<Communication> c2(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()+2*295,
+                                                        centre.get_y()+295,
+                                                               false));
+    ressources-=cost_com;
+    E_C.push_back(c2);
+    E_R.push_back(c2);
+    std::shared_ptr<Communication> c3(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()+2*295,
+                                                            centre.get_y()-295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c3);
+    E_R.push_back(c3);
+    
+    
+}
+
+//================================================================================//
+
+void Base::creation_robCom5()
+{
+    std::shared_ptr<Communication> c1(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x(),
+                                                            centre.get_y()-2*295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c1);
+    E_R.push_back(c1);
+    std::shared_ptr<Communication> c2(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x(),
+                                                        centre.get_y()+2*295,
+                                                               false));
+    ressources-=cost_com;
+    E_C.push_back(c2);
+    E_R.push_back(c2);
+    std::shared_ptr<Communication> c3(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()-2*295,
+                                                            centre.get_y()+295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c3);
+    E_R.push_back(c3);
+    
+    
+}
+
+//================================================================================//
+
+void Base::creation_robCom6()
+{
+    std::shared_ptr<Communication> c1(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()+295,
+                                                            centre.get_y()-2*295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c1);
+    E_R.push_back(c1);
+    std::shared_ptr<Communication> c2(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()-295,
+                                                        centre.get_y()+2*295,
+                                                               false));
+    ressources-=cost_com;
+    E_C.push_back(c2);
+    E_R.push_back(c2);
+    std::shared_ptr<Communication> c3(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()-2*295,
+                                                            centre.get_y()-295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c3);
+    E_R.push_back(c3);
+    
+    
+}
+
+//================================================================================//
+
+void Base::creation_robCom7()
+{
+    std::shared_ptr<Communication> c1(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()-295,
+                                                            centre.get_y()-2*295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c1);
+    E_R.push_back(c1);
+    std::shared_ptr<Communication> c2(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()+295,
+                                                        centre.get_y()+2*295,
+                                                               false));
+    ressources-=cost_com;
+    E_C.push_back(c2);
+    E_R.push_back(c2);
+    std::shared_ptr<Communication> c3(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()-2*295,
+                                                            centre.get_y()+2*295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c3);
+    E_R.push_back(c3);
+    
+    
+}
+
+//================================================================================//
+
+void Base::creation_robCom8()
+{
+    std::shared_ptr<Communication> c1(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()+2*295,
+                                                            centre.get_y()+2*295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c1);
+    E_R.push_back(c1);
+    std::shared_ptr<Communication> c2(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()-2*295,
+                                                        centre.get_y()+2*295,
+                                                               false));
+    ressources-=cost_com;
+    E_C.push_back(c2);
+    E_R.push_back(c2);
+    std::shared_ptr<Communication> c3(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()-2*295,
+                                                            centre.get_y()-2*295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c3);
+    E_R.push_back(c3);
+    
+    
+}
+
+//================================================================================//
+
+void Base::creation_robCom9()
+{
+    std::shared_ptr<Communication> c1(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()+3*295,
+                                                            centre.get_y(),
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c1);
+    E_R.push_back(c1);
+    std::shared_ptr<Communication> c2(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()-3*295,
+                                                        centre.get_y(),
+                                                               false));
+    ressources-=cost_com;
+    E_C.push_back(c2);
+    E_R.push_back(c2);
+    std::shared_ptr<Communication> c3(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x(),
+                                                            centre.get_y()-3*295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c3);
+    E_R.push_back(c3);
+    
+    
+}
+
+//================================================================================//
+
+void Base::creation_robCom10()
+{
+    std::shared_ptr<Communication> c1(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()+3*295,
+                                                            centre.get_y()+295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c1);
+    E_R.push_back(c1);
+    std::shared_ptr<Communication> c2(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()-3*295,
+                                                        centre.get_y()+295,
+                                                               false));
+    ressources-=cost_com;
+    E_C.push_back(c2);
+    E_R.push_back(c2);
+    std::shared_ptr<Communication> c3(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()+295,
+                                                            centre.get_y()-3*295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c3);
+    E_R.push_back(c3);
+    
+    
+}
+
+//================================================================================//
+
+void Base::creation_robCom11()
+{
+    std::shared_ptr<Communication> c1(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()+3*295,
+                                                        centre.get_y()-295,
+                                                        false));
+    ressources-=cost_com;
+    E_C.push_back(c1);
+    E_R.push_back(c1);
+    std::shared_ptr<Communication> c2(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()-3*295,
+                                                        centre.get_y()-295,
+                                                        false));
+    ressources-=cost_com;
+    E_C.push_back(c2);
+    E_R.push_back(c2);
+    std::shared_ptr<Communication> c3(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()-295,
+                                                        centre.get_y()-3*295,
+                                                        false));
+    ressources-=cost_com;
+    E_C.push_back(c3);
+    E_R.push_back(c3);
+    
+    
+}
+
+//================================================================================//
+
+void Base::creation_robCom12()
+{
+    std::shared_ptr<Communication> c1(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()+3*295,
+                                                        centre.get_y()+2*295,
+                                                        false));
+    ressources-=cost_com;
+    E_C.push_back(c1);
+    E_R.push_back(c1);
+    std::shared_ptr<Communication> c2(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()-3*295,
+                                                        centre.get_y()+2*295,
+                                                        false));
+    ressources-=cost_com;
+    E_C.push_back(c2);
+    E_R.push_back(c2);
+    std::shared_ptr<Communication> c3(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()+2*295,
+                                                        centre.get_y()-3*295,
+                                                        false));
+    ressources-=cost_com;
+    E_C.push_back(c3);
+    E_R.push_back(c3);
+    
+    
+}
+
+//================================================================================//
+
+void Base::creation_robCom13()
+{
+    std::shared_ptr<Communication> c1(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()+3*295,
+                                                        centre.get_y()-2*295,
+                                                        false));
+    ressources-=cost_com;
+    E_C.push_back(c1);
+    E_R.push_back(c1);
+    std::shared_ptr<Communication> c2(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()-3*295,
+                                                        centre.get_y()-2*295,
+                                                        false));
+    ressources-=cost_com;
+    E_C.push_back(c2);
+    E_R.push_back(c2);
+    std::shared_ptr<Communication> c3(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()-2*295,
+                                                        centre.get_y()-3*295,
+                                                         false));
+    ressources-=cost_com;
+    E_C.push_back(c3);
+    E_R.push_back(c3);
+    
+    
+}
+
+
+//================================================================================//
+
+void Base::creation_robCom14()
+{
+    std::shared_ptr<Communication> c1(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()+3*295,
+                                                        centre.get_y()-3*295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c1);
+    E_R.push_back(c1);
+    std::shared_ptr<Communication> c2(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()-3*295,
+                                                        centre.get_y()-3*295,
+                                                               false));
+    ressources-=cost_com;
+    E_C.push_back(c2);
+    E_R.push_back(c2);
+    std::shared_ptr<Communication> c3(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()+3*295,
+                                                            centre.get_y()+3*295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c3);
+    E_R.push_back(c3);
+    
+    
+}
+
+//================================================================================//
+
+void Base::creation_robCom15()
+{
+    std::shared_ptr<Communication> c1(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()-295,
+                                                            centre.get_y()-2*295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c1);
+    E_R.push_back(c1);
+    std::shared_ptr<Communication> c2(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()-3*295,
+                                                        centre.get_y()+3*295,
+                                                               false));
+    ressources-=cost_com;
+    E_C.push_back(c2);
+    E_R.push_back(c2);
+    std::shared_ptr<Communication> c3(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()+295,
+                                                            centre.get_y()+3*295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c3);
+    E_R.push_back(c3);
+    
+    
+}
+
+//================================================================================//
+
+void Base::creation_robCom16()
+{
+    std::shared_ptr<Communication> c1(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()+2*295,
+                                                            centre.get_y()-2*295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c1);
+    E_R.push_back(c1);
+    std::shared_ptr<Communication> c2(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()-2*295,
+                                                        centre.get_y()+3*295,
+                                                               false));
+    ressources-=cost_com;
+    E_C.push_back(c2);
+    E_R.push_back(c2);
+    std::shared_ptr<Communication> c3(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x()-295,
+                                                            centre.get_y()+3*295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c3);
+    E_R.push_back(c3);
+    
+    
+}
 
