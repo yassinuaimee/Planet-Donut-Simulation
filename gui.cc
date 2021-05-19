@@ -23,7 +23,7 @@
 #include "simulation.h"
 
 #define GTK_COMPATIBILITY_MODE
-#ifdef GTK_COMPATIBILITY_MODE
+#ifndef GTK_COMPATIBILITY_MODE
 namespace Gtk
 {
   template<class T, class... T_Args>
@@ -88,7 +88,7 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
     
     simulation.affiche_range(toggle_range);
     simulation.affiche_link(toggle_link);
-    simulation.affiche_dessin();
+    simulation.affiche_dessin(toggle_range);
 
     
     return true;
@@ -171,7 +171,7 @@ Interface::Interface(int argc, char** argv)
     m_Button_toggle_range.signal_clicked().connect(sigc::mem_fun(*this,
                 &Interface::on_button_clicked_toggle_range));
     Glib::signal_timeout().connect(sigc::mem_fun(*this,
-                &Interface::on_idle), 100);//Ligne avec le timer
+                &Interface::on_idle), 40);//Ligne avec le timer
     m_Box.add(_scrolled_window);
 	_scrolled_window.set_size_request(-1, 200);
 	_scrolled_window.add(_tree_view);
@@ -225,7 +225,6 @@ bool Interface::on_idle()
 {
   if(start)
   {
-      std::cout << "Mise à jour de la simulation numéro : " << ++count << std::endl;
       simulation.update();
       m_Area.refresh();
       this->tree_view_update();
@@ -279,6 +278,7 @@ void Interface::on_button_clicked_open()
     dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
     dialog.add_button("_Open", Gtk::RESPONSE_OK);
     m_Button_open.set_label("choosing a file");
+    m_Button_start.set_label("start");
     int result = dialog.run();
     m_Button_open.set_label("Open");
     switch(result)
@@ -290,6 +290,7 @@ void Interface::on_button_clicked_open()
             std::ifstream fichier(filename);
             if(not(fichier.fail()))
             {
+                start=false;
                 simulation.clear();
                 simulation.lecture(fichier);
                 if(simulation.get_error_file())
@@ -298,7 +299,7 @@ void Interface::on_button_clicked_open()
                 }
                 simulation.adjacence();
                 count=0;
-                toggle_link=false;//New file = new life = new beginning
+                toggle_link=false;
                 toggle_range=false;
                 m_Area.refresh();
                 this->tree_view_update();

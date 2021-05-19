@@ -31,6 +31,8 @@ namespace
     std::vector<unsigned> E_uid;
     int compteur(0);
     bool autre_triangulation(false);
+    std::shared_ptr<Communication> robot_centre;
+    std::vector<std::shared_ptr<Robot>> L_remote;
 }
 
 bool verif_uid(const unsigned);
@@ -82,69 +84,63 @@ Base::Base(double x, double y, double ressources,
 :centre(x, y, rayon_base), ressources(ressources), error_base(false), active(true),
  nbP(nbP), nbF(nbF), nbT(nbT), nbC(nbC)
 {
-    if(ressources<=0)
+    if(nbP!=0)
     {
-        active=false;
-    }
-    if(active)
-    {
-        if(nbP!=0)
+        if(init_liste_propecteur(nbP, entree, this->E_P))
         {
-            if(init_liste_propecteur(nbP, entree, this->E_P))
-            {
-                error_base=true;
-            }
-            
-            for(int i(0); i<nbP; ++i)
-            {
-                (this->E_R).push_back(this->E_P[i]);
-            }
-        }
-        if(nbF!=0)
-        {
-            if(init_liste_forage(nbF, entree, this->E_F))
-            {
-                error_base=true;
-            }
-            for(int i(0); i<nbF; ++i)
-            {
-                (this->E_R).push_back(this->E_F[i]);
-            }
-        }
-        if(nbT!=0)
-        {
-            if(init_liste_transport(nbT, entree, this->E_T))
-            {
-                error_base=true;
-            }
-            for(int i(0); i<nbT; ++i)
-            {
-                (this->E_R).push_back(this->E_T[i]);
-            }
-        }
-        if(nbC!=0)
-        {
-            if(init_liste_communication(nbC, entree, this->centre, this->E_C))
-            {
-                error_base=true;
-            }
-            for(int i(0); i<nbC; ++i)
-            {
-                (this->E_R).push_back(this->E_C[i]);
-            }
-        }
-        else
-        {
-            std::cout<<message::missing_robot_communication(x, y);
             error_base=true;
         }
+        
+        for(int i(0); i<nbP; ++i)
+        {
+            (this->E_R).push_back(this->E_P[i]);
+        }
     }
+    if(nbF!=0)
+    {
+        if(init_liste_forage(nbF, entree, this->E_F))
+        {
+            error_base=true;
+        }
+        for(int i(0); i<nbF; ++i)
+        {
+            (this->E_R).push_back(this->E_F[i]);
+        }
+    }
+    if(nbT!=0)
+    {
+        if(init_liste_transport(nbT, entree, this->E_T))
+        {
+            error_base=true;
+        }
+        for(int i(0); i<nbT; ++i)
+        {
+            (this->E_R).push_back(this->E_T[i]);
+        }
+    }
+    if(nbC!=0)
+    {
+        if(init_liste_communication(nbC, entree, this->centre, this->E_C))
+        {
+            error_base=true;
+        }
+        for(int i(0); i<nbC; ++i)
+        {
+            (this->E_R).push_back(this->E_C[i]);
+        }
+    }
+    else
+    {
+        std::cout<<message::missing_robot_communication(x, y);
+        error_base=true;
+    }
+    
     E_uid.clear();
 }
 
 /*
 //================================================================================//
- //MÉTHODES EVOLUTION DE LA SIMULATION//
+ //MÉTHODES CREATION LISTES ADJACENCE//
 //================================================================================//
 */
 
@@ -160,13 +156,12 @@ void Base::update_voisin(Base& base_2)
 
 void Base::test_voisin(std::shared_ptr<Robot>& robot_depart)
 {
-    for(auto robot : E_R)
+    for(auto& robot : E_R)
     {
         robot->set_visited(false);
     }
     robot_depart->vide_adj();
-    //robot_depart->ajoute_liste_adjacence(robot_depart);
-    test_adjacence(E_R, robot_depart, robot_depart);//Fonction récursive
+    test_adjacence(E_R, robot_depart, robot_depart);
 }
 
 //================================================================================//
@@ -176,9 +171,9 @@ void test_adjacence(std::vector<std::shared_ptr<Robot>>& E_R,
                     std::shared_ptr<Robot>& robot_depart)
 {
     robot_test->set_visited(true);
-    for(auto robot : E_R)
+    for(auto& robot : E_R)
     {
-        if(robot->get_visited()==false and robot->communication(robot_test))//J'ai trouvé mon erreur, j'avais mal fait ma fonction de test communication
+        if(robot->get_visited()==false and robot->communication(robot_test))
         {
             if(robot_depart->in_L_adj(robot)==false)
             {
@@ -203,21 +198,24 @@ void Base::connexion()
             break;
         }
     }
-    E_remote.clear();
-    E_autonomous.clear();
-    
-    E_C[robot_index]->creation_remote_autonomous(E_remote, E_autonomous, E_R,
-                                                 E_C[robot_index]);
-    
+    robot_centre=E_C[robot_index];
+    L_remote.clear();
+    L_remote=robot_centre->get_adj();
+    E_C[robot_index]->creation_connexion(E_R, E_C[robot_index]);//va associer les booleens remote ou pas remote
 }
 
+
+/*
 //================================================================================//
+ //MAINTENANCE//
+//================================================================================//
+*/
 
 void Base::maintenance()
 {
     for(auto& robot : E_R)
     {
-        if(centre.point_appartient(robot->get_position()))
+        if(centre.point_appartient(robot->get_position()) and robot->get_dp()>=10)
         {
             ressources=ressources-cost_repair*robot->get_dp();
             robot->init_dp();
@@ -225,16 +223,24 @@ void Base::maintenance()
     }
 }
 
+/*
 //================================================================================//
+ //CREATION DE ROBOTS//
+//================================================================================//
+*/
+
 
 void Base::creation()
 {
-	
+    creation_forage();
+    creation_transport();
 	compteur+=1;
 	
-	std::cout<<"le comteur vaut: "<<compteur<<std::endl;
-	if(ressources>250 and E_C.size()<=100)
+	//std::cout<<"le comteur vaut: "<<compteur<<std::endl;
+	if(ressources>250 and nbC<=30)//Ne correspond que aux robots de communication
 	{
+        //creation_communication();
+        
 		switch(compteur%3)
 		{
 			case 0: if (autre_triangulation)
@@ -266,28 +272,28 @@ void Base::creation()
 	{
 		compteur=0;
 		autre_triangulation=(!autre_triangulation);
-		std::cout<<"le bool vaut: "<<autre_triangulation<<"\n";
+		//std::cout<<"le bool vaut: "<<autre_triangulation<<"\n";
 	}
+    nbP=(int) E_P.size();
+    nbF=(int) E_F.size();
+    nbT=(int) E_T.size();
+    nbC=(int) E_C.size();
 }
 
 //================================================================================//
 
 void Base::creation_robots1(int i)//Chaque scénario va créer au max 3 robots
 {
-	std::cout<<E_R.size()<<"\n";
-	std::cout<<ressources<<"\n";
-	std::shared_ptr<Communication> c1(new Communication(E_R.size()+1, 0, 
+	std::shared_ptr<Communication> c1(new Communication((unsigned)E_R.size()+1, 0,
 		                                                    centre.get_x(), 
 		                                                    centre.get_y(),
                                                             centre.get_x()+295/2*i,
 		                                                    centre.get_y()+295*i*(sqrt(3)/2),
 		                                                     false));
 	ressources-=cost_com;
-	std::cout<<ressources<<"\n";
 	E_C.push_back(c1);
 	E_R.push_back(c1);
-	std::cout<<E_R.size()<<"\n";
-	std::shared_ptr<Communication> c2(new Communication(E_R.size()+1, 0, centre.get_x(), 
+	std::shared_ptr<Communication> c2(new Communication((unsigned)E_R.size()+1, 0, centre.get_x(),
 	                                                    centre.get_y(),
 															   centre.get_x()-295/2*i,
 	                                                    centre.get_y()+295*i*(sqrt(3)/2),
@@ -295,36 +301,30 @@ void Base::creation_robots1(int i)//Chaque scénario va créer au max 3 robots
 	ressources-=cost_com;
 	E_C.push_back(c2);
 	E_R.push_back(c2);
-	std::cout<<E_R.size()<<"\n";
-	std::cout<<ressources<<"\n";
-	std::shared_ptr<Prospection> p(new Prospection(E_R.size()+1, 0, centre.get_x(),
+	std::shared_ptr<Prospection> p(new Prospection((unsigned)E_R.size()+1, 0, centre.get_x(),
 												  centre.get_y(), centre.get_x(),
 												  centre.get_y()-295*i,
 												   false, false, false));
 	ressources-=cost_prosp;
 	E_P.push_back(p);
-	E_R.push_back(p);                                                
-	std::cout<<E_R.size()<<"\n";
-	std::cout<<ressources<<"\n";    
+	E_R.push_back(p);
+    nbP+=1;
+    nbC+=2;
 }
 
 //================================================================================//
 
 void Base::creation_robots2(int i)//Chaque scénario va créer au max 3 robots
 {
-	std::cout<<E_R.size()<<"\n";
-	std::cout<<ressources<<"\n";
-	std::shared_ptr<Communication> c1(new Communication(E_R.size()+1, 0, 
+	std::shared_ptr<Communication> c1(new Communication((unsigned)E_R.size()+1, 0,
 												centre.get_x(), 
 												centre.get_y(),
 												 centre.get_x()-295/2*i,
 	                                             centre.get_y()+295*i*(sqrt(3)/2), false));
 	ressources-=cost_com;
-	std::cout<<ressources<<"\n";
 	E_C.push_back(c1);
 	E_R.push_back(c1);
-	std::cout<<E_R.size()<<"\n";
-	std::shared_ptr<Communication> c2(new Communication(E_R.size()+1, 0, centre.get_x(), 
+	std::shared_ptr<Communication> c2(new Communication((unsigned)E_R.size()+1, 0, centre.get_x(),
 												centre.get_y(),
 											    centre.get_x(),
 												centre.get_y()-295*i,
@@ -332,36 +332,30 @@ void Base::creation_robots2(int i)//Chaque scénario va créer au max 3 robots
 	ressources-=cost_com;
 	E_C.push_back(c2);
 	E_R.push_back(c2);
-	std::cout<<E_R.size()<<"\n";
-	std::cout<<ressources<<"\n";
-	std::shared_ptr<Prospection> p(new Prospection(E_R.size()+1, 0, centre.get_x(),
+	std::shared_ptr<Prospection> p(new Prospection((unsigned)E_R.size()+1, 0, centre.get_x(),
 										  centre.get_y(), centre.get_x()+295/2*i,
 		                                  centre.get_y()+295*i*(sqrt(3)/2),
 										   false, false, false));
 	ressources-=cost_prosp;
 	E_P.push_back(p);
-	E_R.push_back(p);                                                
-	std::cout<<E_R.size()<<"\n";
-	std::cout<<ressources<<"\n";    
+	E_R.push_back(p);
+    nbP+=1;
+    nbC+=2;
 }
 
 //================================================================================//
 
 void Base::creation_robots3(int i)//Chaque scénario va créer au max 3 robots
 {
-	std::cout<<E_R.size()<<"\n";
-	std::cout<<ressources<<"\n";
-	std::shared_ptr<Communication> c1(new Communication(E_R.size()+1, 0, 
+	std::shared_ptr<Communication> c1(new Communication((unsigned)E_R.size()+1, 0,
 												centre.get_x(), 
 												centre.get_y(),
 												centre.get_x(),
 												centre.get_y()-295*i, false));
 	ressources-=cost_com;
-	std::cout<<ressources<<"\n";
 	E_C.push_back(c1);
 	E_R.push_back(c1);
-	std::cout<<E_R.size()<<"\n";
-	std::shared_ptr<Communication> c2(new Communication(E_R.size()+1, 0, centre.get_x(), 
+	std::shared_ptr<Communication> c2(new Communication((unsigned)E_R.size()+1, 0, centre.get_x(),
 												centre.get_y(),
 													   centre.get_x()+295/2*i,
 		                                  centre.get_y()+295*i*(sqrt(3)/2),
@@ -369,36 +363,30 @@ void Base::creation_robots3(int i)//Chaque scénario va créer au max 3 robots
 	ressources-=cost_com;
 	E_C.push_back(c2);
 	E_R.push_back(c2);
-	std::cout<<E_R.size()<<"\n";
-	std::cout<<ressources<<"\n";
-	std::shared_ptr<Prospection> p(new Prospection(E_R.size()+1, 0, centre.get_x(),
+	std::shared_ptr<Prospection> p(new Prospection((unsigned)E_R.size()+1, 0, centre.get_x(),
 										  centre.get_y(), centre.get_x()-295/2*i,
 	                                             centre.get_y()+295*i*(sqrt(3)/2),
 										   false, false, false));
 	ressources-=cost_prosp;
 	E_P.push_back(p);
-	E_R.push_back(p);                                                
-	std::cout<<E_R.size()<<"\n";
-	std::cout<<ressources<<"\n";    
+	E_R.push_back(p);
+    nbP+=1;
+    nbC+=2;
 }
 
 //================================================================================//
 
 void Base::creation_robots4(int i)//Chaque scénario va créer au max 3 robots
 {
-	std::cout<<E_R.size()<<"\n";
-	std::cout<<ressources<<"\n";
-	std::shared_ptr<Communication> c1(new Communication(E_R.size()+1, 0, 
+	std::shared_ptr<Communication> c1(new Communication((unsigned)E_R.size()+1, 0,
 												centre.get_x(), 
 												centre.get_y(),
 												centre.get_x()+295*i,
 												centre.get_y(), false));
 	ressources-=cost_com;
-	std::cout<<ressources<<"\n";
 	E_C.push_back(c1);
 	E_R.push_back(c1);
-	std::cout<<E_R.size()<<"\n";
-	std::shared_ptr<Communication> c2(new Communication(E_R.size()+1, 0, centre.get_x(), 
+	std::shared_ptr<Communication> c2(new Communication((unsigned)E_R.size()+1, 0, centre.get_x(),
 												centre.get_y(),
 												centre.get_x()+295*(sqrt(2)/2)*i,
 	                                            centre.get_y()+295*(sqrt(2)/2)*i,
@@ -406,35 +394,29 @@ void Base::creation_robots4(int i)//Chaque scénario va créer au max 3 robots
 	ressources-=cost_com;
 	E_C.push_back(c2);
 	E_R.push_back(c2);
-	std::cout<<E_R.size()<<"\n";
-	std::cout<<ressources<<"\n";
-	std::shared_ptr<Prospection> p(new Prospection(E_R.size()+1, 0, centre.get_x(),
+	std::shared_ptr<Prospection> p(new Prospection((unsigned)E_R.size()+1, 0, centre.get_x(),
 										  centre.get_y(), centre.get_x()+295*(sqrt(2)/2)*i,
 	                                            centre.get_y()-295*(sqrt(2)/2)*i,
 										   false, false, false));
 	ressources-=cost_prosp;
 	E_P.push_back(p);
-	E_R.push_back(p);                                                
-	std::cout<<E_R.size()<<"\n";
-	std::cout<<ressources<<"\n";    
+	E_R.push_back(p);
+    nbP+=1;
+    nbC+=2;
 }
 
 //================================================================================//
 
 void Base::creation_robots5(int i)//Chaque scénario va créer au max 3 robots
 {
-	std::cout<<E_R.size()<<"\n";
-	std::cout<<ressources<<"\n";
 	std::shared_ptr<Communication> c1(new Communication(E_R.size()+1, 0, 
 												centre.get_x(), 
 												centre.get_y(),
 												centre.get_x()+295*(sqrt(2)/2)*i,
 	                                            centre.get_y()-295*(sqrt(2)/2)*i, false));
 	ressources-=cost_com;
-	std::cout<<ressources<<"\n";
 	E_C.push_back(c1);
 	E_R.push_back(c1);
-	std::cout<<E_R.size()<<"\n";
 	std::shared_ptr<Communication> c2(new Communication(E_R.size()+1, 0, centre.get_x(), 
 												centre.get_y(),
 												centre.get_y(),
@@ -443,35 +425,29 @@ void Base::creation_robots5(int i)//Chaque scénario va créer au max 3 robots
 	ressources-=cost_com;
 	E_C.push_back(c2);
 	E_R.push_back(c2);
-	std::cout<<E_R.size()<<"\n";
-	std::cout<<ressources<<"\n";
 	std::shared_ptr<Prospection> p(new Prospection(E_R.size()+1, 0, centre.get_x(),
-										  centre.get_y(), centre.get_x()+295*(sqrt(2)/2)*i,
-	                                            centre.get_y()+295*(sqrt(2)/2)*i,
+										  centre.get_y(), 0,
+	                                            700,
 										   false, false, false));
 	ressources-=cost_prosp;
 	E_P.push_back(p);
-	E_R.push_back(p);                                                
-	std::cout<<E_R.size()<<"\n";
-	std::cout<<ressources<<"\n";    
+	E_R.push_back(p);
+    nbP+=1;
+    nbC+=2;
 }
 
 //================================================================================//
 
 void Base::creation_robots6(int i)//Chaque scénario va créer au max 3 robots
 {
-	std::cout<<E_R.size()<<"\n";
-	std::cout<<ressources<<"\n";
 	std::shared_ptr<Communication> c1(new Communication(E_R.size()+1, 0, 
 												centre.get_x(), 
 												centre.get_y(),
 												centre.get_x()+295*(sqrt(2)/2)*i,
 	                                            centre.get_y()+295*(sqrt(2)/2)*i, false));
 	ressources-=cost_com;
-	std::cout<<ressources<<"\n";
 	E_C.push_back(c1);
 	E_R.push_back(c1);
-	std::cout<<E_R.size()<<"\n";
 	std::shared_ptr<Communication> c2(new Communication(E_R.size()+1, 0, centre.get_x(), 
 												centre.get_y(),
 											    centre.get_x()+295*(sqrt(2)/2)*i,
@@ -480,52 +456,52 @@ void Base::creation_robots6(int i)//Chaque scénario va créer au max 3 robots
 	ressources-=cost_com;
 	E_C.push_back(c2);
 	E_R.push_back(c2);
-	std::cout<<E_R.size()<<"\n";
-	std::cout<<ressources<<"\n";
 	std::shared_ptr<Prospection> p(new Prospection(E_R.size()+1, 0, centre.get_x(),
 										  centre.get_y(), centre.get_y(),
 												centre.get_x()+295*i,
 										   false, false, false));
 	ressources-=cost_prosp;
 	E_P.push_back(p);
-	E_R.push_back(p);                                                
-	std::cout<<E_R.size()<<"\n";
-	std::cout<<ressources<<"\n";    
+	E_R.push_back(p);
+    nbP+=1;
+    nbC+=2;
 }
 
 //================================================================================//
 
-void Base::update_autonomous()
+void Base::creation_forage()
 {
-    for(auto& robot : E_autonomous)
+    for(auto& prospecteur : E_P)
     {
-        robot->deplacement(centre.get_x(), centre.get_y());
-    }
-}
-
-//================================================================================//
-
-void Base::update_remote()
-{
-    for(auto& robot : E_remote)
-    {
-        robot->deplacement(centre.get_x(), centre.get_y());
-    }
-}
-
-//================================================================================//
-
-void Base::decouverte_gisement(std::vector<Gisement>& Eg)
-{
-    for(auto& robot : E_P)
-    {
-        if(not(robot->get_found()) and not(robot->get_atteint()))
+        if(prospecteur->get_remote())
         {
-            for(auto& gisement : Eg)
+            if(prospecteur->get_found() and
+               not(prospecteur->get_forage_envoyer()))
             {
-                if(gisement.get_field().point_appartient(robot->get_position()))
+                Point but(prospecteur->get_centre_gisement());
+                bool forage_deja_envoyé(false);
+                for(auto& forage : E_F)
                 {
-                    robot->add_gisement(gisement);
+                    if(forage->get_but().same_position(but))
+                    {
+                        forage_deja_envoyé=true;
+                    }
+                }
+                if(not(forage_deja_envoyé))
+                {
+                    prospecteur->set_forage_envoyer(true);
+                    unsigned size_E_R((unsigned)E_R.size());
+                    std::shared_ptr<Forage> forage(new Forage(size_E_R+1,
+                                                              0,
+                                                              centre.get_x(),
+                                                              centre.get_y(),
+                                                              but.get_x(),
+                                                              but.get_y(),
+                                                              false));
+                    E_F.push_back(forage);
+                    E_R.push_back(forage);
+                    nbF+=1;
+                    return;
                 }
             }
         }
@@ -533,6 +509,285 @@ void Base::decouverte_gisement(std::vector<Gisement>& Eg)
 }
 
 //================================================================================//
+
+void Base::creation_transport()
+{
+    if(ressources>200 and nbT<2)
+    {
+        for(auto& forage : E_F)
+        {
+            if(forage->get_atteint())
+            {
+                unsigned size_E_R((unsigned)E_R.size());
+                std::shared_ptr<Transport> transport(new Transport(size_E_R+1,
+                                                          0,
+                                                          centre.get_x(),
+                                                          centre.get_y(),
+                                                          forage->get_x(),
+                                                          forage->get_y(),
+                                                          false, false));
+                E_T.push_back(transport);
+                E_R.push_back(transport);
+                nbT+=1;
+            }
+        }
+    }
+    else if(ressources>1000 and nbT<3)
+    {
+        
+    }
+}
+
+
+/*
+//================================================================================//
+ //DEPLACEMENTS ROBOTS//
+//================================================================================//
+*/
+
+void Base::deplacement_robots()
+{
+    for(auto& robot : E_R)
+    {
+        robot->deplacement(centre.get_centre());
+    }
+}
+
+//================================================================================//
+
+void Base::update_prospection()
+{
+    for(auto& robot : E_P)
+    {
+        robot->deplacement(centre.get_centre());
+    }
+}
+
+//================================================================================//
+
+void Base::update_forage()
+{
+    for(auto& robot : E_F)
+    {
+        robot->deplacement(centre.get_centre());
+    }
+}
+
+//================================================================================//
+
+void Base::update_transport()
+{
+    for(auto& robot : E_T)
+    {
+        robot->deplacement(centre.get_centre());
+        if(robot->get_atteint() and robot->get_retour())
+            {
+                std::cout<<"atteint = "<<robot->get_atteint()<<", retour : "<<robot->get_atteint()<<"\n";
+                ressources=ressources+250;
+                robot->reinitialise(E_G);
+            }
+    }
+}
+
+//================================================================================//
+
+void Base::update_communicaiton()
+{
+    for(auto& robot : E_C)
+    {
+        robot->deplacement(centre.get_centre());
+    }
+}
+
+/*
+//================================================================================//
+ //EVOLUTION DE LA SIMULATION//
+//================================================================================//
+*/
+
+void Base::evolution(std::vector<Gisement>& Eg)
+{
+    
+    liste_gisements(Eg);
+    evolution_prospecteur(Eg);//Dans les fonctions evolution on va pouvoir changer les coordonnées du but en fonction de la situation
+    //evolution_forage();
+    //evolution_transport();
+    //evolution_communication();
+    //deplacement_robots();
+    
+    contact_gisement_forage(Eg);
+    contact_gisement_transport(Eg);
+    update_prospection();
+    update_forage();
+    update_transport();
+    update_communicaiton();
+}
+//================================================================================//
+
+void Base::liste_gisements(std::vector<Gisement>& Eg)//Creation de la liste avec tous les gisements connus CA MARCHE!!!!!!!!
+{
+    E_G.clear();
+    std::vector<bool> booléens;
+    for(auto& robot : L_remote)
+    {
+        booléens.clear();
+        if(robot->get_type()==1)//Prospecteurs
+        {
+            booléens=robot->get_bools();
+            if(booléens[2]==true)//represente le bool found
+            {
+                if(not(robot->get_gisement().in_E_G(E_G)))
+                {
+                    E_G.push_back(robot->get_gisement());
+                    
+                }
+            }
+        }
+        if(robot->get_type()==2)//Forage
+        {
+            booléens=robot->get_bools();
+            if(booléens[0]==true)//représente le bool atteint
+            {
+                for(auto& gisement : Eg)
+                {
+                    if(gisement.get_field().point_appartient(robot->get_position()))
+                    {
+                        if(not(gisement.in_E_G(E_G)))
+                        {
+                            E_G.push_back(gisement);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+//================================================================================//
+
+void Base::evolution_prospecteur(std::vector<Gisement>& Eg)
+{
+    for(size_t i(0); i<E_P.size();++i /*auto& robot : E_P*/)
+    {
+        if(not(E_P[i]->get_found()) and not(E_P[i]->get_atteint()))
+        {
+            for(auto& gisement : Eg)
+            {
+                if(gisement.get_field().point_appartient(E_P[i]->get_position()))
+                {
+                    E_P[i]->add_gisement(gisement);//On a deja la condition de taille du gisement à l'intérieur
+                }
+            }
+        }
+    }
+    for(size_t i(0); i<E_P.size();++i)//Changement de direction des prospecteur si un gisement a deja été trouvé CA MARCHE!!!!!
+    {
+        if(E_P[i]->get_remote())
+        {
+            for(auto& gisement : E_G)
+            {
+                if(E_P[i]->get_atteint()==false and
+                   E_P[i]->get_but().get_x() -300<gisement.get_x()
+                   and E_P[i]->get_but().get_x()+300>gisement.get_x()
+                   and E_P[i]->get_but().get_y() -300<gisement.get_y()
+                   and E_P[i]->get_but().get_y()+300>gisement.get_y())
+                {
+                    std::cout<<"Passage dans la boucle changement de direction\n";
+                    if(i-1>=0)
+                    {
+                        E_P[i]->set_but(E_P[i-1]->get_but().get_x()+300,
+                                        E_P[i-1]->get_but().get_y()-300);
+                    }
+                    else if(E_P.size()>3)
+                    {
+                        E_P[i]->set_but(E_P[E_P.size()-2]->get_but().get_x()-300,
+                                        E_P[E_P.size()-2]->get_but().get_y()+300);
+                    }
+                    else
+                    {
+                        E_P[i]->set_but(E_P[E_P.size()-1]->get_but().get_x()+300,
+                                        E_P[E_P.size()-1]->get_but().get_y()-300);
+                    }
+                }
+            }
+        }
+    }
+    for(size_t i(0); i<E_P.size();++i)
+    {
+        if(E_P[i]->get_atteint()==true and E_P[i]->get_found()==false)
+        {
+            if(i-1>=0)
+            {
+                E_P[i]->set_but(E_P[i-1]->get_but().get_x()+300,
+                                E_P[i-1]->get_but().get_y()-300);
+            }
+            else if(E_P.size()>3)
+            {
+                E_P[i]->set_but(E_P[E_P.size()-2]->get_but().get_x()-300,
+                                E_P[E_P.size()-2]->get_but().get_y()+300);
+            }
+            else
+            {
+                E_P[i]->set_but(E_P[E_P.size()-1]->get_but().get_x()+300,
+                                E_P[E_P.size()-1]->get_but().get_y()-300);
+            }
+        }
+    }
+}
+
+//================================================================================//
+
+void Base::contact_gisement_forage(std::vector<Gisement> & Eg)
+{
+    for(auto& forage : E_F)
+    {
+        if(forage->get_atteint()==false)
+        {
+            for(auto& gisement : Eg)
+            {
+                Point point(forage->get_position());
+                Cercle gisement_cercle(gisement.get_field());
+                if(gisement_cercle.point_appartient(point))
+                {
+                    forage->set_atteint(true);
+                    return;
+                }
+            }
+        }
+    }
+}
+
+//================================================================================//
+
+void Base::contact_gisement_transport(std::vector<Gisement> & Eg)
+{
+    for(auto& transport : E_T)
+    {
+        if(transport->get_atteint()==false and transport->get_retour()==false)
+        {
+            for(auto& gisement : Eg)
+            {
+                Point point(transport->get_position());
+                Cercle gisement_cercle(gisement.get_field());
+                if(gisement_cercle.point_appartient(point))
+                {
+                    transport->set_retour(true);
+                    transport->set_atteint(false);
+                    
+                    gisement.set_capacite(250);
+                    return;
+                }
+            }
+        }
+    }
+}
+
+
+/*
+//================================================================================//
+ //DESTRUCTION//
+//================================================================================//
+*/
 
 void Base::destruction()
 {
@@ -612,26 +867,26 @@ void Base::affiche_texte(std::ofstream& sortie)
 
 //================================================================================//
 
-void Base::affiche_dessin(int index)
+void Base::affiche_dessin(int index, bool toggle_range)
 {
     if(active)
     {
         centre.affiche_dessin(3, index);
         for(auto& prospection : E_P)
         {
-            prospection->affiche_dessin(index);
+            prospection->affiche_dessin(index, toggle_range);
         }
         for(auto& forage : E_F)
         {
-            forage->affiche_dessin(index);
+            forage->affiche_dessin(index, toggle_range);
         }
         for(auto& transport : E_T)
         {
-            transport->affiche_dessin(index);
+            transport->affiche_dessin(index, toggle_range);
         }
         for(auto& communication : E_C)
         {
-            communication->affiche_dessin(index);
+            communication->affiche_dessin(index, toggle_range);
         }
     }
 }
@@ -694,6 +949,41 @@ bool Base::get_error_base()
 bool Base::get_active()
 {
     return active;
+}
+
+//================================================================================//
+
+int Base::get_nbP()
+{
+    return nbP;
+}
+
+//================================================================================//
+
+int Base::get_nbF()
+{
+    return nbF;
+}
+
+//================================================================================//
+
+int Base::get_nbT()
+{
+    return nbT;
+}
+
+//================================================================================//
+
+int Base::get_nbC()
+{
+    return nbC;
+}
+
+//================================================================================//
+
+double Base::get_ressources()
+{
+    return ressources;
 }
 
 
@@ -983,37 +1273,4 @@ bool lecture_bool(std::stringstream& data)
     }
 }
 
-//================================================================================//
 
-int Base::get_nbP()
-{
-    return nbP;
-}
-
-//================================================================================//
-
-int Base::get_nbF()
-{
-    return nbF;
-}
-
-//================================================================================//
-
-int Base::get_nbT()
-{
-    return nbT;
-}
-
-//================================================================================//
-
-int Base::get_nbC()
-{
-    return nbC;
-}
-
-//================================================================================//
-
-double Base::get_ressources()
-{
-    return ressources;
-}

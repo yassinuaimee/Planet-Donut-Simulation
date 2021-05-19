@@ -75,6 +75,20 @@ bool Gisement::verification(std::vector<Gisement>& Eg)
 
 //===================================================================================//
 
+bool Gisement::in_E_G(std::vector<Gisement>& E_G)
+{
+    for(auto& gisement : E_G)
+    {
+        if(gisement.get_field().intersection_cercle(field))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+//===================================================================================//
+
 Cercle Gisement::get_field()
 {
 	return field;
@@ -106,6 +120,20 @@ double Gisement::get_rayon()
 double Gisement::get_capacite()
 {
     return capacite;
+}
+
+//===================================================================================//
+ 
+void Gisement::set_capacite(double perte)
+{
+    if(capacite>perte)
+    {
+        capacite=capacite-perte;
+    }
+    else
+    {
+        capacite=0;
+    }
 }
 
 //===================================================================================//

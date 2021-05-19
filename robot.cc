@@ -30,8 +30,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 
 Robot::Robot(unsigned uid, double dp, double x, double y,
-             double xb, double yb, bool atteint)
-: uid(uid), dp(dp), position(x, y), but(xb, yb) , atteint(atteint)
+             double xb, double yb, bool atteint, int type)
+: uid(uid), dp(dp), position(x, y), but(xb, yb) , atteint(atteint), type(type),
+  remote(false)
 {}
 
 //================================================================================//
@@ -63,27 +64,48 @@ bool Robot::communication(std::shared_ptr<Robot> & robot)
 
 //================================================================================//
 
-void Robot::deplacement(double x_base, double y_base)
+void Robot::deplacement(Point base)
 {
-	if(not(atteint) and not(this->reach_max_dp()))
+	if(not(atteint) and not(reach_max_dp()))
 	{
-		test_return_base(x_base, y_base);
-	    double x(position.get_x()), y(position.get_y());
+        double x(position.get_x()), y(position.get_y());
 	    double xb(but.get_x()), yb(but.get_y());
 	    double delta_x(xb-x), delta_y(yb-y);
 	    double norme(sqrt(pow(delta_x,2)+pow(delta_y,2)));
 	    
-	    if(norme>=5)
+	    if(norme>5)
 	    {
 	        position.set_x(x+5*delta_x/norme);
 	        position.set_y(y+5*delta_y/norme);
 	        dp=dp+5;
 	    }
-	    else
-	    {
-			atteint=true;
-		}
-	}
+        else if(norme<5)
+        {
+            position.set_x(xb);
+            position.set_y(yb);
+            dp=dp+norme;
+            atteint=true;
+        }
+    }
+}
+
+//================================================================================//
+
+std::vector<Gisement> Robot::get_gisements()
+{
+    std::vector<Gisement> L_gisements;
+    for(auto& robot : L_adjacence)
+    {
+        if(robot->get_type()==1)
+        {
+            if(robot->get_atteint()==true)
+            {
+                std::cout<<"le robot "<<&robot<<" a trouvé un gisement\n";
+            }
+            
+        }
+    }
+    return L_gisements;
 }
 
 
@@ -155,7 +177,7 @@ void Robot::affiche_link()
 
 /*
 //================================================================================//
- //GETTERS//
+ //GETTERS & SETTERS//
 //================================================================================//
 */
 
@@ -194,6 +216,13 @@ Point Robot::get_position()
 
 //================================================================================//
 
+Point Robot::get_but()
+{
+    return but;
+}
+
+//================================================================================//
+
 double Robot::get_dp()
 {
     return dp;
@@ -208,11 +237,68 @@ void Robot::init_dp()
 
 //================================================================================//
 
+unsigned Robot::get_uid()
+{
+    return uid;
+}
+//================================================================================//
+
 bool Robot::get_atteint()
 {
     return atteint;
 }
 
+//================================================================================//
+
+void Robot::set_atteint(bool x)
+{
+    atteint=x;
+}
+
+//================================================================================//
+
+int Robot::get_type()
+{
+    return type;
+}
+
+//================================================================================//
+
+void Robot::set_remote(bool x)
+{
+    remote=x;
+}
+
+//================================================================================//
+
+bool Robot::get_remote()
+{
+    return remote;
+}
+
+//================================================================================//
+
+Gisement Robot::get_gisement()//Vraiment de la merde mais ça me simplifie plein plein de trucs
+{
+    Gisement gisement;
+    return gisement;
+}
+
+//================================================================================//
+
+void Robot::set_but(Point p)
+{
+    but.set_x(p.get_x());
+    but.set_y(p.get_y());
+}
+
+//================================================================================//
+
+void Robot::set_but(double x, double y)
+{
+    but.set_x(x);
+    but.set_y(y);
+}
 
 /*
 //================================================================================//
@@ -245,15 +331,17 @@ Prospection::Prospection(unsigned uid, double dp, double x, double y,
                          double xb, double yb, bool atteint, bool retour,
                          bool found, double xg, double yg, double rayong, 
 						 double capaciteg)
-:   Robot(uid, dp, x, y, xb, yb, atteint),
-    retour(retour), found(found), gisement(xg, yg, rayong, capaciteg)
+:   Robot(uid, dp, x, y, xb, yb, atteint, 1),
+    retour(retour), found(found), gisement(xg, yg, rayong, capaciteg),
+    forage_envoyer(false)
 {}
 
 //================================================================================//
 
 Prospection::Prospection(unsigned uid, double dp, double x, double y,
                          double xb, double yb, bool atteint, bool retour, bool found)
-: Robot(uid, dp, x, y, xb, yb, atteint), retour(retour), found(found), gisement()
+: Robot(uid, dp, x, y, xb, yb, atteint, 1), retour(retour), found(found), gisement(),
+forage_envoyer(false)
 {}
 
 //================================================================================//
@@ -270,23 +358,59 @@ bool Prospection::reach_max_dp()
 
 //================================================================================//
 
-void Prospection::test_return_base(double& x_base, double& y_base)
+void Prospection::test_return_base(Point base)
 {
-	if(10*dim_max-dp-10<norme_plus_petit_vecteur(position.get_x(), 
-											  position.get_y(), 
-											  x_base, 
-											  y_base))
-	{
-		but.set_x(x_base);
-		but.set_y(y_base);
-	}
+    if(atteint==false)
+    {
+        if(10*dim_max-dp-6<norme_plus_petit_vecteur(position.get_x(),
+                                                  position.get_y(),
+                                                  base.get_x(),
+                                                  base.get_y()))
+        {
+            but.set_x(base.get_x());
+            but.set_y(base.get_y());
+        }
+    }
+}
+//================================================================================//
+
+void Prospection::deplacement(Point base)
+{
+    if(not(atteint) and not(reach_max_dp()))
+    {
+        test_return_base(base);
+        double x(position.get_x()), y(position.get_y());
+        double xb(but.get_x()), yb(but.get_y());
+        double delta_x(xb-x), delta_y(yb-y);
+        double norme(sqrt(pow(delta_x,2)+pow(delta_y,2)));
+        
+        if(norme>5)
+        {
+            position.set_x(x+5*delta_x/norme);
+            position.set_y(y+5*delta_y/norme);
+            dp=dp+5;
+        }
+        else if(norme<5)
+        {
+            position.set_x(xb);
+            position.set_y(yb);
+            dp=dp+norme;
+            atteint=true;
+        }
+    }
+    if(found)
+    {
+        but.set_x(base.get_x());
+        but.set_y(base.get_y());
+        atteint=false;
+    }
 }
 
 //================================================================================//
 
-void Prospection::add_gisement(Gisement& gisement_found)
+void Prospection::add_gisement(Gisement gisement_found)
 {
-    if(gisement_found.get_capacite()>=240)
+    if(gisement_found.get_capacite()>=400)
     {
         found=true;
         gisement=gisement_found;
@@ -343,16 +467,19 @@ void Prospection::affiche_texte(std::ofstream& sortie)
 
 //================================================================================//
 
-void Prospection::affiche_dessin(int index)
+void Prospection::affiche_dessin(int index, bool toggle_range)
 {
     position.affiche_dessin(1, index);
-    if(position.get_x()-rayon_comm<(-dim_max))
+    if(toggle_range)
     {
-        ::affiche_dessin(1, index, position.get_x()+2*dim_max, position.get_y());
-    }
-    if(position.get_y()+rayon_comm>dim_max)
-    {
-       ::affiche_dessin(1, index, position.get_x(), position.get_y()-2*dim_max);
+        if(position.get_x()-rayon_comm<(-dim_max))
+        {
+            ::affiche_dessin(1, index, position.get_x()+2*dim_max, position.get_y());
+        }
+        if(position.get_y()+rayon_comm>dim_max)
+        {
+           ::affiche_dessin(1, index, position.get_x(), position.get_y()-2*dim_max);
+        }
     }
 }
 
@@ -363,6 +490,64 @@ bool Prospection::get_found()
     return found;
 }
 
+//================================================================================//
+
+bool Prospection::get_forage_envoyer()
+{
+    return forage_envoyer;
+}
+
+//================================================================================//
+
+double Prospection::get_ressources()
+{
+    return gisement.get_capacite();
+}
+
+//================================================================================//
+
+void Prospection::set_forage_envoyer(bool x)
+{
+    forage_envoyer=x;
+}
+
+//================================================================================//
+
+Cercle Prospection::get_cercle_gisement()
+{
+    return gisement.get_field();
+}
+
+//================================================================================//
+
+Point Prospection::get_centre_gisement()
+{
+    return gisement.get_field().get_centre();
+}
+
+//================================================================================//
+
+double Prospection::get_rayon_gisement()
+{
+    return gisement.get_field().get_rayon();
+}
+
+//================================================================================//
+
+Gisement Prospection::get_gisement()
+{
+    return gisement;
+}
+
+//================================================================================//
+std::vector<bool> Prospection::get_bools()
+{
+    std::vector<bool> bools;
+    bools.push_back(atteint);
+    bools.push_back(retour);
+    bools.push_back(found);
+    return bools;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /*
@@ -374,7 +559,7 @@ bool Prospection::get_found()
 
 Forage::Forage(unsigned uid, double dp, double x, double y,
                double xb, double yb, bool atteint)
-: Robot(uid, dp, x, y, xb, yb, atteint)
+: Robot(uid, dp, x, y, xb, yb, atteint, 2)
 {}
 
 //================================================================================//
@@ -387,20 +572,6 @@ bool Forage::reach_max_dp()
         max=true;
     }
     return max;
-}
-
-//================================================================================//
-
-void Forage::test_return_base(double& x_base, double& y_base)
-{
-	if(1.42*dim_max-dp-10<norme_plus_petit_vecteur(position.get_x(),
-                                                   position.get_y(),
-                                                   x_base,
-                                                   y_base))
-	{
-		but.set_x(x_base);
-		but.set_y(y_base);
-	}
 }
 
 //================================================================================//
@@ -425,17 +596,28 @@ void Forage::affiche_texte(std::ofstream& sortie)
 
 //================================================================================//
 
-void Forage::affiche_dessin(int index)
+void Forage::affiche_dessin(int index, bool toggle_range)
 {
     position.affiche_dessin(2,index);
-    if(position.get_x()-rayon_comm<(-dim_max))
+    if(toggle_range)
     {
-        ::affiche_dessin(2, index, position.get_x()+2*dim_max, position.get_y());
+        if(position.get_x()-rayon_comm<(-dim_max))
+        {
+            ::affiche_dessin(2, index, position.get_x()+2*dim_max, position.get_y());
+        }
+        if(position.get_y()+rayon_comm>dim_max)
+        {
+           ::affiche_dessin(2, index, position.get_x(), position.get_y()-2*dim_max);
+        }
     }
-    if(position.get_y()+rayon_comm>dim_max)
-    {
-       ::affiche_dessin(2, index, position.get_x(), position.get_y()-2*dim_max);
-    }
+}
+
+//================================================================================//
+std::vector<bool> Forage::get_bools()
+{
+    std::vector<bool> bools;
+    bools.push_back(atteint);
+    return bools;
 }
 
 
@@ -449,7 +631,7 @@ void Forage::affiche_dessin(int index)
 
 Transport::Transport(unsigned uid, double dp, double x, double y,
                      double xb, double yb, bool atteint, bool retour)
-: Robot(uid, dp, x, y, xb, yb, atteint), retour(retour)
+: Robot(uid, dp, x, y, xb, yb, atteint, 3), retour(retour)
 {}
 
 //================================================================================//
@@ -466,16 +648,76 @@ bool Transport::reach_max_dp()
 
 //================================================================================//
 
-void Transport::test_return_base(double& x_base, double& y_base)
+void Transport::reinitialise(std::vector<Gisement>& E_G)
 {
-	if(5*dim_max-dp-10<norme_plus_petit_vecteur(position.get_x(),
-                                                position.get_y(),
-                                                x_base,
-                                                y_base))
-	{
-		but.set_x(x_base);
-		but.set_y(y_base);
-	}
+    atteint=false;
+    retour=false;
+    for(auto& gisement : E_G)
+    {
+        double capacite(gisement.get_capacite());
+        if(capacite>200)
+        {
+            std::cout<<"Boucle nouvelles coordonnées du vecteur\n";
+            but.set_x(gisement.get_x());
+            but.set_y(gisement.get_y());
+        }
+    }
+}
+
+//================================================================================//
+
+void Transport::deplacement(Point base)
+{
+    if(not(atteint) and not(reach_max_dp()))
+    {
+        double x(position.get_x()), y(position.get_y());
+        double xb(but.get_x()), yb(but.get_y());
+        double delta_x(xb-x), delta_y(yb-y);
+        double norme(sqrt(pow(delta_x,2)+pow(delta_y,2)));
+        
+        if(norme>5)
+        {
+            position.set_x(x+5*delta_x/norme);
+            position.set_y(y+5*delta_y/norme);
+            dp=dp+5;
+        }
+        else if(norme<5)
+        {
+            position.set_x(xb);
+            position.set_y(yb);
+            dp=dp+norme;
+            atteint=true;
+            if(retour==false)
+            {
+                retour=true;
+                atteint=false;
+                but.set_x(base.get_x());
+                but.set_y(base.get_y());
+            }
+            std::cout<<"Robot de transport arrivé\n";
+        }
+    }
+    Point p(base.get_x(),base.get_y());
+    if(retour==true and position.same_position(p))
+    {
+        atteint=false;
+    }
+}
+
+
+
+//================================================================================//
+
+bool Transport::get_retour()
+{
+    return retour;
+}
+
+//================================================================================//
+
+void Transport::set_retour(bool x)
+{
+    retour=x;
 }
 
 //================================================================================//
@@ -500,19 +742,31 @@ void Transport::affiche_texte(std::ofstream& sortie)
 
 //================================================================================//
 
-void Transport::affiche_dessin(int index)
+void Transport::affiche_dessin(int index, bool toggle_range)
 {
-    position.affiche_dessin(3,index);
-    if(position.get_x()-rayon_comm<(-dim_max))
+    position.affiche_dessin(3,index, retour);
+    if(toggle_range)
     {
-        ::affiche_dessin(3, index, position.get_x()+2*dim_max, position.get_y());
-    }
-    if(position.get_y()+rayon_comm>dim_max)
-    {
-       ::affiche_dessin(3, index, position.get_x(), position.get_y()-2*dim_max);
+        if(position.get_x()-rayon_comm<(-dim_max))
+        {
+            ::affiche_dessin(3, index, position.get_x()+2*dim_max, position.get_y(), retour);
+        }
+        if(position.get_y()+rayon_comm>dim_max)
+        {
+           ::affiche_dessin(3, index, position.get_x(), position.get_y()-2*dim_max, retour);
+        }
     }
 }
 
+//================================================================================//
+
+std::vector<bool> Transport::get_bools()
+{
+    std::vector<bool> bools;
+    bools.push_back(atteint);
+    bools.push_back(retour);
+    return bools;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /*
@@ -524,7 +778,7 @@ void Transport::affiche_dessin(int index)
 
 Communication::Communication(unsigned uid, double dp, double x, double y,
                              double xb, double yb, bool atteint)
-: Robot(uid, dp, x, y, xb, yb, atteint)
+: Robot(uid, dp, x, y, xb, yb, atteint, 4), communication_ok(false)
 {}
 
 //================================================================================//
@@ -537,20 +791,6 @@ bool Communication::reach_max_dp()
         max=true;
     }
     return max;
-}
-
-//================================================================================//
-
-void Communication::test_return_base(double& x_base, double& y_base)
-{
-	if(1.42*dim_max-dp-10<norme_plus_petit_vecteur(position.get_x(),
-                                                   position.get_y(),
-                                                   x_base,
-                                                   y_base))
-	{
-		but.set_x(x_base);
-		but.set_y(y_base);
-	}
 }
 
 //================================================================================//
@@ -575,49 +815,66 @@ void Communication::affiche_texte(std::ofstream& sortie)
 
 //================================================================================//
 
-void Communication::affiche_dessin(int index)
+void Communication::affiche_dessin(int index, bool toggle_range)
 {
     position.affiche_dessin(4, index);
-    if(position.get_x()-rayon_comm<(-dim_max))
+    if(toggle_range)
     {
-        ::affiche_dessin(4, index,position.get_x()+2*dim_max, position.get_y());
-    }
-    if(position.get_y()+rayon_comm>dim_max)
-    {
-       ::affiche_dessin(4, index, position.get_x(), position.get_y()-2*dim_max);
+        if(position.get_x()-rayon_comm<(-dim_max))
+        {
+            ::affiche_dessin(4, index,position.get_x()+2*dim_max, position.get_y());
+        }
+        if(position.get_y()+rayon_comm>dim_max)
+        {
+           ::affiche_dessin(4, index, position.get_x(), position.get_y()-2*dim_max);
+        }
     }
 }
 
 //================================================================================//
 
-void Communication::creation_remote_autonomous(
-                                    std::vector<std::shared_ptr<Robot>>& E_remote,
-                                    std::vector<std::shared_ptr<Robot>>& E_autonomous,
-                                    std::vector<std::shared_ptr<Robot>>& E_R,
-                                    std::shared_ptr<Communication>& robot_centre)
+void Communication::creation_connexion(std::vector<std::shared_ptr<Robot>>& E_R,
+                                       std::shared_ptr<Communication>& robot_centre)
 {
-    for(auto& robot_base : E_R)
+    for(auto& robot : E_R)
     {
         bool in_adjacence(false);
         
         for(auto& robot_adj : L_adjacence)
         {
-            if(robot_base==robot_adj)
+            if(robot==robot_adj)
             {
                 in_adjacence=true;
             }
         }
-        if(robot_base==robot_centre)
+        if(robot==robot_centre)
         {
             in_adjacence=true;
         }
         if(in_adjacence)
         {
-            E_remote.push_back(robot_base);
+            robot->set_remote(true);
         }
         else
         {
-            E_autonomous.push_back(robot_base);
+            robot->set_remote(false);
         }
     }
 }
+
+//================================================================================//
+
+std::vector<bool> Communication::get_bools()
+{
+    std::vector<bool> bools;
+    bools.push_back(atteint);
+    return bools;
+}
+
+//================================================================================//
+
+std::vector<std::shared_ptr<Robot>> Communication::get_adj()
+{
+    return L_adjacence;
+}
+

@@ -102,12 +102,21 @@ void affiche_symbole_forage(double x, double y, int index)
     (*ptcr)->stroke();
 }
 
-void affiche_symbole_transport(double x, double y, int index)
+void affiche_symbole_transport(double x, double y, int index, bool retour)
 {
     color_base(index);
     (*ptcr)->set_line_width(5.0);
     (*ptcr)->rectangle(x-15, y-15, 30, 30);
     (*ptcr)->stroke();
+    if(retour)
+    {
+        (*ptcr)->rectangle(x-10, y-10, 20, 20);
+        (*ptcr)->set_source_rgb(0.1,0.1,0.1);
+        (*ptcr)->fill_preserve();
+        (*ptcr)->stroke();
+    }
+    
+   
 }
 
 void affiche_symbole_communication(double x, double y, int index)

@@ -28,7 +28,7 @@ public:
     bool same_position(Point);
     void ligne_reseau(Point);
     void cercle_communication();
-    void affiche_dessin(int, int);
+    void affiche_dessin(int, int, bool retour = false);
     
 private:
 	double x;
@@ -90,5 +90,8 @@ double norme_plus_petit_vecteur(const double,
 								const double,
 								const double,
 								const double);
-void affiche_dessin(int, int, double, double);
+void affiche_dessin(int, int, double, double, bool retour = false);
+
+std::array<double,2> plus_courte_direction(Point &, Point &);
+
 #endif

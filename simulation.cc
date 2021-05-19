@@ -190,13 +190,17 @@ void Simulation::update()
         {
             Eb[i].update_voisin(Eb[j]);
         }
-        
-        Eb[i].connexion();
-        Eb[i].maintenance();
-        Eb[i].decouverte_gisement(Eg);
-        Eb[i].creation();
-        Eb[i].update_remote();
-        Eb[i].update_autonomous();
+    }
+    for(unsigned i(0); i<nbB; ++i)
+    {
+        if(Eb[i].get_ressources()<=finR)
+        {
+            Eb[i].connexion();
+            Eb[i].maintenance();
+            Eb[i].creation();
+            Eb[i].evolution(Eg);
+            
+        }
     }
     for(unsigned i(0); i<nbB; ++i)
     {
@@ -262,7 +266,7 @@ void Simulation::affiche_texte(std::ofstream& sortie)
 
 //================================================================================//
 
-void Simulation::affiche_dessin()
+void Simulation::affiche_dessin(bool toggle_range)
 {
     for(auto& gisement : Eg)
     {
@@ -270,7 +274,7 @@ void Simulation::affiche_dessin()
     }
     for(unsigned i(0);i<nbB;++i)
     {
-        Eb[i].affiche_dessin(i);
+        Eb[i].affiche_dessin(i, toggle_range);
     }
 }
 

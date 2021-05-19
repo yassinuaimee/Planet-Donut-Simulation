@@ -32,7 +32,7 @@ public:
     
     void affiche_texte();
     void affiche_texte(std::ofstream&);
-    void affiche_dessin();
+    void affiche_dessin(bool);
     void affiche_range(bool);
     void affiche_link(bool);
     

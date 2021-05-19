@@ -31,7 +31,9 @@ public:
 	double get_y();
 	double get_rayon();
     double get_capacite();
+    void set_capacite(double);
     bool get_error_gisement();
+    bool in_E_G(std::vector<Gisement>&);
 	
 private:
 	Cercle field;

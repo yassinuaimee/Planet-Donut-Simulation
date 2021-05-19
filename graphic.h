@@ -25,7 +25,7 @@ void cercle_communication_dessin(double, double);
 void cercle_base_dessin(double, double, int);
 void cercle_robot_dessin(double, double, int);
 void affiche_symbole_prospecteur(double, double, int);
-void affiche_symbole_transport(double, double, int);
+void affiche_symbole_transport(double, double, int, bool);
 void affiche_symbole_communication(double, double, int);
 void affiche_symbole_forage(double , double, int);
 

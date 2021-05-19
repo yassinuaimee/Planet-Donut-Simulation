@@ -24,8 +24,6 @@ namespace
 	double epsilon_zero(max_*pow(10,-10));
 }
 
-std::array<double,2> plus_courte_direction(Point &, Point &);
-
 void affiche_cercle_gisement(double,double,double);
 void affiche_cercle_communication(double, double);
 void affiche_cercle_base(double,double, int);
@@ -157,7 +155,7 @@ void Point::cercle_communication()
     }
 }
 
-void Point::affiche_dessin(int type,int index)//Pratique si dans le futur on veut differencier affichage robots
+void Point::affiche_dessin(int type,int index, bool retour)//Pratique si dans le futur on veut differencier affichage robots
 {
     affiche_cercle_robot(x, y, index);
     switch(type)
@@ -169,7 +167,7 @@ void Point::affiche_dessin(int type,int index)//Pratique si dans le futur on veu
             affiche_symbole_forage(x, y, index);
             break;
         case 3:
-            affiche_symbole_transport(x, y, index);
+            affiche_symbole_transport(x, y, index, retour);
             break;
         case 4:
             affiche_symbole_communication(x, y, index);
@@ -466,7 +464,7 @@ void Cercle::affiche_dessin(int type, int index)//Va falloir donner en argument 
 
 //================================================================================//
 
-void affiche_dessin(int type, int index, double x, double y)
+void affiche_dessin(int type, int index, double x, double y, bool retour)
 {
     affiche_cercle_robot(x, y, index);
     switch(type)
@@ -478,7 +476,7 @@ void affiche_dessin(int type, int index, double x, double y)
             affiche_symbole_forage(x, y, index);
             break;
         case 3:
-            affiche_symbole_transport(x, y, index);
+            affiche_symbole_transport(x, y, index, retour);
             break;
         case 4:
             affiche_symbole_communication(x, y, index);
