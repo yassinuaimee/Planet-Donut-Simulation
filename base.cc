@@ -250,6 +250,7 @@ void Base::creation()
 
 void Base::creation_forage()
 {
+    
     for(auto& prospecteur : E_P)
     {
         if(prospecteur->get_remote())
@@ -258,15 +259,15 @@ void Base::creation_forage()
                not(prospecteur->get_forage_envoyer()))
             {
                 Point but(prospecteur->get_centre_gisement());
-                bool forage_deja_envoyé(false);
+                bool forage_deja_envoyer(false);
                 for(auto& forage : E_F)
                 {
                     if(forage->get_but().same_position(but))
                     {
-                        forage_deja_envoyé=true;
+                        forage_deja_envoyer=true;
                     }
                 }
-                if(not(forage_deja_envoyé))
+                if(not(forage_deja_envoyer))
                 {
                     prospecteur->set_forage_envoyer(true);
                     unsigned size_E_R((unsigned)E_R.size());
@@ -453,14 +454,14 @@ void Base::evolution(std::vector<Gisement>& Eg)
 void Base::liste_gisements(std::vector<Gisement>& Eg)//Creation de la liste avec tous les gisements connus CA MARCHE!!!!!!!!
 {
     E_G.clear();
-    std::vector<bool> booléens;
+    std::vector<bool> bools;
     for(auto& robot : L_remote)
     {
-        booléens.clear();
+        bools.clear();
         if(robot->get_type()==1)//Prospecteurs
         {
-            booléens=robot->get_bools();
-            if(booléens[2]==true)//represente le bool found
+            bools=robot->get_bools();
+            if(bools[2]==true)//represente le bool found
             {
                 if(not(robot->get_gisement().in_E_G(E_G)))
                 {
@@ -470,8 +471,8 @@ void Base::liste_gisements(std::vector<Gisement>& Eg)//Creation de la liste avec
         }
         if(robot->get_type()==2)//Forage
         {
-            booléens=robot->get_bools();
-            if(booléens[0]==true)//représente le bool atteint
+            bools=robot->get_bools();
+            if(bools[0]==true)//représente le bool atteint
             {
                 for(auto& gisement : Eg)
                 {

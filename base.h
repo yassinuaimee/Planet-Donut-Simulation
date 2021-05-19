@@ -24,10 +24,15 @@ class Base
 public:
     Base(double, double, double, int, int, int, int, std::ifstream & );
     
+    //CONNECTION
     void update_voisin(Base&);
     void test_voisin(std::shared_ptr<Robot>&);
     void connexion();
+    
+    //MAINTENANCE
     void maintenance();
+    
+    
     void update_prospection();
     void update_forage();
     void update_transport();
@@ -38,13 +43,14 @@ public:
     void creation();
     void destruction();
     
-    
+    //AFFICHAGE
     void affiche_texte();
     void affiche_texte(std::ofstream&);
     void affiche_dessin(int, bool);
     void affiche_range();
     void affiche_link();
     
+    //GETTERS
     Cercle get_centre();
     double get_x();
     double get_y();
@@ -57,8 +63,10 @@ public:
     bool get_active();//Permet de verifier qu'une base est bien active
     
 private:
-    void liste_gisements(std::vector<Gisement>&);
-    void deplacement_robots();
+    void liste_gisements(std::vector<Gisement>&);//Initialise la liste des gisements connus
+    void deplacement_robots();//Surtout pour le cas des robots autonomous
+    
+    //EVOLUTION diff ROBOTS
     void evolution_prospecteur(std::vector<Gisement>&);
     void evolution_forage();
     void evolution_transport();
