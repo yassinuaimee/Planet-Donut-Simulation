@@ -90,6 +90,8 @@ public:
     void affiche_texte(std::ofstream&);
     void affiche_dessin(int, bool);
     bool get_found();
+    void set_found(bool);
+    void set_retour(bool);
     Cercle get_cercle_gisement();
     Point get_centre_gisement();
     Gisement get_gisement() override;

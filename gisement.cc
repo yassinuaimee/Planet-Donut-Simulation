@@ -124,11 +124,11 @@ double Gisement::get_capacite()
 
 //===================================================================================//
  
-void Gisement::set_capacite(double perte)
+void Gisement::delta_capacite(double variation)
 {
-    if(capacite>perte)
+    if(capacite>=variation)
     {
-        capacite=capacite-perte;
+        capacite=capacite+variation;
     }
     else
     {

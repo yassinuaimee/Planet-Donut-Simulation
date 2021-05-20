@@ -90,7 +90,7 @@ void Robot::deplacement(Point base)
 	        position.set_y(y+5*delta_y/norme);
 	        dp=dp+5;
 	    }
-        else if(norme<5)
+        else if(norme<=5)
         {
             position.set_x(xb);
             position.set_y(yb);
@@ -419,6 +419,7 @@ void Prospection::deplacement(Point base)
         vecteur_deplacement=plus_court_deplacement(position, but);
         double x(position.get_x()), y(position.get_y());
         double xb(but.get_x()), yb(but.get_y());
+        
         double delta_x(vecteur_deplacement[0]);
         double delta_y(vecteur_deplacement[1]);
         double norme(vecteur_deplacement[2]);
@@ -527,6 +528,20 @@ void Prospection::affiche_dessin(int index, bool toggle_range)
 bool Prospection::get_found()
 {
     return found;
+}
+
+//================================================================================//
+
+void Prospection::set_found(bool x)
+{
+	found=x;
+}
+
+//================================================================================//
+
+void Prospection::set_retour(bool x)
+{
+	retour=x;
 }
 
 //================================================================================//
@@ -723,7 +738,7 @@ void Transport::deplacement(Point base)
             position.set_y(y+5*delta_y/norme);
             dp=dp+5;
         }
-        else if(norme<5)
+        else if(norme<=5)
         {
             position.set_x(xb);
             position.set_y(yb);
@@ -739,11 +754,11 @@ void Transport::deplacement(Point base)
             std::cout<<"Robot de transport arrivé\n";
         }
     }
-    Point p(base.get_x(),base.get_y());
-    if(retour==true and position.same_position(p))
-    {
-        atteint=false;
-    }
+    //~ Point p(base.get_x(),base.get_y());
+    //~ if(retour==true and position.same_position(p))
+    //~ {
+        //~ atteint=false;
+    //~ }
 }
 
 

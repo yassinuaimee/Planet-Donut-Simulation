@@ -38,8 +38,12 @@ public:
     void update_transport();
     void update_communicaton();
     void evolution(std::vector<Gisement>&);
+    
+    
     void contact_gisement_forage(std::vector<Gisement>&);
     void contact_gisement_transport(std::vector<Gisement> & Eg);
+    
+    
     void creation();
     void destruction();
     
@@ -64,12 +68,15 @@ public:
     
 private:
     void liste_gisements(std::vector<Gisement>&);//Initialise la liste des gisements connus
-    void deplacement_robots();//Surtout pour le cas des robots autonomous
+    
+    void deplacement_robots();
+    
+    
     
     //EVOLUTION diff ROBOTS
     void evolution_prospecteur(std::vector<Gisement>&);
-    void evolution_forage();
-    void evolution_transport();
+    void evolution_forage(std::vector<Gisement>&);
+    void evolution_transport(std::vector<Gisement>&);
     void evolution_communication();
     
     //Tous les algo on devrait les mettre dans le private je pense que c'est mieux
@@ -78,16 +85,11 @@ private:
     void algo_decision_transport();
     void algo_placement_robot_com();
    
-    void creation_prospection();
-    void creation_forage();
-    void creation_transport();
-    void creation_communication();
-    
     void reinitialise(std::shared_ptr<Transport>);
     void reinitialise(std::shared_ptr<Prospection>);
     void refresh_nb_robots();
     
-    
+    void creation_communication();
     void creation_robCom1();
     void creation_robCom2();
     void creation_robCom3();
@@ -105,6 +107,29 @@ private:
     void creation_robCom15();
     void creation_robCom16();
     void creation_robCom17();
+    
+    void creation_prospection();
+    void creation_prospection1();
+    void creation_prospection2();
+    void creation_prospection3();
+    void creation_prospection4();
+    void creation_prospection5();
+    void relance_prospection();
+    
+	void creation_forage();
+    void creation_forage1(int);//Au debut vraiment meme si on a pas beaucoup de ressources on envoi forage
+	void creation_forage2(int);//On devient de plus en plus chiant avec les ressources
+    void creation_forage3(int);
+    
+    
+    void creation_transport();
+    void creation_transport1();
+	void creation_transport2();
+    void creation_transport3();
+    void relance_transport(std::shared_ptr<Transport>);
+
+
+
     
     
     std::vector<std::shared_ptr<Robot>> E_R;
