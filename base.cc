@@ -1141,6 +1141,35 @@ bool verif_uid(const unsigned uid)
 
 //================================================================================//
 
+unsigned Base::new_uid()
+{
+	unsigned uid((unsigned) E_R:size());
+	bool uid_not_ok(true);
+	while(uid_not_ok)
+	{
+		bool test(false);
+		for(auto& robot : E_R)
+		{
+			if(uid==robot->get_uid())
+			{
+				test=true;
+				break;
+			}
+		}
+		if(test)
+		{
+			++uid;
+		}
+		else
+		{
+			uid_not_ok=false;
+		}
+	}
+	return uid;
+}
+
+//================================================================================//
+
 bool lecture_bool(std::stringstream& data)
 {
     std::string booleen;

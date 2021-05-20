@@ -129,7 +129,7 @@ private:
     void relance_transport(std::shared_ptr<Transport>);
 
 
-
+	unsigned new_uid();
     
     
     std::vector<std::shared_ptr<Robot>> E_R;
