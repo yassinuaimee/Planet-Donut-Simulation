@@ -292,11 +292,12 @@ void Base::evolution(std::vector<Gisement>& Eg)
 {
     nb_nouveaux_robots=0;
     liste_gisements(Eg);
-    evolution_forage(Eg);
-    evolution_prospecteur(Eg);//Dans les fonctions evolution on va pouvoir changer les coordonnées du but en fonction de la situation
     
+    evolution_forage(Eg);
+    evolution_prospecteur(Eg);
     evolution_transport(Eg);
     evolution_communication();
+    
     deplacement_robots();
     
 }
@@ -424,14 +425,17 @@ void Base::evolution_communication()
 
 void Base::creation_prospection()
 {
-    if(nbP==0 and ressources>300 and nbC>10)
+    if(nbP<=10)
     {
-		creation_prospection1();
+        if(nbP==0 and ressources>300 and nbC>10)
+        {
+            creation_prospection1();
+        }
+        if(nbP<=3 and ressources>300 and nbC>20)
+        {
+            creation_prospection2();
+        }
     }
-    if(nbP<=3 and ressources>300 and nbC>20)
-    {
-		creation_prospection2();
-	}
 }
 
 //================================================================================//
@@ -452,7 +456,7 @@ void Base::creation_forage()
 		}
 		if(robot_deja_envoyer==false)
 		{
-			index=i;
+			index=(int) i;
 			new_forage=true;
 			break;
 		}
@@ -477,19 +481,22 @@ void Base::creation_forage()
 
 void Base::creation_transport()
 {
-	if(nbT==0 and nbF>=1 and ressources>=110 and nbC>30)
-	{
-		creation_transport1();
-	}
-	else if(nbT<=2 and nbF>=2 and ressources>300 and nbC>30)
-	{
-		creation_transport2();
-	}
-	else if(nbT>2 and nbF>=2 and ressources>110 and nbC>30)
-	{
-		creation_transport3();
-	}
-    refresh_nb_robots();
+    if(nbT<=5)
+    {
+        if(nbT==0 and nbF>=1 and ressources>=110 and nbC>30)
+        {
+            creation_transport1();
+        }
+        else if(nbT<=2 and nbF>=2 and ressources>300 and nbC>30)
+        {
+            creation_transport2();
+        }
+        else if(nbT>2 and nbF>=2 and ressources>110 and nbC>30)
+        {
+            creation_transport3();
+        }
+        refresh_nb_robots();
+    }
 }
 
 //================================================================================//
@@ -1315,36 +1322,42 @@ void Base::creation_prospection1()
 
 void Base::creation_prospection2()
 {
-	int x(0), y(0);
-	random(x, y);
-    std::shared_ptr<Prospection> p1(new Prospection((unsigned) E_R.size()+1, 0,
-															centre.get_x(),
-															centre.get_y(),
-															centre.get_x()+x,
-															centre.get_y()+y,
-															false, false,
-															false));
+    int x(0), y(0);
+    if(nb_nouveaux_robots<4)
+    {
+        random(x, y);
+        std::shared_ptr<Prospection> p1(new Prospection((unsigned) E_R.size()+1, 0,
+                                                                centre.get_x(),
+                                                                centre.get_y(),
+                                                                centre.get_x()+x,
+                                                                centre.get_y()+y,
+                                                                false, false,
+                                                                false));
+        
+        ressources-=cost_prosp;
+        E_P.push_back(p1);
+        E_R.push_back(p1);
+        ++nb_nouveaux_robots;
+        refresh_nb_robots();
+    }
 	
-	ressources-=cost_prosp;
-	E_P.push_back(p1);
-	E_R.push_back(p1);	
-	++nb_nouveaux_robots;
-	refresh_nb_robots();													
-	
-	random(x, y);
-    std::shared_ptr<Prospection> p2(new Prospection((unsigned) E_R.size()+1, 0,
-															centre.get_x(),
-															centre.get_y(),
-															centre.get_x()+x,
-															centre.get_y()+y,
-															false, false,
-															false));
-	
-	
-	E_P.push_back(p2);
-	E_R.push_back(p2);
-	++nb_nouveaux_robots;
-	refresh_nb_robots();
+    if(nb_nouveaux_robots<4)
+    {
+        random(x, y);
+        std::shared_ptr<Prospection> p2(new Prospection((unsigned) E_R.size()+1, 0,
+                                                                centre.get_x(),
+                                                                centre.get_y(),
+                                                                centre.get_x()+x,
+                                                                centre.get_y()+y,
+                                                                false, false,
+                                                                false));
+        
+        
+        E_P.push_back(p2);
+        E_R.push_back(p2);
+        ++nb_nouveaux_robots;
+        refresh_nb_robots();
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -1357,52 +1370,60 @@ void Base::creation_prospection2()
 
 void Base::creation_forage1(int index)
 {
-	if(new)
-	 std::shared_ptr<Forage> f(new Forage((unsigned) E_R.size()+1, 0,
-                                                            centre.get_x(),
-                                                            centre.get_y(),
-                                                            E_G[index].get_x(),
-                                                            E_G[index].get_y(),
-                                                             false));
-    ressources-=cost_forage;
-    E_F.push_back(f);
-    E_R.push_back(f);
-    ++nb_nouveaux_robots;
-	refresh_nb_robots();
+    if(nb_nouveaux_robots<4)
+    {
+         std::shared_ptr<Forage> f(new Forage((unsigned) E_R.size()+1, 0,
+                                                                centre.get_x(),
+                                                                centre.get_y(),
+                                                                E_G[index].get_x(),
+                                                                E_G[index].get_y(),
+                                                                 false));
+        ressources-=cost_forage;
+        E_F.push_back(f);
+        E_R.push_back(f);
+        ++nb_nouveaux_robots;
+        refresh_nb_robots();
+    }
 }
 
 //================================================================================//
 
 void Base::creation_forage2(int index)
 {
-	 std::shared_ptr<Forage> f(new Forage((unsigned) E_R.size()+1, 0,
-                                                            centre.get_x(),
-                                                            centre.get_y(),
-                                                            E_G[index].get_x(),
-                                                            E_G[index].get_y(),
-                                                             false));
-    ressources-=cost_forage;
-    E_F.push_back(f);
-    E_R.push_back(f);
-    ++nb_nouveaux_robots;
-	refresh_nb_robots();
+    if(nb_nouveaux_robots<4)
+    {
+         std::shared_ptr<Forage> f(new Forage((unsigned) E_R.size()+1, 0,
+                                                                centre.get_x(),
+                                                                centre.get_y(),
+                                                                E_G[index].get_x(),
+                                                                E_G[index].get_y(),
+                                                                 false));
+        ressources-=cost_forage;
+        E_F.push_back(f);
+        E_R.push_back(f);
+        ++nb_nouveaux_robots;
+        refresh_nb_robots();
+    }
 }
 
 //================================================================================//
 
 void Base::creation_forage3(int index)
 {
-	 std::shared_ptr<Forage> f(new Forage((unsigned) E_R.size()+1, 0,
-                                                            centre.get_x(),
-                                                            centre.get_y(),
-                                                            E_G[index].get_x(),
-                                                            E_G[index].get_y(),
-                                                             false));
-    ressources-=cost_forage;
-    E_F.push_back(f);
-    E_R.push_back(f);
-    ++nb_nouveaux_robots;
-	refresh_nb_robots();
+    if(nb_nouveaux_robots<4)
+    {
+         std::shared_ptr<Forage> f(new Forage((unsigned) E_R.size()+1, 0,
+                                                                centre.get_x(),
+                                                                centre.get_y(),
+                                                                E_G[index].get_x(),
+                                                                E_G[index].get_y(),
+                                                                 false));
+        ressources-=cost_forage;
+        E_F.push_back(f);
+        E_R.push_back(f);
+        ++nb_nouveaux_robots;
+        refresh_nb_robots();
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
