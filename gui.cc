@@ -23,7 +23,7 @@
 #include "simulation.h"
 
 #define GTK_COMPATIBILITY_MODE
-#ifdef GTK_COMPATIBILITY_MODE
+#ifndef GTK_COMPATIBILITY_MODE
 namespace Gtk
 {
   template<class T, class... T_Args>

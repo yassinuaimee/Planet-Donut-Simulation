@@ -59,6 +59,14 @@ bool Robot::communication(std::shared_ptr<Robot> & robot)
     {
         return true;
     }
+    if((sqrt(pow(x+2*dim_max,2)+pow(y,2))-rayon_comm)<=0)
+    {
+        return true;
+    }
+    if((sqrt(pow(x,2)+pow(y+2*dim_max,2))-rayon_comm)<=0)
+    {
+        return true;
+    }
     return false;
 }
 
@@ -68,10 +76,13 @@ void Robot::deplacement(Point base)
 {
 	if(not(atteint) and not(reach_max_dp()))
 	{
+        std::array<double,3> vecteur_deplacement;
+        vecteur_deplacement=plus_court_deplacement(position, but);
         double x(position.get_x()), y(position.get_y());
-	    double xb(but.get_x()), yb(but.get_y());
-	    double delta_x(xb-x), delta_y(yb-y);
-	    double norme(sqrt(pow(delta_x,2)+pow(delta_y,2)));
+        double xb(but.get_x()), yb(but.get_y());
+        double delta_x(vecteur_deplacement[0]);
+        double delta_y(vecteur_deplacement[1]);
+        double norme(vecteur_deplacement[2]);
 	    
 	    if(norme>5)
 	    {
@@ -160,7 +171,7 @@ void Robot::affiche_range()
 
 //================================================================================//
 
-void Robot::affiche_link()
+void Robot::affiche_link(std::vector<std::shared_ptr<Robot>>& E_R)
 {
     double x1(position.get_x()), y1(position.get_y());
     for(auto& robot_adjacent : L_adjacence)
@@ -170,6 +181,31 @@ void Robot::affiche_link()
         if(sqrt(pow(x1-x2,2)+pow(y1-y2,2))-rayon_comm<=0)
         {
             position.ligne_reseau(robot_adjacent->get_position());
+        }
+        if(sqrt(pow((2*dim_max)+x1-x2,2)+pow(y1-y2,2))-rayon_comm<=0)
+        {
+            position.ligne_reseau(robot_adjacent->get_position());
+        }
+        if(sqrt(pow(x1-x2,2)+pow((2*dim_max)+y1-y2,2))-rayon_comm<=0)
+        {
+            position.ligne_reseau(robot_adjacent->get_position());
+        }
+    }
+    for(auto& robot : E_R)
+    {
+        double x2(robot->get_x()), y2(robot->get_y());
+        
+        if(sqrt(pow(x1-x2,2)+pow(y1-y2,2))-rayon_comm<=0)
+        {
+            position.ligne_reseau(robot->get_position());
+        }
+        if(sqrt(pow((2*dim_max)+x1-x2,2)+pow(y1-y2,2))-rayon_comm<=0)
+        {
+            position.ligne_reseau(robot->get_position());
+        }
+        if(sqrt(pow(x1-x2,2)+pow((2*dim_max)+y1-y2,2))-rayon_comm<=0)
+        {
+            position.ligne_reseau(robot->get_position());
         }
     }
 }
@@ -379,10 +415,13 @@ void Prospection::deplacement(Point base)
     if(not(atteint) and not(reach_max_dp()))
     {
         test_return_base(base);
+        std::array<double,3> vecteur_deplacement;
+        vecteur_deplacement=plus_court_deplacement(position, but);
         double x(position.get_x()), y(position.get_y());
         double xb(but.get_x()), yb(but.get_y());
-        double delta_x(xb-x), delta_y(yb-y);
-        double norme(sqrt(pow(delta_x,2)+pow(delta_y,2)));
+        double delta_x(vecteur_deplacement[0]);
+        double delta_y(vecteur_deplacement[1]);
+        double norme(vecteur_deplacement[2]);
         
         if(norme>5)
         {
@@ -670,10 +709,13 @@ void Transport::deplacement(Point base)
 {
     if(not(atteint) and not(reach_max_dp()))
     {
+        std::array<double,3> vecteur_deplacement;
+        vecteur_deplacement=plus_court_deplacement(position, but);
         double x(position.get_x()), y(position.get_y());
         double xb(but.get_x()), yb(but.get_y());
-        double delta_x(xb-x), delta_y(yb-y);
-        double norme(sqrt(pow(delta_x,2)+pow(delta_y,2)));
+        double delta_x(vecteur_deplacement[0]);
+        double delta_y(vecteur_deplacement[1]);
+        double norme(vecteur_deplacement[2]);
         
         if(norme>5)
         {

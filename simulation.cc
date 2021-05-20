@@ -190,14 +190,11 @@ void Simulation::update()
         {
             Eb[i].update_voisin(Eb[j]);
         }
-    }
-    for(unsigned i(0); i<nbB; ++i)
-    {
         if(Eb[i].get_ressources()<=finR)
         {
             Eb[i].connexion();
             Eb[i].maintenance();
-            Eb[i].creation();
+            //Eb[i].creation();//On va tout mettre dans evolution du coup
             Eb[i].evolution(Eg);
             
         }
@@ -297,7 +294,7 @@ void Simulation::affiche_link(bool toggle_link)
 {
     if(toggle_link)
     {
-        for(unsigned i(0);i<nbB;++i)
+        for(unsigned i(0); i<nbB; ++i)
         {
             Eb[i].affiche_link();
         }

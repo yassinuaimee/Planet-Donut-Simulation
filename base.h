@@ -36,7 +36,7 @@ public:
     void update_prospection();
     void update_forage();
     void update_transport();
-    void update_communicaiton();
+    void update_communicaton();
     void evolution(std::vector<Gisement>&);
     void contact_gisement_forage(std::vector<Gisement>&);
     void contact_gisement_transport(std::vector<Gisement> & Eg);
@@ -78,11 +78,14 @@ private:
     void algo_decision_transport();
     void algo_placement_robot_com();
    
-    void creation_communication();
+    void creation_prospection();
     void creation_forage();
     void creation_transport();
+    void creation_communication();
+    
     void reinitialise(std::shared_ptr<Transport>);
     void reinitialise(std::shared_ptr<Prospection>);
+    void refresh_nb_robots();
     
     
     void creation_robCom1();
@@ -101,6 +104,7 @@ private:
     void creation_robCom14();
     void creation_robCom15();
     void creation_robCom16();
+    void creation_robCom17();
     
     
     std::vector<std::shared_ptr<Robot>> E_R;
@@ -112,7 +116,7 @@ private:
 	Cercle centre;
     double ressources;
     bool error_base, active;
-    int compteur;
+    int compteur_C;
 	int nbP, nbF, nbT, nbC;
 };
 

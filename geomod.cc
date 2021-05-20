@@ -201,14 +201,37 @@ double Point::get_y()
 
 void Point::set_x(double x_)
 {
-    x=x_;
+    if(x_>dim_max)
+    {
+        x=x_-2*dim_max;
+    }
+    else if(x_<-dim_max)
+    {
+        x=x_+2*dim_max;
+    }
+    else
+    {
+        x=x_;
+    }
+    
 }
 
 //================================================================================//
 
 void Point::set_y(double y_)
 {
-    y=y_;
+    if(y_>dim_max)
+    {
+        y=y_-2*dim_max;
+    }
+    else if(y_<-dim_max)
+    {
+        y=y_+2*dim_max;
+    }
+    else
+    {
+        y=y_;
+    }
 }
 
 
@@ -759,5 +782,42 @@ std::array<double,2> plus_courte_direction(Point & p1, Point & p2)
             }
         }
     }
+    return direction;
+}
+
+
+std::array<double,3> plus_court_deplacement(Point & p1, Point & p2)
+{
+    std::array<double,3> direction({0,0,0});
+    double distance_min(0.), distance_test(0.);
+    double delta_x(0.), delta_y(0.);
+    double init_x1(p1.get_x()), init_y1(p1.get_y());
+    double init_x2(p2.get_x()), init_y2(p2.get_y());
+    
+    delta_x=init_x2-init_x1;
+    delta_y=init_y2-init_y1;
+    direction[0]=delta_x;
+    direction[1]=delta_y;
+    distance_min=sqrt(pow(delta_x,2) + pow(delta_y,2));
+    
+    for(int kx=-1;kx<=1;++kx)
+    {
+        for(int ky=-1;ky<=1;++ky)
+        {
+            delta_x=(init_x2+kx*2*max_)-init_x1;
+            delta_y=(init_y2+ky*2*max_)-init_y1;
+            
+            distance_test=sqrt(pow(delta_x,2)+pow(delta_y,2));
+            
+            if(distance_min>distance_test)
+            {
+                direction[0]=delta_x;
+                direction[1]=delta_y;
+                distance_min=distance_test;
+            }
+        }
+    }
+    
+    direction[2]=distance_min;
     return direction;
 }

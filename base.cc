@@ -81,7 +81,7 @@ Base creation_base(std::string line, std::ifstream & entree)
 Base::Base(double x, double y, double ressources,
            int nbP, int nbF, int nbT, int nbC, std::ifstream & entree )
 :centre(x, y, rayon_base), ressources(ressources), error_base(false), active(true),
-compteur(-1), nbP(nbP), nbF(nbF), nbT(nbT), nbC(nbC)
+compteur_C(-1), nbP(nbP), nbF(nbF), nbT(nbT), nbC(nbC)
 {
     if(nbP!=0)
     {
@@ -223,147 +223,6 @@ void Base::maintenance()
     }
 }
 
-/*
-//================================================================================//
- //CREATION DE ROBOTS//
-//================================================================================//
-*/
-
-
-void Base::creation()
-{
-    
-    creation_forage();
-    creation_transport();
-    creation_communication();
-	
-                                                       
-    nbP=(int) E_P.size();
-    nbF=(int) E_F.size();
-    nbT=(int) E_T.size();
-    nbC=(int) E_C.size();
-}
-
-
-
-//================================================================================//
-
-void Base::creation_forage()
-{
-    
-    for(auto& prospecteur : E_P)
-    {
-        if(prospecteur->get_remote())
-        {
-            if(prospecteur->get_found() and
-               not(prospecteur->get_forage_envoyer()))
-            {
-                Point but(prospecteur->get_centre_gisement());
-                bool forage_deja_envoyer(false);
-                for(auto& forage : E_F)
-                {
-                    if(forage->get_but().same_position(but))
-                    {
-                        forage_deja_envoyer=true;
-                    }
-                }
-                if(not(forage_deja_envoyer))
-                {
-                    prospecteur->set_forage_envoyer(true);
-                    unsigned size_E_R((unsigned)E_R.size());
-                    std::shared_ptr<Forage> forage(new Forage(size_E_R+1,
-                                                              0,
-                                                              centre.get_x(),
-                                                              centre.get_y(),
-                                                              but.get_x(),
-                                                              but.get_y(),
-                                                              false));
-                    E_F.push_back(forage);
-                    E_R.push_back(forage);
-                    nbF+=1;
-                    return;
-                }
-            }
-        }
-    }
-}
-
-//================================================================================//
-
-void Base::creation_transport()
-{
-    if(ressources>200 and nbT<2)
-    {
-        for(auto& forage : E_F)
-        {
-            if(forage->get_atteint())
-            {
-                unsigned size_E_R((unsigned)E_R.size());
-                std::shared_ptr<Transport> transport(new Transport(size_E_R+1,
-                                                          0,
-                                                          centre.get_x(),
-                                                          centre.get_y(),
-                                                          forage->get_x(),
-                                                          forage->get_y(),
-                                                          false, false));
-                E_T.push_back(transport);
-                E_R.push_back(transport);
-                nbT+=1;
-            }
-        }
-    }
-    else if(ressources>1000 and nbT<3)
-    {
-        
-    }
-}
-
-//================================================================================//
-
-void Base::creation_communication()
-{
-    compteur+=1;
-    std::cout<<"le comteur vaut: "<<compteur<<std::endl;
-    if(ressources>250 and E_C.size()<47 and compteur<16)
-    {
-        switch(compteur%16)
-        {
-            case 0: creation_robCom1();
-                   break;
-            case 1: creation_robCom2();
-                   break;
-            case 2: creation_robCom3();
-                   break;
-            case 3: creation_robCom4();
-                   break;
-            case 4: creation_robCom5();
-                   break;
-            case 5: creation_robCom6();
-                   break;
-            case 6 : creation_robCom7();
-                   break;
-            case 7: creation_robCom8();
-                   break;
-            case 8: creation_robCom9();
-                   break;
-            case 9: creation_robCom10();
-                   break;
-            case 10: creation_robCom11();
-                   break;
-            case 11: creation_robCom12();
-                   break;
-            case 12: creation_robCom13();
-                   break;
-            case 13: creation_robCom14();
-                   break;
-            case 14: creation_robCom15();
-                   break;
-            case 15: creation_robCom16();
-                   break;
-        }
-    }
-}
-
 
 
 /*
@@ -418,7 +277,7 @@ void Base::update_transport()
 
 //================================================================================//
 
-void Base::update_communicaiton()
+void Base::update_communicaton()
 {
     for(auto& robot : E_C)
     {
@@ -436,18 +295,18 @@ void Base::evolution(std::vector<Gisement>& Eg)
 {
     
     liste_gisements(Eg);
-    evolution_prospecteur(Eg);//Dans les fonctions evolution on va pouvoir changer les coordonnées du but en fonction de la situation
+    //evolution_prospecteur(Eg);//Dans les fonctions evolution on va pouvoir changer les coordonnées du but en fonction de la situation
     //evolution_forage();
     //evolution_transport();
-    //evolution_communication();
+    evolution_communication();
     //deplacement_robots();
     
-    contact_gisement_forage(Eg);
-    contact_gisement_transport(Eg);
-    update_prospection();
-    update_forage();
-    update_transport();
-    update_communicaiton();
+    //contact_gisement_forage(Eg);
+    //contact_gisement_transport(Eg);
+    //update_prospection();
+    //update_forage();
+    //update_transport();
+    update_communicaton();
 }
 //================================================================================//
 
@@ -493,6 +352,7 @@ void Base::liste_gisements(std::vector<Gisement>& Eg)//Creation de la liste avec
 
 void Base::evolution_prospecteur(std::vector<Gisement>& Eg)
 {
+    creation_prospection();
     for(size_t i(0); i<E_P.size();++i)
     {
         if(not(E_P[i]->get_found()) and not(E_P[i]->get_atteint()))
@@ -568,6 +428,185 @@ void Base::evolution_prospecteur(std::vector<Gisement>& Eg)
         }
     }
 }
+
+
+
+//================================================================================//
+
+void Base::evolution_forage()
+{
+    creation_forage();
+}
+
+void Base::evolution_transport()
+{
+    creation_transport();
+}
+
+void Base::evolution_communication()
+{
+    creation_communication();
+}
+
+/*
+//================================================================================//
+ //CREATION DE ROBOTS//
+//================================================================================//
+*/
+
+void Base::creation_prospection()
+{
+    if(nbP==0 and ressources>300 and nbC>10)
+    {
+        std::shared_ptr<Prospection> p(new Prospection((unsigned) E_R.size()+1, 0,
+                                                                centre.get_x(),
+                                                                centre.get_y(),
+                                                                centre.get_x()-2*295,
+                                                                centre.get_y()+295,
+                                                                 false, false,
+                                                                false));
+        ressources-=cost_com;
+        E_P.push_back(p);
+        E_R.push_back(p);
+        refresh_nb_robots();
+    }
+}
+void Base::refresh_nb_robots()
+{
+    nbP=(int) E_P.size();
+    nbF=(int) E_F.size();
+    nbT=(int) E_T.size();
+    nbC=(int) E_C.size();
+}
+
+//================================================================================//
+
+void Base::creation_forage()
+{
+    
+    for(auto& prospecteur : E_P)
+    {
+        if(prospecteur->get_remote())
+        {
+            if(prospecteur->get_found() and
+               not(prospecteur->get_forage_envoyer()))
+            {
+                Point but(prospecteur->get_centre_gisement());
+                bool forage_deja_envoyer(false);
+                for(auto& forage : E_F)
+                {
+                    if(forage->get_but().same_position(but))
+                    {
+                        forage_deja_envoyer=true;
+                    }
+                }
+                if(not(forage_deja_envoyer))
+                {
+                    prospecteur->set_forage_envoyer(true);
+                    unsigned size_E_R((unsigned)E_R.size());
+                    std::shared_ptr<Forage> forage(new Forage(size_E_R+1,
+                                                              0,
+                                                              centre.get_x(),
+                                                              centre.get_y(),
+                                                              but.get_x(),
+                                                              but.get_y(),
+                                                              false));
+                    E_F.push_back(forage);
+                    E_R.push_back(forage);
+                    nbF+=1;
+                    return;
+                }
+            }
+        }
+    }
+    refresh_nb_robots();
+}
+
+//================================================================================//
+
+void Base::creation_transport()
+{
+    if(ressources>200 and nbT<2)
+    {
+        for(auto& forage : E_F)
+        {
+            if(forage->get_atteint())
+            {
+                unsigned size_E_R((unsigned)E_R.size());
+                std::shared_ptr<Transport> transport(new Transport(size_E_R+1,
+                                                          0,
+                                                          centre.get_x(),
+                                                          centre.get_y(),
+                                                          forage->get_x(),
+                                                          forage->get_y(),
+                                                          false, false));
+                E_T.push_back(transport);
+                E_R.push_back(transport);
+                nbT+=1;
+            }
+        }
+    }
+    else if(ressources>1000 and nbT<3)
+    {
+        
+    }
+    refresh_nb_robots();
+}
+
+
+
+
+
+//================================================================================//
+
+void Base::creation_communication()
+{
+    compteur_C+=1;
+    std::cout<<"le comteur vaut: "<<compteur_C<<std::endl;
+    if(ressources>250 and E_C.size()<50 and compteur_C<17)
+    {
+        switch(compteur_C%17)
+        {
+            case 0: creation_robCom1();
+                   break;
+            case 1: creation_robCom2();
+                   break;
+            case 2: creation_robCom3();
+                   break;
+            case 3: creation_robCom4();
+                   break;
+            case 4: creation_robCom5();
+                   break;
+            case 5: creation_robCom6();
+                   break;
+            case 6 : creation_robCom7();
+                   break;
+            case 7: creation_robCom8();
+                   break;
+            case 8: creation_robCom9();
+                   break;
+            case 9: creation_robCom10();
+                   break;
+            case 10: creation_robCom11();
+                   break;
+            case 11: creation_robCom12();
+                   break;
+            case 12: creation_robCom13();
+                   break;
+            case 13: creation_robCom14();
+                   break;
+            case 14: creation_robCom15();
+                   break;
+            case 15: creation_robCom16();
+                   break;
+            case 16: creation_robCom17();
+                   break;
+        }
+    }
+    refresh_nb_robots();
+}
+
+
 
 //================================================================================//
 
@@ -741,7 +780,7 @@ void Base::affiche_link()
 {
     for(auto& robot : E_R)
     {
-        robot->affiche_link();
+        robot->affiche_link(E_R);
     }
 }
 
@@ -1667,3 +1706,26 @@ void Base::creation_robCom16()
     
 }
 
+//================================================================================//
+
+void Base::creation_robCom17()
+{
+    std::shared_ptr<Communication> c1(new Communication((unsigned) E_R.size()+1, 0,
+                                                            centre.get_x(),
+                                                            centre.get_y(),
+                                                            centre.get_x(),
+                                                            centre.get_y()+3*295,
+                                                             false));
+    ressources-=cost_com;
+    E_C.push_back(c1);
+    E_R.push_back(c1);
+    std::shared_ptr<Communication> c2(new Communication((unsigned) E_R.size()+1, 0,
+                                                        centre.get_x(),
+                                                        centre.get_y(),
+                                                        centre.get_x()+2*295,
+                                                        centre.get_y()+3*295,
+                                                               false));
+    ressources-=cost_com;
+    E_C.push_back(c2);
+    E_R.push_back(c2);
+}

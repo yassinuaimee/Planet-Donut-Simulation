@@ -93,5 +93,6 @@ double norme_plus_petit_vecteur(const double,
 void affiche_dessin(int, int, double, double, bool retour = false);
 
 std::array<double,2> plus_courte_direction(Point &, Point &);
+std::array<double,3> plus_court_deplacement(Point &, Point &);
 
 #endif
